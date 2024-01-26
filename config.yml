@@ -1,0 +1,36 @@
+
+
+
+# Class:
+# Server
+
+
+# Request:
+#
+# - Method
+# - Path
+# - Body
+
+# Route
+# 
+
+# CGI
+# - Path
+
+server: 
+  name: 3
+  port: 7070
+  host: 345
+  body_limit: 10
+  directory_listing: 1
+  cgi: ./woifjwef/dsofijds/cgi.php
+  directory_listing: on
+  404_page: 404.html
+  500_page: 500.html
+  ...
+  route:
+     methods:
+      - POST
+      - GET
+      - DELETE
+    
