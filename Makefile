@@ -4,7 +4,7 @@ FLAGS = -pedantic -std=c++98 -Wall -Wextra -Werror
 NAME = webserv
 CC = c++
 
-SRC = test.cpp
+SRC = test2.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

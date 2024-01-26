@@ -10,6 +10,32 @@
 #define MAX_EVENTS 100
 #define PORT 8080
 
+
+#include <fstream>
+#include <streambuf>
+
+std::string loadHTMLFromFile(const std::string& filePath) {
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+        std::cerr << "Error opening HTML file: " << filePath << std::endl;
+        return "";
+    }
+
+    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    return content;
+}
+
+std::string generateHTMLPage() {
+    // Specify the path to your HTML file
+    std::string filePath = "main.html";
+
+    // Load HTML content from the file
+    std::string html = loadHTMLFromFile(filePath);
+
+    return html;
+}
+
+
 class WebServer {
 public:
     WebServer() {
@@ -35,36 +61,43 @@ public:
     }
 
     void run() {
-        while (true) {
-            int nev = kevent(kq, nullptr, 0, events, MAX_EVENTS, nullptr);
-            if (nev == -1) {
-                perror("Error in kevent");
-                exit(EXIT_FAILURE);
-            }
+		while (true) {
+			int nev = kevent(kq, nullptr, 0, events, MAX_EVENTS, nullptr);
+			if (nev == -1) {
+				perror("Error in kevent");
+				exit(EXIT_FAILURE);
+			}
 
-            for (int i = 0; i < nev; ++i) {
-                if (events[i].ident == server_fd) {
-                    // New client connection
-                    struct sockaddr_in client_addr;
-                    socklen_t client_len = sizeof(client_addr);
-                    int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
+			for (int i = 0; i < nev; ++i) {
+				if (events[i].ident == server_fd) {
+					// New client connection
+					struct sockaddr_in client_addr;
+					socklen_t client_len = sizeof(client_addr);
+					int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
 
-                    if (client_fd == -1) {
-                        perror("Error accepting connection");
-                        exit(EXIT_FAILURE);
-                    }
+					if (client_fd == -1) {
+						perror("Error accepting connection");
+						exit(EXIT_FAILURE);
+					}
 
-                    std::cout << "New client connected : " << client_fd << " " << i << std::endl;
+					std::cout << "New client connected\n";
 
-                    // TODO: Handle the client connection, e.g., read/write data
-                    // ...
+					// Send HTML page from file to the client
+					std::string htmlPage = generateHTMLPage();
+					std::string responseHeaders = "HTTP/1.1 200 OK\r\n";
+					responseHeaders += "Content-Type: text/html\r\n";
+					responseHeaders += "Content-Length: " + std::to_string(htmlPage.size()) + "\r\n";
+					responseHeaders += "\r\n";
+					send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
+					send(client_fd, htmlPage.c_str(), htmlPage.size(), 0);
 
-                    close(client_fd);
-                }
-            }
-			sleep(6);
-        }
-    }
+
+					// Close the client connection
+					close(client_fd);
+				}
+			}
+		}
+	}
 
 private:
     int server_fd;
