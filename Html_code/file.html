@@ -12,7 +12,6 @@
 			  text-align: center;
 			  margin: auto;
 			  font-size: 16px;
-			  cursor: grab;
 			  border-radius: 9px;
 			  background-color: rgb(152, 152, 158);
 			  box-shadow: none;
@@ -41,9 +40,14 @@
 				font-size: 15px;
 				text-align: center;
 			}
-			.button{
-				margin: auto;
-				padding: 10px;
+			.Button1{
+				cursor: s-resize;
+			}
+			.Button2{
+				cursor: no-drop;
+			}
+			.Button3{
+				cursor: n-resize;
 			}
 
 			.div_file{
@@ -53,11 +57,13 @@
 
 		</style>
 		<h1>File transfert</h1>
+		<p></p>
 		<div class="button">
-		<button class = "Button 1">test set file</button>
-		<button class = "Button 2">test set file</button>
-		<button class = "Button 3">test set file</button>
+		<button class = "Button1">Download</button>
+		<button class = "Button2">Delete</button>
+		<button class = "Button3">upload</button>
 		</div>
+		<p></p>
 		<div class="div_file">
 			<label for="file">Select a file to download : </label>
 			<input type="file" id="file" name="avatar"/>
