@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WebServer.hpp                                      :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 16:05:55 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/30 09:31:50 by pudry            ###   ########.fr       */
+/*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
+/*   Updated: 2024/01/30 09:47:12 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "Server.hpp"
+#include "../includes/Server.hpp"
 
-class WebServer
+Server::~Server(void) {}
+
+Server::Server(ServConf *Conf)
 {
-	private:
-		std::vector<Server> _servers;
-	public:
-		WebServer(std::string file);
-		void run(void);
-		std::vector<Server>	getServer(int i) const;
-		void	AddServer(ServConf Conf);
-		~WebServer();
-};
+	_name = Conf->name;
+	_host = Conf->host;
+	_port = Conf->port;
+	_bodyLimit = Conf->bodyLimit;
+	_idirectorylListing = Conf->idirectorylListing;
+	_bdirectorylListing = Conf->bdirectoryListing;
+	_ErrPage = Conf->ErrPage;
+}

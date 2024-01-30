@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/26 16:07:59 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/01/30 09:40:09 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,19 @@ struct HttpResponse
 	// ... ?
 	// Reponse body
 	std::string body;
+};
+
+struct	ServConf
+{
+	std::string	name;
+	int			port = 0;
+	int			host;
+	int			bodyLimit;
+	int			idirectorylListing;
+	std::string	cgi;
+	bool		bdirectoryListing;
+	std::string	ErrPage;
+	bool		Get;
+	bool		Post;
+	bool		Delete;
 };

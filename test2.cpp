@@ -45,7 +45,7 @@ public:
 
     // Méthode principale pour exécuter le serveur
     void run() {
-		std::string htmlPage = loadHTMLFromFile("main2.html");
+		std::string htmlPage = loadHTMLFromFile("./Html_code/file.html");
         while (true) {
             // Attente d'événements avec kqueue
             int nev = kevent(kq, nullptr, 0, events, MAX_EVENTS, nullptr);
@@ -66,8 +66,9 @@ public:
                         perror("Error accepting connection");
                         exit(EXIT_FAILURE);
                     }
-
-                    std::cout << "New client connected\n";
+                    std::cout << "<=======================================================================================>\n";
+                    std::cout << "<                              New client connected                                     >\n";
+                    std::cout << "<=======================================================================================>\n";
 
                     // Réception et affichage de la requête HTTP du client
                     std::string httpRequest = receiveHTTPRequest(client_fd);

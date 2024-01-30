@@ -3,24 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:30 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/26 16:07:57 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/01/30 09:47:39 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Route.hpp"
+#include "structs.hpp"
 
 class Server
 {
 	private:
-		std::string _host;
-		int _port;
-		std::vector<Route> _routes;
+		std::string			_name;
+		int					 _host;
+		int					_port;
+		int					_bodyLimit;
+		int					_idirectorylListing;
+		bool				_bdirectorylListing;
+		std::string			_ErrPage;
+		std::vector<Route>	_routes;
 	public:
+		Server(ServConf *Conf);
+		~Server(void);
 		Route *matchRoute(const HttpRequest & req)
 		{
 			for (size_t i = 0; i < _routes.size(); i++)

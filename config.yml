@@ -24,13 +24,17 @@ server:
   body_limit: 10
   directory_listing: 1
   cgi: ./woifjwef/dsofijds/cgi.php
-  directory_listing: on
-  404_page: 404.html
+  directory_listing_state: on
+  default_return: main2.html
+  400_page: 404.html
   500_page: 500.html
   ...
   route:
-     methods:
+    methods:
       - POST
       - GET
       - DELETE
+    root: ./Html_code
+    root_page: file.html
+
     
