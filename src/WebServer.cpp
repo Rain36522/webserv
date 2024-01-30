@@ -16,6 +16,6 @@ WebServer::~WebServer(void) {}
 
 void	WebServer::AddServer(ServConf Conf)
 {
-	Server	*Serv = new Server(Conf);
+	Server	*Serv = new Server(&Conf);
 	
 }

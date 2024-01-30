@@ -17,14 +17,18 @@ class Route
 {
 	//set_methode();
 	private:
-		std::string _path;
-		m_type _type;
-		AbstractCGI &_cgi;
+		std::string			_path; // part in the url after the port/hostname if I understand correctly
+		std::string			_dir; // path on server
+		std::string			_default; // default page (index.html)
+		std::set<m_type>	_methods; // a set elements are unique and also has the contains() method
+		bool				listDir; // enable or disable directory listing
+		AbstractCGI			&_cgi; // Not entirely sure if this is the correct place or not.
+		std::string			_redirPath; // Redirect from this route to another?
 	public:
 		Route(std::string _path, m_type _type, AbstractCGI &cgi);
 		bool match(HttpRequest req)
 		{
-			return req.path == _path && req.method == _type;
+			return req.path == _path && _methods.find(req.method) != _methods.end();
 		};
 		HttpResponse execute(HttpRequest req)
 		{

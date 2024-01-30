@@ -19,12 +19,13 @@ class Server
 {
 	private:
 		std::string			_name;
-		int					 _host;
+		int					_host;
 		int					_port;
 		int					_bodyLimit;
-		int					_idirectorylListing;
-		bool				_bdirectorylListing;
-		std::string			_ErrPage;
+		// error code => error page
+		// we could perhaps use something like -1 or 0 for default page
+		std::map<int, std::string>	_ErrPages;
+		
 		std::vector<Route>	_routes;
 	public:
 		Server(ServConf *Conf);

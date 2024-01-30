@@ -20,7 +20,7 @@ Server::Server(ServConf *Conf)
 	_host = Conf->host;
 	_port = Conf->port;
 	_bodyLimit = Conf->bodyLimit;
-	_idirectorylListing = Conf->idirectorylListing;
-	_bdirectorylListing = Conf->bdirectoryListing;
-	_ErrPage = Conf->ErrPage;
+	// _idirectorylListing = Conf->idirectorylListing;
+	// _bdirectorylListing = Conf->bdirectoryListing;
+	// _ErrPage = Conf->ErrPage;
 }
