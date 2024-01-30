@@ -9,9 +9,10 @@
 #include <sys/socket.h>
 #include <sys/event.h>
 #include <sys/time.h>
+#include "includes/data.hpp"
 
 #define MAX_EVENTS 100
-#define PORT 8080
+#define PORT 443
 
 // Declaration of the function to receive an HTTP request
 std::string receiveHTTPRequest(int client_fd);
@@ -129,7 +130,8 @@ public:
 					std::cout << "<=======================================================================================>\n";
 
 					// Receive and display the client's HTTP request
-					std::string httpRequest = receiveHTTPRequest(client_fd);
+					// std::string httpRequest = receiveHTTPRequest(client_fd);
+					std::string httpRequest = requestToStruct(client_fd).body;
 					std::cout << "Received HTTP request:\n" << httpRequest << std::endl;
 					
 					if (httpRequest.find("POST") != std::string::npos)
@@ -206,8 +208,8 @@ private:
 		std::string responseHeaders = "HTTP/1.1 200 OK\r\n";
 		responseHeaders += "Content-Type: text/html\r\n";
 		responseHeaders += "Content-Length: " + std::to_string(htmlPage.size()) + "\r\n";
+		responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
 		responseHeaders += "\r\n";
-
 		ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
 		if (sent == -1) {
 			perror("Error sending response headers");

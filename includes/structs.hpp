@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/30 09:40:09 by pudry            ###   ########.fr       */
+/*   Updated: 2024/01/30 16:59:56 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 enum m_type{
 	_GET,
 	_POST,
-	_DEL
+	_DEL,
+	_UNKNOW
 };
 
 struct HttpRequest
@@ -28,6 +29,9 @@ struct HttpRequest
 	m_type method;
 	std::string path;
 	std::string body;
+	std::string	HostPort;
+	bool		HtmlFile;
+	bool		emptyPath;
 };
 
 struct HttpResponse

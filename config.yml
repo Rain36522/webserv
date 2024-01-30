@@ -36,5 +36,13 @@ server:
       - DELETE
     root: ./Html_code
     root_page: file.html
+  route:
+    methods:
+      - POST
+      - DELETE
+    root: ./Html_code_files2
+    root_page: file2.html
+
+
 
     
