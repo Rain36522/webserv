@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ParseConfig.hpp                                    :+:      :+:    :+:   */
+/*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 16:23:14 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/26 16:25:29 by dvandenb         ###   ########.fr       */
+/*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
+/*   Updated: 2024/01/31 11:26:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "Server.hpp"
+#include "../includes/Route.hpp"
 
-class ParseConfig
+bool Route::match(HttpRequest req)
 {
-	public:
-		static std::vector<Server> generate_servers(std::string file);
-};
+	return req.path == _path && _methods.find(req.method) != _methods.end();
+}
+

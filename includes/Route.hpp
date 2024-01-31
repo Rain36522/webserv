@@ -26,10 +26,7 @@ class Route
 		std::string			_redirPath; // Redirect from this route to another?
 	public:
 		Route(std::string _path, m_type _type, AbstractCGI &cgi);
-		bool match(HttpRequest req)
-		{
-			return req.path == _path && _methods.find(req.method) != _methods.end();
-		};
+		bool match(HttpRequest req);
 		HttpResponse execute(HttpRequest req)
 		{
 			return _cgi.execute(req);

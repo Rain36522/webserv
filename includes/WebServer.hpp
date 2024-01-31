@@ -12,15 +12,21 @@
 
 #pragma once
 #include "Server.hpp"
+#define MAX_EVENTS 100
 
 class WebServer
 {
 	private:
-		std::vector<Server> _servers;
+		// map from server fd to Server
+		std::map<int, Server>	_servers;
+		int getServerSocket(Server s);
+		int						_kfd;
+		struct kevent events[MAX_EVENTS];
+
 	public:
 		WebServer(std::string file);
 		void run(void);
 		std::vector<Server>	getServer(int i) const;
-		void	AddServer(ServConf Conf);
+				void	AddServer(ServConf Conf);
 		~WebServer();
 };

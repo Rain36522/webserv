@@ -25,7 +25,7 @@ class Server
 		// error code => error page
 		// we could perhaps use something like -1 or 0 for default page
 		std::map<int, std::string>	_ErrPages;
-		
+
 		std::vector<Route>	_routes;
 	public:
 		Server(ServConf *Conf);
@@ -37,4 +37,8 @@ class Server
 					return &_routes[i];
 			return 0;
 		};
+		int get_port()
+		{
+			return _port;
+		}
 };
