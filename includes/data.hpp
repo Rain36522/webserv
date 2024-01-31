@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/31 10:21:11 by pudry            ###   ########.fr       */
+/*   Updated: 2024/01/31 13:17:38 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <fstream>
+#include "get_next_line.h"
 
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
 
 HttpRequest	requestToStruct(int fd);
 std::string	getHtmlPage(std::string path);
+bool downloadImage(int sockfd);
+void sendHTMLResponse(int client_fd, const std::string& htmlPage);

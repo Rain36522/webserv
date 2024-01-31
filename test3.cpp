@@ -44,96 +44,6 @@ public:
 		close(server_fd);
 	}
 
-	std::string extractImageURL(const std::string& httpRequest) {
-		std::istringstream iss(httpRequest); // Create a string stream to parse the HTTP request
-		std::string line; // String to hold each line of the request
-		std::string imageURL; // String to store the extracted image URL
-
-		bool inBody = false; // Flag to indicate if we are in the body of the request
-
-		DEBUG
-		// Iterate through each line of the HTTP request
-		while (std::getline(iss, line)) {
-			
-			std::cout << "line = " << line << std::endl;
-			// Check if the line marks the beginning of the body
-			if (!inBody && line.empty()) {
-				inBody = true;
-				continue;
-			}
-
-			// If we are in the body, we can read the file data
-			if (inBody) {
-				// Here, you can process the file data as needed
-				std::cout << "File data: " << line << std::endl;
-				// For example, you can store it in a separate variable or write it to a file
-			}
-
-			// Check if the line contains the "Content-Type" header
-			if (!inBody && line.find("Content-Type") != std::string::npos) {
-				// Assuming the Content-Type header contains "multipart/form-data"
-				// You may need to adjust this condition based on your actual request format
-				if (line.find("multipart/form-data") != std::string::npos) {
-					// Assuming the URL is in the Content-Disposition header
-					// You may need to adjust this condition and extraction method based on your actual request format
-					size_t pos = line.find("filename=\"");
-					if (pos != std::string::npos) {
-						// Extracting the URL from the Content-Disposition header
-						imageURL = line.substr(pos + 10); // 10 is the length of "filename=\""
-						// Trimming the quotation mark at the end
-						imageURL = imageURL.substr(0, imageURL.size() - 1);
-						break; // Stop parsing once the URL is found
-					}
-				}
-			}
-		}
-
-		return imageURL; // Return the extracted image URL
-	}
-
-
-	void downloadImage(int sockfd) {
-		// Réception de données sur un socket client
-		char buffer[1024]; // Buffer pour lire les données du socket
-		std::string	Html;
-		ssize_t bytes_received;
-
-		// Lire les données du socket client
-		bytes_received = read(sockfd, buffer, sizeof(buffer));
-
-		// Si des données sont lues
-		if (bytes_received > 0) {
-			// Traiter les données ici
-			// Vous devez analyser les données reçues pour extraire le fichier ou toute autre information nécessaire
-			// Ensuite, vous pouvez enregistrer le fichier sur le serveur ou effectuer tout autre traitement requis
-
-			// Par exemple, enregistrer le fichier sur le serveur
-			FILE *file = fopen("fichier_recu", "wb");
-			if (file) {
-				fwrite(buffer, 1, bytes_received, file);
-				fclose(file);
-			}
-
-			// Une fois que le fichier est enregistré ou tout autre traitement est effectué, vous pouvez répondre au client pour indiquer que le fichier a été téléchargé avec succès
-			Html = getHtmlPage("./main2.html");
-			send(sockfd, Html.c_str(), Html.length(), 0);
-
-			// Fermer la connexion avec le client
-			close(sockfd);
-		}
-		// Si une erreur se produit lors de la lecture des données
-		else if (bytes_received == -1) {
-			perror("read");
-			exit(EXIT_FAILURE);
-		}
-		// Si la connexion est fermée par le client
-		else {
-			// Fermer la connexion avec le client
-			close(sockfd);
-    }
-
-	}
-
 	void run() {
 		std::string htmlPage = loadHTMLFromFile("./Html_code/file.html");
 		while (true) {
@@ -169,7 +79,7 @@ public:
 					{
 						std::cout << std::endl << "post methode?\n";
 						// Extract the image URL from the HTTP request
-						std::string imageURL = extractImageURL(httpRequest);
+						// std::string imageURL = extractImageURL(httpRequest);
 						std::cout << "start download\n";
 
 						DEBUG
@@ -234,26 +144,6 @@ private:
 		std::stringstream content;
 		content << file.rdbuf();
 		return content.str();
-	}
-
-	// Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
-	void sendHTMLResponse(int client_fd, const std::string& htmlPage) {
-		std::string responseHeaders = "HTTP/1.1 200 OK\r\n";
-		responseHeaders += "Content-Type: text/html\r\n";
-		responseHeaders += "Content-Length: " + std::to_string(htmlPage.size()) + "\r\n";
-		responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
-		responseHeaders += "\r\n";
-		ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
-		if (sent == -1) {
-			perror("Error sending response headers");
-			// Gérer l'erreur appropriée, fermer la connexion, etc.
-		}
-
-		sent = send(client_fd, htmlPage.c_str(), htmlPage.size(), 0);
-		if (sent == -1) {
-			perror("Error sending HTML content");
-			// Gérer l'erreur appropriée, fermer la connexion, etc.
-		}
 	}
 };
 

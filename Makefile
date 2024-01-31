@@ -4,7 +4,18 @@ FLAGS = -pedantic -std=c++98 -Wall -Wextra -Werror
 NAME = webserv
 CC = c++
 
-SRC = test3.cpp src/request/request.cpp src/request/getPage.cpp
+MAIN = test3.cpp
+GNL = get_next_line.c get_next_line_utils.c
+GETIMG = getImg.cpp
+REQUEST = getPage.cpp request.cpp
+SRC1 = Route.cpp Server.cpp WebServer.cpp
+
+SRC1 += $(addprefix gnl/, $(GNL))
+SRC1 += $(addprefix imgManager/, $(GETIMG))
+SRC1 += $(addprefix request/, $(REQUEST))
+
+SRC = $(addprefix src/, $(SRC1))
+SRC += $(MAIN)
 
 OBJ = $(SRC:.cpp=.o)
 
