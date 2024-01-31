@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/30 16:59:56 by pudry            ###   ########.fr       */
+/*   Updated: 2024/01/31 10:20:35 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ struct HttpResponse
 struct	ServConf
 {
 	std::string	name;
-	int			port = 0;
+	int			port;
 	int			host;
 	int			bodyLimit;
 	int			idirectorylListing;

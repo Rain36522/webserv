@@ -12,7 +12,7 @@
 #include "includes/data.hpp"
 
 #define MAX_EVENTS 100
-#define PORT 443
+#define PORT 80
 
 // Declaration of the function to receive an HTTP request
 std::string receiveHTTPRequest(int client_fd);
@@ -51,10 +51,11 @@ public:
 
 		bool inBody = false; // Flag to indicate if we are in the body of the request
 
+		DEBUG
 		// Iterate through each line of the HTTP request
 		while (std::getline(iss, line)) {
-			std::cout << "Content : " << line << std::endl;
 			
+			std::cout << "line = " << line << std::endl;
 			// Check if the line marks the beginning of the body
 			if (!inBody && line.empty()) {
 				inBody = true;
@@ -91,16 +92,46 @@ public:
 	}
 
 
-	void downloadImage(const std::string& imageURL) {
-		// Open a new HTTP connection to the image URL
-		// Here, you would implement the logic to open a connection and retrieve the image data
-		// I'll show you an example based on the curl library to simplify this
+	void downloadImage(int sockfd) {
+		// Réception de données sur un socket client
+		char buffer[1024]; // Buffer pour lire les données du socket
+		std::string	Html;
+		ssize_t bytes_received;
 
-		// std::string command = "curl -o downloaded_image.jpg " + imageURL;
-		// system(command.c_str()); // Execute the curl command to download the image
-		std::cout << "img url : \n" << imageURL << std::endl;
+		// Lire les données du socket client
+		bytes_received = read(sockfd, buffer, sizeof(buffer));
 
-		// You can also use other libraries like libcurl to download the image
+		// Si des données sont lues
+		if (bytes_received > 0) {
+			// Traiter les données ici
+			// Vous devez analyser les données reçues pour extraire le fichier ou toute autre information nécessaire
+			// Ensuite, vous pouvez enregistrer le fichier sur le serveur ou effectuer tout autre traitement requis
+
+			// Par exemple, enregistrer le fichier sur le serveur
+			FILE *file = fopen("fichier_recu", "wb");
+			if (file) {
+				fwrite(buffer, 1, bytes_received, file);
+				fclose(file);
+			}
+
+			// Une fois que le fichier est enregistré ou tout autre traitement est effectué, vous pouvez répondre au client pour indiquer que le fichier a été téléchargé avec succès
+			Html = getHtmlPage("./main2.html");
+			send(sockfd, Html.c_str(), Html.length(), 0);
+
+			// Fermer la connexion avec le client
+			close(sockfd);
+		}
+		// Si une erreur se produit lors de la lecture des données
+		else if (bytes_received == -1) {
+			perror("read");
+			exit(EXIT_FAILURE);
+		}
+		// Si la connexion est fermée par le client
+		else {
+			// Fermer la connexion avec le client
+			close(sockfd);
+    }
+
 	}
 
 	void run() {
@@ -140,8 +171,10 @@ public:
 						// Extract the image URL from the HTTP request
 						std::string imageURL = extractImageURL(httpRequest);
 						std::cout << "start download\n";
+
+						DEBUG
 						// Download the image
-						downloadImage(imageURL);
+						downloadImage(client_fd);
 					}
 
 					sendHTMLResponse(client_fd, htmlPage);

@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/30 18:06:48 by pudry            ###   ########.fr       */
+/*   Updated: 2024/01/31 09:30:29 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,15 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 
 	request.emptyPath = true;
 	Ref = "Referer: http://" + request.HostPort + "/";
-	// add check after / is \n?
-	std::cout << Ref << std::endl;
 	i = httpRequest.find(Ref);
 	if (i == std::string::npos)
 		return (request);
 	i += Ref.size();
 	j = httpRequest.find("\n", i);
-	if (j == std::string::npos)
-		return (request);
-	if (j == i)
+	if (j == std::string::npos || j <= i + 1)
 		return (request);
 	request.emptyPath = false;
-	request.path = httpRequest.substr(i, j - i);
+	request.path = httpRequest.substr(i, j - i - 1);
 	return (request);
 
 }
@@ -92,9 +88,7 @@ static void	printHttpRequest(HttpRequest request)
 	std::cout << "hostport  : " << request.HostPort << "|"  << std::endl;
 	std::cout << "Html?     : " << request.HtmlFile << "|"  << std::endl;
 	std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
-	std::cout << "<===================================================>\n";
-	std::cout << "body      : " << request.body << std::endl;
-	std::cout << "<===================================================>\n";
+	std::cout << "body      : " << request.body << "|"  << std::endl;
 }
 
 HttpRequest	requestToStruct(int fd)
@@ -110,6 +104,8 @@ HttpRequest	requestToStruct(int fd)
 	if (request.path.find(".html") != std::string::npos)
 		request.HtmlFile = true;
 	request.body = httpRequest;
+	if (request.HostPort.find(":") == std::string::npos)
+		request.HostPort += ":80";
 	printHttpRequest(request);
 	return (request);
 }

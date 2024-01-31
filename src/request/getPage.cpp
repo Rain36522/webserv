@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   data.hpp                                           :+:      :+:    :+:   */
+/*   getPage.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/31 10:21:11 by pudry            ###   ########.fr       */
+/*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
+/*   Updated: 2024/01/31 10:20:05 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "../../includes/data.hpp"
 
-#include "structs.hpp"
-#include <iostream>
-#include <sys/socket.h>
-#include <fstream>
+std::string	getHtmlPage(std::string path)
+{
+	std::ifstream	HtmlFile;
+	std::string		tmp;
+	std::string		Html;
 
-#define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
-
-HttpRequest	requestToStruct(int fd);
-std::string	getHtmlPage(std::string path);
+	HtmlFile.open(path);
+	if (HtmlFile.fail())
+		return ("");
+	while (getline(HtmlFile, tmp))
+		Html += tmp;
+	HtmlFile.close();
+	return (Html);	
+}
