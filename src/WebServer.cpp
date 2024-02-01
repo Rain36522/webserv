@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/30 09:35:35 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 13:29:00 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ WebServer::WebServer(std::string file)
 			perror("Error adding server socket to kqueue");
 			exit(EXIT_FAILURE);
 		}
-		_servers.insert({server_fd, *i});
+		_servers.insert(std::map<int, Server>::value_type(server_fd, *i));
 	}
 }
 
@@ -80,5 +80,6 @@ void WebServer::run(void)
 			if (_servers.find(events[i].ident) != _servers.end()) {
 				
 			}
+		}
 	}
 }
