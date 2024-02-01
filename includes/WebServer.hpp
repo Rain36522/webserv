@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 16:05:55 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/01/30 09:31:50 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 16:02:50 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 class WebServer
 {
 	private:
-		// map from server fd to Server
-		std::map<int, Server>	_servers;
+		// map from hostname to Server
+		std::map<std::string, Server>	_servers;
+		std::vector<int> 				_serverFds;
 		int getServerSocket(Server s);
 		int						_kfd;
 		struct kevent events[MAX_EVENTS];

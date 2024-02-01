@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getPage.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/31 11:44:04 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 16:08:58 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@ std::string	getHtmlPage(std::string path)
 	std::string		Html;
 
 	HtmlFile.open(path);
+	
 	if (HtmlFile.fail())
-		return ("");
+	{
+		perror("Read Html page\n");
+		return "";	
+	}
 	while (getline(HtmlFile, tmp))
 		Html += tmp;
 	HtmlFile.close();
@@ -41,7 +45,6 @@ void sendHTMLResponse(int client_fd, const std::string& htmlPage)
 		perror("Error sending response headers");
 		// Gérer l'erreur appropriée, fermer la connexion, etc.
 	}
-
 	sent = send(client_fd, htmlPage.c_str(), htmlPage.size(), 0);
 	if (sent == -1) {
 		perror("Error sending HTML content");

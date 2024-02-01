@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/01 13:46:25 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 15:48:46 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ HttpRequest	requestToStruct(int fd)
 	HttpRequest	request;
 
 	httpRequest = receiveHTTPRequest(fd, 0); 
+	request.clientFd = fd;
 	request.body = httpRequest;
 	request.HostPort = setHostPort(httpRequest);
 	request.method = setMethod(httpRequest);
@@ -142,5 +143,6 @@ HttpRequest	requestToStruct(int fd)
 		request.HtmlFile = true;
 	if (request.HostPort.find(":") == std::string::npos)
 		request.HostPort += ":80";
+	printHttpRequest(request);
 	return (request);
 }

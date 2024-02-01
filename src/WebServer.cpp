@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/01 13:29:00 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/01 16:04:04 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,15 @@ WebServer::WebServer(std::string file)
 			perror("Error adding server socket to kqueue");
 			exit(EXIT_FAILURE);
 		}
-		_servers.insert(std::map<int, Server>::value_type(server_fd, *i));
+		std::string host_port = (*i).get_host() + ":" + std::to_string((*i).get_port());
+		_servers.insert(std::map<std::string, Server>::value_type(host_port, *i));
+		_serverFds.push_back(server_fd);
 	}
 }
 
 void	WebServer::AddServer(ServConf Conf)
 {
-	Server	*Serv = new Server(&Conf);
+	Server	*Serv = new Server(Conf);
 }
 
 int WebServer::getServerSocket(Server s) {
@@ -63,11 +65,15 @@ int WebServer::getServerSocket(Server s) {
 		perror("Error listening on socket");
 		exit(EXIT_FAILURE);
 	}
+	std::cout << "listening on port: " << s.get_port() << std::endl;
 	return sockfd;
 }
 
 void WebServer::run(void)
 {
+	HttpRequest	request;
+	struct sockaddr_in client_addr;
+
 	while (true)
 	{
 		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, nullptr);
@@ -77,8 +83,17 @@ void WebServer::run(void)
 		}
 
 		for (int i = 0; i < n_events; ++i) {
-			if (_servers.find(events[i].ident) != _servers.end()) {
-				
+			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
+				socklen_t client_len = sizeof(client_addr);
+				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
+				if (client_fd == -1) {
+					perror("Error accepting connection");
+					//exit(EXIT_FAILURE);
+				}
+				request = requestToStruct(client_fd);
+				std::cout << request.body << std::endl;
+				if (_servers.find(request.HostPort) != _servers.end())
+					_servers[request.HostPort].makeRequest(request);
 			}
 		}
 	}
