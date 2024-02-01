@@ -1,0 +1,80 @@
+POST /kittenland HTTP/1.1
+Host: 127.0.0.1:8080
+Connection: keep-alive
+Content-Length: 2137
+Cache-Control: max-age=0
+sec-ch-ua: "Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+Origin: http://127.0.0.1:8080
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarynEqvb1uYJnDQYUox
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://127.0.0.1:8080/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,fr;q=0.8
+
+þ------WebKitFormBoundarynEqvb1uYJnDQYUox
+Content-Disposition: form-data; name="fileUpload"; filename="class.py"
+Content-Type: text/x-python-script
+
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    class.py                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/01/31 16:25:43 by pudry             #+#    #+#              #
+#    Updated: 2024/02/01 11:13:52 by pudry            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+import sys
+import os
+
+def write_header(arg, path):
+	f = open(path + "/" + arg + ".hpp", "a")
+
+	f.write("#ifndef __" + arg.upper() + "__HPP\n")
+	f.write("# define __" + arg.upper() + "__HPP\n\n")
+
+	f.write("# include <iostream>\n\n")
+
+	f.write("class " + arg)
+	f.write("\n{\n")
+	f.write("\tpublic:\n")
+	f.write("\t\t" + arg + "(void);\n")
+	f.write("\t\t~" + arg + "(void);\n")
+	f.write("\t\t" + arg +"(const " + arg + " &src);\n")
+	f.write("\t\t" + arg +"\t&operator=(const " + arg + " &src);\n\n")
+	f.write("\tprivate:\n\n")
+	f.write("};\n\n")
+	f.write("#endif\n")
+
+	f.close()
+
+def write_cpp(arg, path):
+	f = open(path + "/" + arg + ".cpp", "a")
+
+	f.write("#include \"" + arg + ".hpp\"\n\n")
+
+	f.write(arg +"\t&" + arg + "::operator=(const " + arg + " &src)\n{\n\t\n}\n\n")
+	f.write(arg + "::" + arg + "(const " + arg + " &src)\n{\n\t\n}\n\n")
+	f.write(arg + "::~" + arg + "(void){}\n\n")
+	f.write(arg + "::" + arg + "(void){}\n")
+	f.close()
+
+
+for args in sys.argv[1:]:
+	write_header(args, os.environ['PWD'])
+	write_cpp(args, os.environ['PWD'])
+
+
+
+------WebKitFormBoundarynEqvb1uYJnDQYUox--

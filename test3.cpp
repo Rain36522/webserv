@@ -12,10 +12,7 @@
 #include "includes/data.hpp"
 
 #define MAX_EVENTS 100
-#define PORT 80
-
-// Declaration of the function to receive an HTTP request
-std::string receiveHTTPRequest(int client_fd);
+#define PORT 8080
 
 class WebServer {
 public:
@@ -46,6 +43,7 @@ public:
 
 	void run() {
 		std::string htmlPage = loadHTMLFromFile("./Html_code/file.html");
+		HttpRequest	HttpStruct;
 		while (true) {
 			// Wait for events with kqueue
 			int nev = kevent(kq, nullptr, 0, events, MAX_EVENTS, nullptr);
@@ -72,22 +70,24 @@ public:
 
 					// Receive and display the client's HTTP request
 					// std::string httpRequest = receiveHTTPRequest(client_fd);
-					std::string httpRequest = requestToStruct(client_fd).body;
+					HttpStruct = requestToStruct(client_fd);
+					std::string httpRequest = HttpStruct.body;
 					std::cout << "Received HTTP request:\n" << httpRequest << std::endl;
 					
 					if (httpRequest.find("POST") != std::string::npos)
 					{
-						std::cout << std::endl << "post methode?\n";
-						// Extract the image URL from the HTTP request
-						// std::string imageURL = extractImageURL(httpRequest);
-						std::cout << "start download\n";
-
 						DEBUG
+						std::cout << "start download, length : " << HttpStruct.RequestLength << "\n";
+						HttpStruct.body += receiveHTTPRequest(client_fd, HttpStruct.RequestLength);
 						// Download the image
-						downloadImage(client_fd);
+						put_in_file("request.txt", HttpStruct.body, HttpStruct.RequestLength + HttpStruct.length);
+						// if (HttpStruct.RequestLength > 0 &&  downloadImage(client_fd, HttpStruct))
+						// 	sendHTMLResponse(client_fd, getHtmlPage("./Html_code/main.html"));
+						// else
+						// 	sendHTMLResponse(client_fd, getHtmlPage("./Html_code/500.html"));
 					}
-
-					sendHTMLResponse(client_fd, htmlPage);
+					else
+						sendHTMLResponse(client_fd, htmlPage);
 
 					// Send HTTP response to the client
 					// Here, you can send a response indicating that the image was successfully downloaded or perform other actions based on your use case
@@ -147,27 +147,6 @@ private:
 	}
 };
 
-// Fonction pour recevoir une requête HTTP du client
-std::string receiveHTTPRequest(int client_fd) {
-	const int bufferSize = 1024;
-	char buffer[bufferSize];
-	std::string httpRequest;
-
-	ssize_t bytesRead;
-	do {
-		bytesRead = recv(client_fd, buffer, bufferSize - 1, 0);
-		if (bytesRead == -1) {
-			perror("Error receiving HTTP request");
-			// Gérer l'erreur appropriée, fermer la connexion, etc.
-			return "";
-		}
-
-		buffer[bytesRead] = '\0';
-		httpRequest += buffer;
-	} while (bytesRead == bufferSize - 1);
-
-	return httpRequest;
-}
 
 int main() {
 	// Création et exécution du serveur web
