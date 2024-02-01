@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/01 15:48:46 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/01 18:21:32 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static std::string	setHostPort(std::string httpRequest)
 	return (httpRequest.substr(i, j - i - 1));
 }
 
+//TODO: make more rigourous (ex 127.0.0.1/GET)
 static m_type	setMethod(std::string httpRequest)
 {
 	if (httpRequest.find("GET") != std::string::npos)
@@ -72,6 +73,7 @@ static m_type	setMethod(std::string httpRequest)
 		return (_UNKNOW);
 }
 
+/* Old:
 static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 {
 	int			i;
@@ -89,6 +91,30 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 		return (request);
 	request.emptyPath = false;
 	request.path = httpRequest.substr(i, j - i - 1);
+	return (request);
+
+}
+*/
+
+static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
+{
+	int			i;
+	int			j;
+	std::string	Ref;
+
+	request.emptyPath = true;
+	Ref = "/";
+	i = httpRequest.find(Ref);
+	DEBUG
+	if (i == std::string::npos)
+		return (request);
+	i += Ref.size();
+	j = httpRequest.find(" ", i);
+	DEBUG
+	if (j == std::string::npos || j <= i + 1)
+		return (request);
+	request.emptyPath = false;
+	request.path = httpRequest.substr(i, j - i);
 	return (request);
 
 }
@@ -130,6 +156,7 @@ HttpRequest	requestToStruct(int fd)
 	HttpRequest	request;
 
 	httpRequest = receiveHTTPRequest(fd, 0); 
+	std::cout << "GOT REQUEST____________________________" << std::endl << httpRequest << std::endl;
 	request.clientFd = fd;
 	request.body = httpRequest;
 	request.HostPort = setHostPort(httpRequest);
