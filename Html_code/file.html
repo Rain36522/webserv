@@ -66,9 +66,10 @@
 		<p></p>
 		<div class="div_file">
 			<label for="file">Select a file to download : </label>
-			<form id="uploadForm" enctype="multipart/form-data" method="POST" action="/upload">
-				<input type="file" id="file" name="avatar" required>
-				<button type="submit">Upload</button>
+			<form action="/kittenland" method="post" enctype="multipart/form-data">
+				<label for="fileUpload">Choisissez les fichiers à téléverser:</label>
+				<input type="file" id="fileUpload" name="fileUpload" multiple><br><br>
+				<input type="submit" value="Téléverser">
 			</form>
 		</div>
 	</body>

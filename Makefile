@@ -5,13 +5,11 @@ NAME = webserv
 CC = c++
 
 MAIN = test3.cpp
-GNL = get_next_line.c get_next_line_utils.c
-GETIMG = getImg.cpp
+GETIMG = getImg.cpp downloadGPT.cpp put_in_file.cpp
 REQUEST = getPage.cpp request.cpp
-SRC1 = Route.cpp Server.cpp WebServer.cpp
+#SRC1 = Route.cpp Server.cpp WebServer.cpp
 
-SRC1 += $(addprefix gnl/, $(GNL))
-SRC1 += $(addprefix imgManager/, $(GETIMG))
+SRC1 = $(addprefix imgManager/, $(GETIMG))
 SRC1 += $(addprefix request/, $(REQUEST))
 
 SRC = $(addprefix src/, $(SRC1))

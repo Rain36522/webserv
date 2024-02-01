@@ -6,30 +6,42 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/31 09:30:29 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 13:46:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
 
 // Fonction pour recevoir une requête HTTP du client
-static std::string receiveHTTPRequest(int client_fd) {
-	const int bufferSize = 1024;
-	char buffer[bufferSize];
-	std::string httpRequest;
-
-	ssize_t bytesRead;
-	do {
-		bytesRead = recv(client_fd, buffer, bufferSize - 1, 0);
+std::string receiveHTTPRequest(int client_fd, int RequestLength) 
+{
+	const int 		bufferSize = 1024;
+	char 			buffer[bufferSize];
+	std::string 	httpRequest;
+	ssize_t 		bytesRead;
+	ssize_t			i;
+	
+	i = 0;
+	bytesRead = bufferSize - 1;
+	DEBUG
+	std::ofstream oui;
+	oui.open("request2.txt");
+	while (bytesRead == bufferSize - 1 || i < RequestLength)
+	{
+		bytesRead = read(client_fd, buffer, bufferSize - 1);
+		i += bytesRead;
 		if (bytesRead == -1) {
 			perror("Error receiving HTTP request");
 			// Gérer l'erreur appropriée, fermer la connexion, etc.
 			return "";
 		}
-
-		buffer[bytesRead] = '\0';
+		std::cout << i << std::endl;
 		httpRequest += buffer;
-	} while (bytesRead == bufferSize - 1);
+		oui << bytesRead;
+	}
+	oui.close();
+	DEBUG
+	std::cout << "read bytes : " << i << std::endl;
 
 	return httpRequest;
 }
@@ -81,6 +93,27 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 
 }
 
+int	getRequestLength(std::string str)
+{
+	int			i;
+	int			j;
+	std::string	value;
+
+	std::cout << "str : " << str << std::endl;
+
+	i = str.find("Content-Length: ");
+	std::cout << "i : " << i << std::endl;
+	if (i == std::string::npos)
+		return (-1);
+	i += 16;
+	for (int j = i; isdigit(str[j]); j++)
+		continue;
+	value = str.substr(i, j - i - 1);
+	if (i == j)
+		return (-1);
+	return (stoi(value));
+}
+
 static void	printHttpRequest(HttpRequest request)
 {
 	std::cout << "method    : " << request.method << "|" <<std::endl;
@@ -96,16 +129,18 @@ HttpRequest	requestToStruct(int fd)
 	std::string httpRequest;
 	HttpRequest	request;
 
-	httpRequest = receiveHTTPRequest(fd);
+	httpRequest = receiveHTTPRequest(fd, 0); 
+	request.body = httpRequest;
 	request.HostPort = setHostPort(httpRequest);
 	request.method = setMethod(httpRequest);
 	request = setPath(httpRequest, request);
+	request.length = httpRequest.length();
 	request.HtmlFile = false;
+	if (request.method == _POST)
+		request.RequestLength = getRequestLength(httpRequest);
 	if (request.path.find(".html") != std::string::npos)
 		request.HtmlFile = true;
-	request.body = httpRequest;
 	if (request.HostPort.find(":") == std::string::npos)
 		request.HostPort += ":80";
-	printHttpRequest(request);
 	return (request);
 }

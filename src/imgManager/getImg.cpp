@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/01/31 13:17:32 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/01 13:46:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,32 +22,23 @@ std::string	getFileName(std::string str)
 		return ("");
 	i += 10;
 	j = str.find("\"\n", i);
-	if (i == std::string::npos || i + 1 == j)
+	if (j == std::string::npos || i + 1 == j)
 		return ("");
-	return (str.substr(i, j - i - 1));
+	return (str.substr(i, j - 3 - i));
 }
 
-
-bool downloadImage(int sockfd)
+bool downloadImage(int sockfd, HttpRequest HttpStruct)
 {
-	std::string 	line;
-	std::ofstream	outFile;
-	if (!get_next_line(sockfd))
-	{
-		std::cerr << "Error geht file\n";
-		return false;
-	}
-	line = get_next_line(sockfd);
-	if (getFileName(line) == "")
-		return false;
-	outFile.open(getFileName(line));
-	line = get_next_line(sockfd);
-	line = get_next_line(sockfd);
-	while (line != "")
-	{
-		outFile << line;
-		line = get_next_line(sockfd);
-	}
-	outFile.close();
+	std::string	request;
+	int			fd;
+	int			i = 0;
+
+	DEBUG
+	processFileUpload(HttpStruct.body);
+	// fd = open("test.png", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	// i += write(fd, request.c_str(), HttpStruct.RequestLength);
+	// DEBUG
+	// std::cout << "Write : " << i << ", of : " << HttpStruct.RequestLength << " char\n";
+	// close(fd);
 	return true;
 }
