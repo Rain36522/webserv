@@ -6,12 +6,12 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/02 13:23:37 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 15:38:54 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include "AbstractCGI.hpp"
+#include "CGI.hpp"
 
 class Route
 {
