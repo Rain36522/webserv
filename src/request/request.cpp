@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 11:31:23 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 15:33:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static std::string	setHostPort(std::string httpRequest)
 	return (httpRequest.substr(i, j - i - 1));
 }
 
+//TODO: make more rigourous (ex 127.0.0.1/GET)
 static m_type	setMethod(std::string httpRequest)
 {
 	if (httpRequest.find("GET") != std::string::npos)
@@ -65,6 +66,7 @@ static m_type	setMethod(std::string httpRequest)
 		return (_UNKNOW);
 }
 
+/* Old:
 static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 {
 	int			i;
@@ -82,6 +84,30 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 		return (request);
 	request.emptyPath = false;
 	request.path = httpRequest.substr(i, j - i - 1);
+	return (request);
+
+}
+*/
+
+static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
+{
+	int			i;
+	int			j;
+	std::string	Ref;
+
+	request.emptyPath = true;
+	Ref = "/";
+	i = httpRequest.find(Ref);
+	DEBUG
+	if (i == std::string::npos)
+		return (request);
+	i += Ref.size();
+	j = httpRequest.find(" ", i);
+	DEBUG
+	if (j == std::string::npos || j <= i + 1)
+		return (request);
+	request.emptyPath = false;
+	request.path = httpRequest.substr(i, j - i);
 	return (request);
 
 }
