@@ -3,47 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/01 18:21:32 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 15:33:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
 
 // Fonction pour recevoir une requête HTTP du client
-std::string receiveHTTPRequest(int client_fd, int RequestLength) 
+HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request) 
 {
 	const int 		bufferSize = 1024;
 	char 			buffer[bufferSize];
-	std::string 	httpRequest;
 	ssize_t 		bytesRead;
-	ssize_t			i;
-	
-	i = 0;
+	std::string		buf2;
+
 	bytesRead = bufferSize - 1;
 	DEBUG
-	std::ofstream oui;
-	oui.open("request2.txt");
-	while (bytesRead == bufferSize - 1 || i < RequestLength)
+	while (bytesRead == bufferSize - 1 || request.length < RequestLength)
 	{
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
-		i += bytesRead;
+		request.length += bytesRead;
 		if (bytesRead == -1) {
 			perror("Error receiving HTTP request");
 			// Gérer l'erreur appropriée, fermer la connexion, etc.
-			return "";
+			return request;
 		}
-		std::cout << i << std::endl;
-		httpRequest += buffer;
-		oui << bytesRead;
+		buf2 = std::string(buffer, bytesRead);
+		request.body += buf2;
+		for (int j = 0; j < bufferSize; j++)
+			buffer[j] = '\0';
 	}
-	oui.close();
-	DEBUG
-	std::cout << "read bytes : " << i << std::endl;
-
-	return httpRequest;
+	return request;
 }
 
 static std::string	setHostPort(std::string httpRequest)
@@ -152,24 +145,34 @@ static void	printHttpRequest(HttpRequest request)
 
 HttpRequest	requestToStruct(int fd)
 {
-	std::string httpRequest;
 	HttpRequest	request;
 
-	httpRequest = receiveHTTPRequest(fd, 0); 
-	std::cout << "GOT REQUEST____________________________" << std::endl << httpRequest << std::endl;
+	request.length = 0;
+	request = receiveHTTPRequest(fd, 0, request);
 	request.clientFd = fd;
-	request.body = httpRequest;
-	request.HostPort = setHostPort(httpRequest);
-	request.method = setMethod(httpRequest);
-	request = setPath(httpRequest, request);
-	request.length = httpRequest.length();
-	request.HtmlFile = false;
+	request.method = setMethod(request.body);
 	if (request.method == _POST)
-		request.RequestLength = getRequestLength(httpRequest);
+	{
+		request.RequestLength = getRequestLength(request.body);
+		if (request.length < request.RequestLength)
+		{
+			request = receiveHTTPRequest(fd, request.RequestLength, request);
+		}
+		request = requestToFile(request);
+		// std::cout << "\033[94mBody :\n";
+		// std::cout << request.body << std::endl;
+		// std::cout << "\033[92mFile content\n";
+		// std::cout << request.FileName << std::endl << std::endl;
+		// std::cout << request.FileContent << std::endl;
+		// std::cout << "\033[39m";
+	}
+	request.HostPort = setHostPort(request.body);
+	request = setPath(request.body, request);
+	request.HtmlFile = false;
 	if (request.path.find(".html") != std::string::npos)
 		request.HtmlFile = true;
 	if (request.HostPort.find(":") == std::string::npos)
 		request.HostPort += ":80";
-	printHttpRequest(request);
+	// printHttpRequest(request);
 	return (request);
 }
