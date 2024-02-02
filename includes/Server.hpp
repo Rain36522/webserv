@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:30 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/01 16:32:18 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 13:42:05 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Server
 		std::string			_defaultPage;
 		// error code => error page
 		// we could perhaps use something like -1 or 0 for default page
-		std::map<int, std::string>	_ErrPages;
+		std::map<int, std::string>	_errPages;
 
 		std::vector<Route>	_routes;
 	public:
@@ -52,4 +52,5 @@ class Server
 			return _host;
 		}
 		bool	makeRequest(HttpRequest request);
+		void	handleError(int code, int fd);
 };
