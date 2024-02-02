@@ -1,6 +1,6 @@
 
 
-FLAGS = -pedantic -std=c++98 -Wall -Wextra -Werror
+FLAGS = -pedantic -std=c++98 -Wall -Wextra -Werror -fsanitize=address
 NAME = webserv
 CC = c++
 
