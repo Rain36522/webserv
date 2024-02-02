@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 15:31:28 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 16:21:38 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ static std::string	getHeader(std::string request)
 	int	j;
 
 	i = request.find("; boundary=----");
-	DEBUG
 	if (i == std::string::npos)
 		return ("");
 	i += 11;
 	j = request.find("\r\n", i);
 	if (j == std::string::npos)
 		return ("");
-	return (request.substr(i, j - i - 1));
+	return (request.substr(i, j - i));
 }
 
 static std::string	getFileContent(std::string header, std::string body)
@@ -49,51 +48,58 @@ static std::string	getFileContent(std::string header, std::string body)
 	int	j;
 	int	k;
 
-	i = body.find("--" + header + "\n");
-	DEBUG
+	i = body.find("--" + header + "\r\n");
 	if (i == std::string::npos)
 		return ("");
-	DEBUG
-	i = body.find("\n\n", i);
+	i = body.find("\r\n\r\n", i);
 	if (i == std::string::npos)
+	{
+		std::cerr << "Wrong end header\n";
 		return ("");
-	DEBUG
-	i += 2;
+	}
+	i += 4;
 	j = i;
 	k = 0;
 	while (j != std::string::npos)
 	{
 		k = j;
-		j = body.find("--" + header + "\r--", j);
+		j = body.find("--" + header + "--\r\n", j + 1);
 	}
 	if (k == std::string::npos || k == i)
 		return ("");
-	DEBUG
-	return (body.substr(i, j - i - 1));
+	return (body.substr(i, k - i - 2));
+}
+
+bool	putInBinary(std::string filename, std::string content)
+{
+	std::ofstream	outfile;
+
+	outfile.open("test.png", std::ios::binary);
+	if (outfile.fail())
+	{
+		std::cerr << "Opening fail error\n";
+		return (false);
+	}
+	outfile << content;
+	outfile.close();
+	return (true);
 }
 
 HttpRequest	requestToFile(HttpRequest request)
 {
 	std::string	header;
+	std::string	FileContent;
 
-	// std::cout << "\033[94mBody :\n";
-	// std::cout << request.body << std::endl;
-	// std::cout << "\033[92mFile content\n";
-	// std::cout << request.FileName << std::endl << std::endl;
-	// std::cout << request.FileContent << std::endl;
-	// std::cout << "\033[39m";
-	DEBUG
-	request.FileContent = "";
+	FileContent = "";
 	header = getHeader(request.body);
-	// std::cout << ""
 	request.FileName = getFileName(request.body);
 	if (header != "" || request.FileName != "")
-		request.FileContent = getFileContent(header, request.body);
+		FileContent = getFileContent(header, request.body);
 	else
-		std::cout << "\033[94mHeader or filename invalide\033[39m\n";
-	DEBUG
-	std::cout << "\033[94m" << request.FileContent << "\033[39m\n";
-	if (request.FileContent == "")
+		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
+	if (FileContent == "")
 		std::cerr << "Post methode with invalide file content" << std::endl;
+	else
+		putInBinary(request.FileName, FileContent);
 	return (request);
 }

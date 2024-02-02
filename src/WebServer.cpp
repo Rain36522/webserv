@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 08:56:41 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 15:53:57 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void WebServer::run(void)
 					//exit(EXIT_FAILURE);
 				}
 				request = requestToStruct(client_fd);
-				// std::cout << request.body << std::endl;
+				std::cout << request.body << std::endl;
 				if (_servers.find(request.HostPort) != _servers.end())
 					_servers[request.HostPort].makeRequest(request);
 			}
