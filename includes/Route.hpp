@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/01 17:33:48 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 13:23:37 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Route
 	public:
 		Route(std::string const _path, m_type _type, std::string default_page);
 		bool match(HttpRequest req);
-		HttpResponse execute(HttpRequest req);
+		int execute(HttpRequest req);
 };
 
 // Helper class for creating Http Reponses?

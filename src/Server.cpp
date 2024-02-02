@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/01 17:34:17 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 13:45:21 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,24 @@ Server::Server(ServConf Conf)
 
 bool	Server::makeRequest(HttpRequest request)
 {
-	for (std::vector<Route>::iterator i = _routes.begin(); i != _routes.end(); i++)
+	int code = 404;
+	std::vector<Route>::iterator i;
+	for (i = _routes.begin(); i != _routes.end(); i++)
 	{
 		if ((*i).match(request))
 		{
-			(*i).execute(request);
-			return true;
+			code = (*i).execute(request);
+			break;
 		}
 	}
+	if (code != 200)
+		handleError(code, request.clientFd);
 	return true;
+}
+
+void	Server::handleError(int code, int fd)
+{
+	if (_errPages.find(code) != _errPages.end())
+		sendHTMLResponse(fd, getHtmlPage(_errPages[code]));
 }
 
