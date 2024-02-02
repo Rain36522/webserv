@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParseConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/02 15:36:59 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:46:48 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 {
 	(void)file;
 	std::vector<Server> servers;
-	ServConf temp_t = (ServConf)
-	{
-		.host = "127.0.0.1",
-		.port = 8080,
-		.DefPage = "./Html_code/file.html"
-	};
-	Server temp(temp_t);
+	ServConf temp_t;
 	
-	temp.addRoute(Route("", _GET, "./Html_code/file.html"));
-	temp.addRoute(Route("haha", _GET, "./Html_code/file.html"));
+	temp_t.host = "127.0.0.1";
+	temp_t.port = 8080;
+	temp_t.DefPage = "./Html_code/file.html";
+	
+	Server temp(temp_t);
+	Route r("", _GET, "./Html_code/file.html");
+	temp.addRoute(r);
+	// temp.addRoute(Route("haha", _GET, "./Html_code/file.html"));
 	servers.push_back(temp);
 	return servers;
 }

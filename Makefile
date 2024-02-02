@@ -20,14 +20,10 @@ OBJ = $(SRC:.cpp=.o)
 all : $(NAME)
 	./$(NAME)
 
-.c.o:
-	$(CC) -c -o $@ $< $(FLAGS)
-
-$(NAME): $(OBJ)
-	$(CC) $(OBJ) $(FLAGS) -o $(NAME)
+$(NAME): $(SRC)
+	$(CC) $(SRC) $(FLAGS) -o $(NAME)
 
 clean :
-	rm $(OBJ)
 
 fclean : clean
 	rm $(NAME)

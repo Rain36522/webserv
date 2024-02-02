@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 15:53:57 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:47:12 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,6 @@ WebServer::WebServer(std::string file)
 		_servers.insert(std::map<std::string, Server>::value_type(host_port, *i));
 		_serverFds.push_back(server_fd);
 	}
-}
-
-void	WebServer::AddServer(ServConf Conf)
-{
-	Server	*Serv = new Server(Conf);
 }
 
 int WebServer::getServerSocket(Server s) {
@@ -92,8 +87,8 @@ void WebServer::run(void)
 				}
 				request = requestToStruct(client_fd);
 				std::cout << request.body << std::endl;
-				if (_servers.find(request.HostPort) != _servers.end())
-					_servers[request.HostPort].makeRequest(request);
+				if (_servers.find(request.hostPort) != _servers.end())
+					_servers[request.hostPort].makeRequest(request);
 			}
 		}
 	}

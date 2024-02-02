@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 11:24:25 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:39:13 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 // Send news request
 std::string	getHtmlPage(std::string path);
+int	getHtml(std::string path, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage);
 
 // Read new request;

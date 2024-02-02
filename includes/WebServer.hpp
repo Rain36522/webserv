@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 16:05:55 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/01 16:02:50 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/02 17:47:17 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,5 @@ class WebServer
 		WebServer(std::string file);
 		void run(void);
 		std::vector<Server>	getServer(int i) const;
-				void	AddServer(ServConf Conf);
 		~WebServer();
 };

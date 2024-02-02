@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getImg.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 16:21:38 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:44:43 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static std::string	getFileName(std::string str)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 
 	i = str.find("filename=\"");
 	if (i == std::string::npos)
@@ -29,8 +29,8 @@ static std::string	getFileName(std::string str)
 
 static std::string	getHeader(std::string request)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 
 	i = request.find("; boundary=----");
 	if (i == std::string::npos)
@@ -44,9 +44,9 @@ static std::string	getHeader(std::string request)
 
 static std::string	getFileContent(std::string header, std::string body)
 {
-	int	i;
-	int	j;
-	int	k;
+	size_t	i;
+	size_t	j;
+	size_t	k;
 
 	i = body.find("--" + header + "\r\n");
 	if (i == std::string::npos)
@@ -74,6 +74,7 @@ bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
 
+	(void)filename; // TODO do we need this?
 	outfile.open("test.png", std::ios::binary);
 	if (outfile.fail())
 	{
@@ -89,17 +90,22 @@ HttpRequest	requestToFile(HttpRequest request)
 {
 	std::string	header;
 	std::string	FileContent;
+	std::string	FileName;
 
 	FileContent = "";
+	request.PostFile = false;
 	header = getHeader(request.body);
-	request.FileName = getFileName(request.body);
-	if (header != "" || request.FileName != "")
+	FileName = getFileName(request.body);
+	if (header != "" || FileName != "")
 		FileContent = getFileContent(header, request.body);
 	else
 		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
 	if (FileContent == "")
 		std::cerr << "Post methode with invalide file content" << std::endl;
 	else
-		putInBinary(request.FileName, FileContent);
+	{
+		if (putInBinary(FileName, FileContent))
+			request.PostFile = true;
+	}
 	return (request);
 }

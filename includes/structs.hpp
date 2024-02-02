@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/02 10:39:41 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:39:03 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,20 @@ enum m_type{
 struct HttpRequest
 {
 	m_type method;
-	std::string path;
-	std::string body;
-	std::string	HostPort;
-	std::string	FileContent;
-	std::string	FileName;
-	int			RequestLength; // total request length of download file
-	int			length; // actual request length
-	bool		HtmlFile;
-	bool		emptyPath;
-	int			clientFd;
+	std::string					hostPort;
+	std::string					path; // route
+	std::string					fileName;
+	std::vector<std::string>	parameters;
+
+	std::string					body;
+	
+	std::string					extension;
+	int							requestLength; // total request length of download file
+	int							length; // actual request length
+	bool						htmlFile;
+	bool						emptyPath;
+	bool						PostFile;
+	int							clientFd;
 };
 
 struct HttpResponse

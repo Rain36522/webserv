@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 15:33:25 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/02 17:43:34 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest req
 
 static std::string	setHostPort(std::string httpRequest)
 {
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 
 	i = httpRequest.find("Host: ") + 6;
 	if (i == std::string::npos)
@@ -91,8 +91,8 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 
 static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 {
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 	std::string	Ref;
 
 	request.emptyPath = true;
@@ -114,8 +114,8 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 
 int	getRequestLength(std::string str)
 {
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 	std::string	value;
 
 	std::cout << "str : " << str << std::endl;
@@ -125,7 +125,8 @@ int	getRequestLength(std::string str)
 	if (i == std::string::npos)
 		return (-1);
 	i += 16;
-	for (int j = i; isdigit(str[j]); j++)
+	j = i;
+	for (; isdigit(str[j]); j++)
 		continue;
 	value = str.substr(i, j - i - 1);
 	if (i == j)
@@ -133,15 +134,15 @@ int	getRequestLength(std::string str)
 	return (stoi(value));
 }
 
-static void	printHttpRequest(HttpRequest request)
-{
-	std::cout << "method    : " << request.method << "|" <<std::endl;
-	std::cout << "path      : " << request.path << "|"  << std::endl;
-	std::cout << "hostport  : " << request.HostPort << "|"  << std::endl;
-	std::cout << "Html?     : " << request.HtmlFile << "|"  << std::endl;
-	std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
-	std::cout << "body      : " << request.body << "|"  << std::endl;
-}
+// static void	printHttpRequest(HttpRequest request)
+// {
+// 	std::cout << "method    : " << request.method << "|" <<std::endl;
+// 	std::cout << "path      : " << request.path << "|"  << std::endl;
+// 	std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
+// 	std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
+// 	std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
+// 	std::cout << "body      : " << request.body << "|"  << std::endl;
+// }
 
 HttpRequest	requestToStruct(int fd)
 {
@@ -153,10 +154,10 @@ HttpRequest	requestToStruct(int fd)
 	request.method = setMethod(request.body);
 	if (request.method == _POST)
 	{
-		request.RequestLength = getRequestLength(request.body);
-		if (request.length < request.RequestLength)
+		request.requestLength = getRequestLength(request.body);
+		if (request.length < request.requestLength)
 		{
-			request = receiveHTTPRequest(fd, request.RequestLength, request);
+			request = receiveHTTPRequest(fd, request.requestLength, request);
 		}
 		request = requestToFile(request);
 		// std::cout << "\033[94mBody :\n";
@@ -166,13 +167,13 @@ HttpRequest	requestToStruct(int fd)
 		// std::cout << request.FileContent << std::endl;
 		// std::cout << "\033[39m";
 	}
-	request.HostPort = setHostPort(request.body);
+	request.hostPort = setHostPort(request.body);
 	request = setPath(request.body, request);
-	request.HtmlFile = false;
+	request.htmlFile = false;
 	if (request.path.find(".html") != std::string::npos)
-		request.HtmlFile = true;
-	if (request.HostPort.find(":") == std::string::npos)
-		request.HostPort += ":80";
+		request.htmlFile = true;
+	if (request.hostPort.find(":") == std::string::npos)
+		request.hostPort += ":80";
 	// printHttpRequest(request);
 	return (request);
 }
