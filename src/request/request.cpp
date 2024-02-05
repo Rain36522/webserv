@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 17:43:34 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 15:52:34 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,16 +98,17 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 	request.emptyPath = true;
 	Ref = "/";
 	i = httpRequest.find(Ref);
-	DEBUG
 	if (i == std::string::npos)
 		return (request);
 	i += Ref.size();
 	j = httpRequest.find(" ", i);
-	DEBUG
 	if (j == std::string::npos || j <= i + 1)
 		return (request);
 	request.emptyPath = false;
 	request.path = httpRequest.substr(i, j - i);
+	request.htmlFile = false;
+	if (request.fileName.find(".html") != std::string::npos)
+		request.htmlFile = true;
 	return (request);
 
 }
@@ -134,15 +135,21 @@ int	getRequestLength(std::string str)
 	return (stoi(value));
 }
 
-// static void	printHttpRequest(HttpRequest request)
-// {
-// 	std::cout << "method    : " << request.method << "|" <<std::endl;
-// 	std::cout << "path      : " << request.path << "|"  << std::endl;
-// 	std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
-// 	std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
-// 	std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
-// 	std::cout << "body      : " << request.body << "|"  << std::endl;
-// }
+static void	printHttpRequest(HttpRequest request)
+{
+	std::cout << "\033[35m\n";
+	// std::cout << "method    : " << request.method << "|" <<std::endl;
+	// std::cout << "path      : " << request.path << "|"  << std::endl;
+	// std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
+	// std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
+	// std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
+	// std::cout << "body      : " << request.body << "|"  << std::endl;
+
+	std::cout << "path      : " << request.path << "|\n";
+	std::cout << "filename  : " << request.fileName << "|\n";
+	std::cout << "extension : " << request.extension << "|\n";
+	std::cout << "\033[39m\n";
+}
 
 HttpRequest	requestToStruct(int fd)
 {
@@ -160,20 +167,12 @@ HttpRequest	requestToStruct(int fd)
 			request = receiveHTTPRequest(fd, request.requestLength, request);
 		}
 		request = requestToFile(request);
-		// std::cout << "\033[94mBody :\n";
-		// std::cout << request.body << std::endl;
-		// std::cout << "\033[92mFile content\n";
-		// std::cout << request.FileName << std::endl << std::endl;
-		// std::cout << request.FileContent << std::endl;
-		// std::cout << "\033[39m";
 	}
 	request.hostPort = setHostPort(request.body);
 	request = setPath(request.body, request);
-	request.htmlFile = false;
-	if (request.path.find(".html") != std::string::npos)
-		request.htmlFile = true;
 	if (request.hostPort.find(":") == std::string::npos)
 		request.hostPort += ":80";
-	// printHttpRequest(request);
+	request = pathToData(request);
+	printHttpRequest(request);
 	return (request);
 }
