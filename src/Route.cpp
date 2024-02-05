@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/05 15:56:13 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 18:06:38 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int Route::execute(HttpRequest request)
 	if (request.method == _DEL)
 		code = delMethod(request);
 	DEBUG
-	sendHTMLResponse(request.clientFd, getHtmlPage(_default));
+	sendHTMLResponse(request.clientFd, html);
 	return code;
 }
 
@@ -67,7 +67,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (request.fileName.empty())
 	{
 		if (!_default.empty())
-			return getHtml(_default, html);
+			return getHtml(_dir + _default, html);
 		else if (_listDir)
 			;// list dir
 		return 404;
@@ -75,7 +75,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
 	if (request.htmlFile)
-		return getHtml(request.fileName, html);
+		return getHtml(_dir + request.fileName, html);
 	return 404;
 }
 

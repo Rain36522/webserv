@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/05 15:56:44 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 18:10:55 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 {
 	
 	if (key == "path:")
-		setIfNot(value, route._path, false);
+		setIfNot(value, route._path, true);
 	else if (key == "dir:")
 		setIfNot(value, route._dir, true);
 	else if (key == "default:")
@@ -99,15 +99,53 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 		setIfNot(value, route._uploadPath, true);
 	else if (key == "listDir:")
 	{
-		if (value == "false" && route._listDir)
+		if (route._listDir)
 		{
-			std::cout << "duplicate elements" << std::endl;
+			std::cout << "error: duplicate key" << std::endl;
 			exit(1);
 		}
 		if (value == "true")
 			route._listDir = true;
 		else if (value == "false")
 			route._listDir = false;
+	}
+	else if (key == "allowUpload:")
+	{
+		if (route._allowUpload)
+		{
+			std::cout << "error: duplicate key" << std::endl;
+			exit(1);
+		}
+		if (value == "true")
+			route._allowUpload = true;
+		else if (value == "false")
+			route._allowUpload = false;
+	}
+	else if (key == "methods:")
+	{
+		if (route._methods.size() > 0)
+		{
+			std::cout << "error: duplicate method" << std::endl;
+		}
+		if (line.find("GET") != std::string::npos)
+			route._methods.insert(_GET);
+		if (line.find("POST") != std::string::npos)
+			route._methods.insert(_POST);
+		if (line.find("DELETE") != std::string::npos)
+			route._methods.insert(_DEL);
+	}
+	else if (key == "CGIs:")
+	{
+		std::istringstream iss(line);
+		std::string cgi;
+		iss >> cgi;
+		while (iss >> cgi)
+			route._CGIs.push_back(cgi);
+	}
+	else
+	{
+		std::cout << "Error: Unknown key " << key << std::endl;
+		exit(1);
 	}
 }
 
@@ -180,6 +218,8 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 			exit(1);
 		}
 		setState(key, state, curS, curR, servers);
+		if (key == "server:" || key == "route:")
+			continue;
 		if (state == SERVER)
 			setServer(key, value, curS);
 		if (state == ROUTE)
@@ -199,9 +239,9 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 	temp_t.host = "127.0.0.1";
 	temp_t.port = 8080;
 	temp_t.DefPage = "./Html_code/file.html";
-	
 	Server temp(temp_t);
-	Route r("", _GET, "./Html_code/file.html");
+	Route r("", _GET, "file.html");
+	r._dir = "./Html_code/";
 	temp.addRoute(r);
 	// temp.addRoute(Route("haha", _GET, "./Html_code/file.html"));
 	servers.push_back(temp);
