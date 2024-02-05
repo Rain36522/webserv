@@ -6,11 +6,15 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/02 17:52:57 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 15:56:13 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Route.hpp"
+
+Route::Route(){
+	_listDir = false;
+}
 
 Route::Route(std::string const path, m_type type, std::string default_page)
 {
@@ -93,4 +97,5 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	}
 	return 200;
 }
+
 

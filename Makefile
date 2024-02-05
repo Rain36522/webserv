@@ -18,7 +18,7 @@ SRC += $(MAIN)
 OBJ = $(SRC:.cpp=.o)
 
 all : $(NAME)
-	./$(NAME)
+	./$(NAME) config.yml
 
 $(NAME): $(SRC)
 	$(CC) $(SRC) $(FLAGS) -o $(NAME)
