@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/05 18:10:55 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/06 14:57:37 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,34 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 	}
 }
 
+
+void ParseConfig::validServers(std::vector<Server> &servers)
+{
+	for (size_t i = 0; i < servers.size(); i++)
+	{
+		for (size_t j = i + 1; j < servers.size(); j++)
+			if (servers[i]._host == servers[j]._host && servers[i]._port == servers[j]._port)
+			{
+				std::vector<Route> r = servers[j]._routes;
+				servers[i]._routes.insert(servers[i]._routes.end(), r.begin(), r.end());
+				servers.erase(servers.begin() + j);
+			}
+		size_t len = servers[i]._routes.size();
+		for (size_t j = 0; j < len; j++)
+		{
+			std::cout << "METHODS " << servers[i]._routes[j]._methods.size();
+			for (size_t k = j + 1; k < len; k++)
+			{
+				if (servers[i]._routes[j]._path == servers[i]._routes[k]._path)
+				{
+					std::cout << "Error: Duplicate path" << std::endl;
+					exit(1);
+				}
+			}
+		}
+	}
+}
+
 std::vector<Server> ParseConfig::generate_servers(std::string file)
 {
 	std::ifstream infile(file);
@@ -234,17 +262,7 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 		validServer(curS);
 		servers.push_back(curS);
 	}
-	ServConf temp_t;
-	
-	temp_t.host = "127.0.0.1";
-	temp_t.port = 8080;
-	temp_t.DefPage = "./Html_code/file.html";
-	Server temp(temp_t);
-	Route r("", _GET, "file.html");
-	r._dir = "./Html_code/";
-	temp.addRoute(r);
-	// temp.addRoute(Route("haha", _GET, "./Html_code/file.html"));
-	servers.push_back(temp);
+	validServers(servers);
 	return servers;
 }
 

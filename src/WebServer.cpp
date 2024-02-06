@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 17:47:12 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/06 14:53:34 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ WebServer::WebServer(std::string file)
 {
 	std::vector<Server> servers = ParseConfig::generate_servers(file);
 	std::vector<Server>::iterator i;
-
+	std::set<int> ports;
 	_kfd = kqueue();
 	if (_kfd == -1) {
 		perror("Error creating kqueue");
@@ -27,16 +27,21 @@ WebServer::WebServer(std::string file)
 	}
 	for (i = servers.begin(); i != servers.end(); i++)
 	{
-		int server_fd = getServerSocket(*i);
-		struct kevent change;
-		EV_SET(&change, server_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-		if (kevent(_kfd, &change, 1, nullptr, 0, nullptr) == -1) {
-			perror("Error adding server socket to kqueue");
-			exit(EXIT_FAILURE);
-		}
+		
 		std::string host_port = (*i).get_host() + ":" + std::to_string((*i).get_port());
 		_servers.insert(std::map<std::string, Server>::value_type(host_port, *i));
-		_serverFds.push_back(server_fd);
+		
+		if (ports.insert((*i).get_port()).second)
+		{
+			int server_fd = getServerSocket(*i);
+			_serverFds.push_back(server_fd);
+			struct kevent change;
+			EV_SET(&change, server_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+			if (kevent(_kfd, &change, 1, nullptr, 0, nullptr) == -1) {
+				perror("Error adding server socket to kqueue");
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
 }
 
@@ -89,6 +94,8 @@ void WebServer::run(void)
 				std::cout << request.body << std::endl;
 				if (_servers.find(request.hostPort) != _servers.end())
 					_servers[request.hostPort].makeRequest(request);
+				else
+					std::cout << "request did not match server" << std::endl;
 			}
 		}
 	}
