@@ -19,29 +19,26 @@
 
 server: 
   name: 3
-  port: 7070
-  host: 345
-  body_limit: 10
-  directory_listing: 1
-  cgi: ./woifjwef/dsofijds/cgi.php
-  directory_listing_state: on
-  default_return: main2.html
-  400_page: 404.html
-  500_page: 500.html
-  ...
+  port: 80
+  host: 127.0.0.1
+  bodyLimit: 256
   route:
-    methods:
-      - POST
-      - GET
-      - DELETE
-    root: ./Html_code
-    root_page: file.html
+    path:
+    dir: ./Html_code/
+    default: 500.html
+    methods:    GET  DELETE PUT
+    listDir: false
+    allowUpload: false
   route:
+    path: hello
+    dir: ./Html_code/
+    default: file.html
+    methods: GET
+  route:
+    path: hello2
+    dir: ./Html_code/
+    default: file.html
     methods:
-      - POST
-      - DELETE
-    root: ./Html_code_files2
-    root_page: file2.html
 
 
 

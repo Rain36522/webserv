@@ -6,11 +6,15 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/05 17:58:48 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 08:57:30 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Route.hpp"
+
+Route::Route(){
+	_listDir = false;
+}
 
 Route::Route(std::string const path, m_type type, std::string default_page)
 {
@@ -38,7 +42,7 @@ int Route::execute(HttpRequest request)
 	if (request.method == _DEL)
 		code = delMethod(request);
 	DEBUG
-	sendHTMLResponse(request.clientFd, getHtmlPage(_default));
+	sendHTMLResponse(request.clientFd, html);
 	return code;
 }
 
@@ -63,7 +67,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (request.fileName.empty())
 	{
 		if (!_default.empty())
-			return getHtml(_default, html);
+			return getHtml(_dir + _default, html);
 		else if (_listDir)
 			;// list dir
 		return 404;
@@ -71,7 +75,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
 	if (request.htmlFile)
-		return getHtml(request.fileName, html);
+		return getHtml(_dir + request.fileName, html);
 	return 404;
 }
 

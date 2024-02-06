@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 13:45:21 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 14:54:38 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 Server::~Server(void) {}
 
-Server::Server()
-{
-
+Server::Server() {
+	_port = -1;
+	_bodyLimit = -1;
 }
 
 Server::Server(ServConf Conf)
@@ -25,10 +25,7 @@ Server::Server(ServConf Conf)
 	_host = Conf.host;
 	_port = Conf.port;
 	_bodyLimit = Conf.bodyLimit;
-	_defaultPage = Conf.DefPage;
-	// _idirectorylListing = Conf->idirectorylListing;
-	// _bdirectorylListing = Conf->bdirectoryListing;
-	// _ErrPage = Conf->ErrPage;
+	
 }
 
 bool	Server::makeRequest(HttpRequest request)
@@ -54,3 +51,15 @@ void	Server::handleError(int code, int fd)
 		sendHTMLResponse(fd, getHtmlPage(_errPages[code]));
 }
 
+Route *Server::matchRoute(const HttpRequest & req)
+{
+	for (size_t i = 0; i < _routes.size(); i++)
+		if (_routes[i].match(req))
+			return &_routes[i];
+	return 0;
+}
+
+void Server::addRoute(Route r)
+{
+	_routes.push_back(r);
+}
