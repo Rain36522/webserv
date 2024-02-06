@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getImg.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 17:44:43 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/06 08:46:27 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,7 @@ bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
 
-	(void)filename; // TODO do we need this?
-	outfile.open("test.png", std::ios::binary);
+	outfile.open(filename, std::ios::binary);
 	if (outfile.fail())
 	{
 		std::cerr << "Opening fail error\n";
@@ -86,7 +85,7 @@ bool	putInBinary(std::string filename, std::string content)
 	return (true);
 }
 
-HttpRequest	requestToFile(HttpRequest request)
+HttpRequest	requestToFile(HttpRequest request, std::string uploadPath)
 {
 	std::string	header;
 	std::string	FileContent;
@@ -101,10 +100,11 @@ HttpRequest	requestToFile(HttpRequest request)
 	else
 		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
 	if (FileContent == "")
-		std::cerr << "Post methode with invalide file content" << std::endl;
+		std::cerr << "\033[94mPost methode with invalide file content\033[39m" << std::endl;
 	else
 	{
-		if (putInBinary(FileName, FileContent))
+		std::cout << "\033[94mDownload image on : " << uploadPath + FileName << "\033[39m\n";
+		if (putInBinary(uploadPath + FileName, FileContent))
 			request.PostFile = true;
 	}
 	return (request);

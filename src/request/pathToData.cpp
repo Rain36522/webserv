@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 12:54:08 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 15:55:28 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/05 17:12:59 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static HttpRequest	pathFilename(HttpRequest request, size_t istart)
 	request.extension = request.path.substr(j, k - j);
 	DEBUG
 	request.fileName = request.path.substr(istart, k - istart);
-	// std::cout << "substr : " << istart << ", " << k - istart << ", word : " << request.fileName << ", origine : " << request.path <<std::endl;
 	return (request);	
 }
 

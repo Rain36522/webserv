@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/02 17:39:03 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 17:33:49 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ struct HttpRequest
 	std::string					path; // route
 	std::string					fileName;
 	std::vector<std::string>	parameters;
-
 	std::string					body;
-	
 	std::string					extension;
 	int							requestLength; // total request length of download file
 	int							length; // actual request length

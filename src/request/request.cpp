@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 15:52:34 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/05 17:52:29 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,18 +155,19 @@ HttpRequest	requestToStruct(int fd)
 {
 	HttpRequest	request;
 
-	request.length = 0;
 	request = receiveHTTPRequest(fd, 0, request);
+	request.requestLength = request.body.length();
+	request.length = request.requestLength;
 	request.clientFd = fd;
 	request.method = setMethod(request.body);
 	if (request.method == _POST)
 	{
 		request.requestLength = getRequestLength(request.body);
-		if (request.length < request.requestLength)
-		{
-			request = receiveHTTPRequest(fd, request.requestLength, request);
-		}
-		request = requestToFile(request);
+		// if (request.length < request.requestLength)
+		// {
+		// 	request = receiveHTTPRequest(fd, request.requestLength, request);
+		// }
+		// request = requestToFile(request);
 	}
 	request.hostPort = setHostPort(request.body);
 	request = setPath(request.body, request);

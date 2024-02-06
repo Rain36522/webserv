@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/02 17:52:57 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 17:58:48 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int Route::postMethod(HttpRequest request, std::string &html)
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
 	if (request.PostFile) // move download here
-		return (200);
+		return (uploadClientFile(request, html));
 	return 404;// Is this correct?
 }
 
@@ -92,5 +92,20 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		//execve with request.fileName and request.parameters
 	}
 	return 200;
+}
+
+int	Route::uploadClientFile(HttpRequest request, std::string &html)
+{
+	(void)  html;
+
+	if (request.length < request.requestLength)
+	{
+		request = receiveHTTPRequest(request.clientFd, request.requestLength, request);
+	}
+	request = requestToFile(request, this->_uploadPath);
+	if (!request.PostFile)
+		return (413);
+	else
+		return (200);
 }
 

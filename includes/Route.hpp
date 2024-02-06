@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/02 17:48:56 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 18:00:36 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Route
 		int getMethod(HttpRequest request, std::string &html);
 		int postMethod(HttpRequest request, std::string &html);
 		int delMethod(HttpRequest request);
+		int	uploadClientFile(HttpRequest request, std::string &html);
 
 };
 

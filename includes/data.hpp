@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 15:26:04 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 08:37:24 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,19 @@
 #include <fstream>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string>
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
 
 // Send news request
 std::string	getHtmlPage(std::string path);
+std::string	getErrorHtml(std::string File, int errorCode);
 int	getHtml(std::string path, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage);
 
 // Read new request;
-std::string receiveHTTPRequest(int client_fd, int RequestLength);
+HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request);
 HttpRequest	requestToStruct(int fd);
 HttpRequest 	pathToData(HttpRequest request);
 
@@ -37,4 +39,4 @@ void processFileUpload(const std::string& httpRequest);
 int	put_in_file(std::string filename, std::string content, int length);
 
 // Download image
-HttpRequest	requestToFile(HttpRequest request);
+HttpRequest	requestToFile(HttpRequest request, std::string uploadPath);

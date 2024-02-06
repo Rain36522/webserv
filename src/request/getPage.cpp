@@ -3,14 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   getPage.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/02 17:36:45 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/05 18:12:40 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
+
+std::string	getErrorHtml(std::string File, int errorCode)
+{
+	std::ifstream	HtmlFile;
+	std::string		tmp;
+	std::string		Html;
+
+	HtmlFile.open(File);
+	
+	if (HtmlFile.fail())
+	{
+		perror("Failed to read html page\n");
+		return "";	
+	}
+	while (getline(HtmlFile, tmp))
+	{
+		if (tmp.find("{Error_code}") != std::string::npos)
+			tmp.replace(tmp.find("{Error_code}"), 12, std::to_string(errorCode));
+		Html += tmp;
+	}
+	HtmlFile.close();
+	return (Html);
+}
 
 std::string	getHtmlPage(std::string path)
 {
@@ -28,7 +51,7 @@ std::string	getHtmlPage(std::string path)
 	while (getline(HtmlFile, tmp))
 		Html += tmp;
 	HtmlFile.close();
-	return (Html);	
+	return (Html);
 }
 
 
