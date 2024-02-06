@@ -33,7 +33,6 @@
 			input::file-selector-button:hover{
 				background-color: #d0d0d0
 			}
-
 			body{
 				background-color: #252525;
 				color: rgb(148, 145, 145);
@@ -59,17 +58,16 @@
 		<h1>File transfert</h1>
 		<p></p>
 		<div class="button">
-		<button class = "Button1">Download</button>
 		<button class = "Button2">Delete</button>
 		<button class = "Button3">upload</button>
 		</div>
 		<p></p>
 		<div class="div_file">
 			<label for="file">Select a file to download : </label>
-			<form action="/kittenland" method="post" enctype="multipart/form-data">
-				<label for="fileUpload">Choisissez les fichiers à téléverser:</label>
+			<form action="/upload" method="post" enctype="multipart/form-data">
+				<label for="fileUpload">Choose a file to upload:</label>
 				<input type="file" id="fileUpload" name="fileUpload" multiple><br><br>
-				<input type="submit" value="Téléverser">
+				<input type="submit" value="Upload">
 			</form>
 		</div>
 	</body>

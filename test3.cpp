@@ -78,7 +78,7 @@ public:
 					{
 						DEBUG
 						std::cout << "start download, length : " << HttpStruct.RequestLength << "\n";
-						HttpStruct.body += receiveHTTPRequest(client_fd, HttpStruct.RequestLength);
+						HttpStruct.body += receiveHT TPRequest(client_fd, HttpStruct.RequestLength);
 						// Download the image
 						put_in_file("request.txt", HttpStruct.body, HttpStruct.RequestLength + HttpStruct.length);
 						// if (HttpStruct.RequestLength > 0 &&  downloadImage(client_fd, HttpStruct))
