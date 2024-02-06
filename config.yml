@@ -19,16 +19,17 @@
 
 server: 
   name: 3
-  port: 80
+  port: 8080
   host: 127.0.0.1
   bodyLimit: 256
   route:
     path:
     dir: ./Html_code/
-    default: 500.html
-    methods:    GET  DELETE PUT
+    default: file.html
+    methods:    GET  DELETE POST
     listDir: false
-    allowUpload: false
+    allowUpload: true
+    uploadPath: ./upload
   route:
     path: hello
     dir: ./Html_code/
@@ -40,6 +41,42 @@ server:
     default: file.html
     methods:
 
+server: 
+  name: 3
+  port: 8080
+  host: 127.0.0.1
+  bodyLimit: 256
+  route:
+    path: other
+    dir: ./Html_code/
+    default: 418.html
+    methods:    GET  DELETE POST
+    listDir: false
+    allowUpload: false
+
+server: 
+  name: 3
+  port: 8080
+  host: localhost
+  bodyLimit: 256
+  route:
+    path: other
+    dir: ./Html_code/
+    default: 418.html
+    methods:    GET  DELETE POST
+    listDir: false
+    allowUpload: false
 
 
-    
+server: 
+  name: 3
+  port: 8080
+  host: 10.11.14.3
+  bodyLimit: 256
+  route:
+    path: other
+    dir: ./Html_code/
+    default: 418.html
+    methods:    GET  DELETE POST
+    listDir: false
+    allowUpload: false

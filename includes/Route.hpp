@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/06 08:57:14 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 13:51:19 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Route
 		int postMethod(HttpRequest request, std::string &html);
 		int delMethod(HttpRequest request);
 		int	uploadClientFile(HttpRequest request, std::string &html);
-
+		friend class ParseConfig;
 };
 
 // Helper class for creating Http Reponses?

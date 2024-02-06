@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pathToData.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 12:54:08 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 17:12:59 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 15:56:14 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static HttpRequest	setParameters(HttpRequest request, size_t start)
 {
 	size_t	i;
-	DEBUG
 	std::cout << "\033[35m\n";
 	i = start;
 	while (request.path.find("&", start) != std::string::npos)
@@ -49,7 +48,6 @@ static HttpRequest	pathFilename(HttpRequest request, size_t istart)
 	if (j == istart || j == std::string::npos || j >= k)
 		return (request);
 	request.extension = request.path.substr(j, k - j);
-	DEBUG
 	request.fileName = request.path.substr(istart, k - istart);
 	return (request);	
 }

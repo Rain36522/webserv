@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 17:52:29 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 15:56:16 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest req
 	std::string		buf2;
 
 	bytesRead = bufferSize - 1;
-	DEBUG
 	while (bytesRead == bufferSize - 1 || request.length < RequestLength)
 	{
 		bytesRead = read(client_fd, buffer, bufferSize - 1);

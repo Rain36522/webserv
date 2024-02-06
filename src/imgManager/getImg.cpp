@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getImg.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 08:46:27 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 15:57:19 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ static std::string	getFileName(std::string str)
 	if (i == std::string::npos)
 		return ("");
 	i += 10;
-	j = str.find("\"\n", i);
+	j = str.find("\"", i);
 	if (j == std::string::npos || i + 1 == j)
 		return ("");
-	return (str.substr(i, j - 3 - i));
+	return (str.substr(i, j - i));
 }
 
 static std::string	getHeader(std::string request)
@@ -73,7 +73,7 @@ static std::string	getFileContent(std::string header, std::string body)
 bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
-
+	std::cout << "File " << filename << std::endl;
 	outfile.open(filename, std::ios::binary);
 	if (outfile.fail())
 	{
@@ -95,7 +95,7 @@ HttpRequest	requestToFile(HttpRequest request, std::string uploadPath)
 	request.PostFile = false;
 	header = getHeader(request.body);
 	FileName = getFileName(request.body);
-	if (header != "" || FileName != "")
+		if (header != "" || FileName != "")
 		FileContent = getFileContent(header, request.body);
 	else
 		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
@@ -104,7 +104,7 @@ HttpRequest	requestToFile(HttpRequest request, std::string uploadPath)
 	else
 	{
 		std::cout << "\033[94mDownload image on : " << uploadPath + FileName << "\033[39m\n";
-		if (putInBinary(uploadPath + FileName, FileContent))
+		if (putInBinary(uploadPath + "/" + FileName, FileContent))
 			request.PostFile = true;
 	}
 	return (request);

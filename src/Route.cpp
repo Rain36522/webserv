@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/06 08:57:30 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/06 15:58:12 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,12 @@ int Route::execute(HttpRequest request)
 {
 	int code = 404;
 	std::string html;
-
 	if (request.method == _GET)
 		code = getMethod(request, html);
 	if (request.method == _POST)
 		code = postMethod(request, html);
 	if (request.method == _DEL)
 		code = delMethod(request);
-	DEBUG
 	sendHTMLResponse(request.clientFd, html);
 	return code;
 }
@@ -57,7 +55,7 @@ int Route::postMethod(HttpRequest request, std::string &html)
 {
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
-	if (request.PostFile) // move download here
+	else // move download here
 		return (uploadClientFile(request, html));
 	return 404;// Is this correct?
 }
@@ -101,12 +99,11 @@ int Route::runCGI(HttpRequest request, std::string &html)
 int	Route::uploadClientFile(HttpRequest request, std::string &html)
 {
 	(void)  html;
-
 	if (request.length < request.requestLength)
 	{
 		request = receiveHTTPRequest(request.clientFd, request.requestLength, request);
 	}
-	request = requestToFile(request, this->_uploadPath);
+	request = requestToFile(request, _uploadPath);
 	if (!request.PostFile)
 		return (413);
 	else
