@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pathToData.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 12:54:08 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 15:56:14 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 12:40:59 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static HttpRequest	setParameters(HttpRequest request, size_t start)
 	}
 	std::cout << "\033[39m\n";
 	return (request);
-
 }
 
 static HttpRequest	pathFilename(HttpRequest request, size_t istart)

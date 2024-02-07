@@ -16,11 +16,15 @@
 
 
 		</style>
-		<h1>Calculator</h1>
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                <label for="calculator">Put the value for calculating : </label>
-                        <input type="text" id="calculate" name="calculate" multiple><br><br>
-                        <input type="submit" value="calcul">
-                </form>
+		<form action="/votre/endpoint/de/suppression" method="post">
+			<input type="hidden" name="_method" value="DELETE">
+			<select name="cars" id="cars">
+			  <option value="volvo">Volvo</option>
+			  <option value="saab">Saab</option>
+			  <option value="mercedes">Mercedes</option>
+			  <option value="audi">Audi</option>
+			</select>
+			<input type="submit" value="Supprimer">
+		  </form>
 	</body>
 </html>

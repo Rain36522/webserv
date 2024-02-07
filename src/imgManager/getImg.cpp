@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getImg.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 15:57:19 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/06 16:03:56 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ HttpRequest	requestToFile(HttpRequest request, std::string uploadPath)
 		std::cerr << "\033[94mPost methode with invalide file content\033[39m" << std::endl;
 	else
 	{
-		std::cout << "\033[94mDownload image on : " << uploadPath + FileName << "\033[39m\n";
+		std::cout << "\033[94mDownload image on : " << uploadPath + "/"+ FileName << "\033[39m\n";
 		if (putInBinary(uploadPath + "/" + FileName, FileContent))
 			request.PostFile = true;
 	}

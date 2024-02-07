@@ -2,8 +2,13 @@ import time
 import os
 
 time = time.strftime("%A, %d %B %Y, %H:%M")
-calcul = "2 + 3"
-result = "5"
+try:
+	calcul = os.environ["calcul"]
+	result = str(eval(calcul))
+	calcul += " = <b>"
+except:
+	calcul = "<b>Invalid Input"
+	result = ""
 
 html1 = """
 <!DOCTYPE html>
@@ -25,16 +30,9 @@ html1 = """
 """
 html2 = "\n<h1>Python CGI</h1>\n"
 		
-html3 = """
-	</body>
-</html>
-"""
+html3 = "</body>\n</html>"
 time ="<p>" + time + "</p>"
-value = "<p>" + calcul + " = <b>" + result + "</b></p>"
+value = "<p>" + calcul + result + "</b></p>"
 
 print(html1 + time + html2 + value + html3)
 print("<==============================================================================================================================================================================================================================================================================>")
-try:
-	print(os.environ["num1"])
-except:
-	print("Variable not found")

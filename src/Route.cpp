@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/06 15:58:12 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 17:43:56 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,12 @@ int Route::execute(HttpRequest request)
 	std::string html;
 	if (request.method == _GET)
 		code = getMethod(request, html);
-	if (request.method == _POST)
+	else if (request.method == _POST)
 		code = postMethod(request, html);
-	if (request.method == _DEL)
+	else if (request.method == _DEL)
 		code = delMethod(request);
+	if (code == 200 && _methods.find(_DEL) != _methods.end())
+		code = addListBox(html);
 	sendHTMLResponse(request.clientFd, html);
 	return code;
 }
@@ -79,7 +81,11 @@ int Route::getMethod(HttpRequest request, std::string &html)
 
 int Route::runCGI(HttpRequest request, std::string &html)
 {
+	int	fd[2];
+
+	pipe(fd);
 	pid_t pid = fork();
+	
 	(void) request, (void) html;
 	if (pid == -1)
 	{
@@ -91,6 +97,9 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	}
 	else
 	{
+		for(size_t i = 0; i < request.parameters.size(); i ++)
+			putenv(&request.parameters[i][0]);
+		
 		//execve with request.fileName and request.parameters
 	}
 	return 200;
@@ -105,8 +114,51 @@ int	Route::uploadClientFile(HttpRequest request, std::string &html)
 	}
 	request = requestToFile(request, _uploadPath);
 	if (!request.PostFile)
+	{
+		html = getErrorHtml("./Html_code/400.html", 413);
 		return (413);
-	else
-		return (200);
+	}
+	return (getHtml(this->_default, html));
 }
 
+int	Route::addListBox(std::string &html)
+{
+	DIR			*dir;
+	bool		file;
+	size_t		i;
+	dirent		*entry;
+	std::string	listBox;
+
+	if ((i = html.find("{Delete_list}")) == std::string::npos)
+		return (200);
+	dir = opendir(_uploadPath.c_str());
+	html.erase(i, 13);
+	if (dir == nullptr)
+	{
+		std::cerr << "Could not acces to upload path\n";
+		return (500);
+	}
+	file = false;
+	listBox = "<form action=\"\" method=\"DEL\">\n";
+	listBox += "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n";
+	listBox += "<select name=\"DeleteFile\" id=\"DeleteFile\">\n";
+	DEBUG
+	while ((entry = readdir(dir)) != nullptr)
+	{
+		if (entry->d_name[0] != '.')
+		{
+			file = true;
+			listBox += "<option value=\"" + std::string(entry->d_name) + "\">" + std::string(entry->d_name) + "</option>\n";
+		}
+	}
+	DEBUG
+	closedir(dir);
+	if (file)
+	{
+		listBox += "</select>\n";
+		listBox += "<input type=\"submit\" value=\"Delete\">\n";
+		listBox += "</form>";
+		html.insert(i, listBox);
+	}
+	return (200);
+}

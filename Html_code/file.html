@@ -31,7 +31,7 @@
 			  box-shadow: none;
 			}
 			input::file-selector-button:hover{
-				background-color: #d0d0d0
+				background-color:rgb(152, 152, 158);
 			}
 			body{
 				background-color: #252525;
@@ -57,18 +57,14 @@
 		</style>
 		<h1>File transfert</h1>
 		<p></p>
-		<div class="button">
-		<button class = "Button2">Delete</button>
-		<button class = "Button3">upload</button>
-		</div>
-		<p></p>
 		<div class="div_file">
-			<label for="file">Select a file to download : </label>
-			<form action="/upload" method="post" enctype="multipart/form-data">
+			<form action="" method="post" enctype="multipart/form-data">
 				<label for="fileUpload">Choose a file to upload:</label>
 				<input type="file" id="fileUpload" name="fileUpload" multiple><br><br>
 				<input type="submit" value="Upload">
 			</form>
+			<p></p>
+			{Delete_list}
 		</div>
 	</body>
 </html>
