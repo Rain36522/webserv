@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/06 15:58:12 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/06 16:10:44 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (request.fileName.empty())
 	{
 		if (!_default.empty())
-			return getHtml(_dir + _default, html);
+			return getHtml(_dir + "/" + _default, html);
 		else if (_listDir)
 			;// list dir
 		return 404;
@@ -73,7 +73,7 @@ int Route::getMethod(HttpRequest request, std::string &html)
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
 	if (request.htmlFile)
-		return getHtml(_dir + request.fileName, html);
+		return getHtml(_dir + "/" +request.fileName, html);
 	return 404;
 }
 
