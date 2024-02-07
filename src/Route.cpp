@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/07 17:46:30 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/07 17:54:50 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,12 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	{
 		for(size_t i = 0; i < request.parameters.size(); i ++)
 			putenv(&request.parameters[i][0]);
-		
-		//execve with request.fileName and request.parameters
+		dup2(fd[1], 1);
+		close(fd[1]);
+		close(fd[0]);
+		// execve((_dir + "/" + request.fileName).c_str(), NULL, env);
+		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
+		exit(1);
 	}
 	return 200;
 }
