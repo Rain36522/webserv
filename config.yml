@@ -24,7 +24,7 @@ server:
   bodyLimit: 256
   route:
     path:
-    dir: ./Html_code/
+    dir: ./Html_code
     default: file.html
     methods:    GET  DELETE POST
     listDir: false
@@ -37,7 +37,7 @@ server:
     methods: GET
   route:
     path: hello2
-    dir: ./Html_code/
+    dir: ./Html_code
     default: file.html
     methods:
 
@@ -59,6 +59,7 @@ server:
   port: 8080
   host: localhost
   bodyLimit: 256
+  404: ./Html_code/400.html
   route:
     path: other
     dir: ./Html_code/

@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/06 14:57:37 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:26:53 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,9 +166,9 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 		else
 			setIfNot(std::stoi(value), server._bodyLimit);
 	}
-	else if (isNum(key))
+	else if (isNum(key.substr(0, key.length() - 1)))
 	{
-		if (key.size() > 3){
+		if (key.size() > 4){
 			std::cout << "Invalid html error code " << key << std::endl;
 			exit(1);
 		}
@@ -194,6 +194,7 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 {
 	for (size_t i = 0; i < servers.size(); i++)
 	{
+		std::cout << "pages: " << servers[i]._errPages.size() << std::endl;
 		for (size_t j = i + 1; j < servers.size(); j++)
 			if (servers[i]._host == servers[j]._host && servers[i]._port == servers[j]._port)
 			{

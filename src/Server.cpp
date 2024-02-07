@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/05 14:54:38 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:30:33 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	Server::handleError(int code, int fd)
 {
 	if (_errPages.find(code) != _errPages.end())
 		sendHTMLResponse(fd, getHtmlPage(_errPages[code]));
+	else
+		;//TODO add default error string
 }
 
 Route *Server::matchRoute(const HttpRequest & req)

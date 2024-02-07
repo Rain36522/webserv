@@ -6,11 +6,37 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 16:25:50 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/07 17:46:48 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
+
+bool validateFd(std::string file, int type)
+{
+	int fd_type = O_RDONLY;
+	if (type == EVFILT_WRITE)
+		fd_type = O_WRONLY;
+	int fd = open(file.c_str(), fd_type);
+	if (fd == -1)
+		return (false);
+	int kfd = kqueue();
+	if (kfd == -1)
+	{
+		close(fd);
+		return false;
+	}
+	struct kevent change;
+	struct kevent events[1];
+
+	EV_SET(&change, fd, type, EV_ADD, 0, 0, NULL);
+	int ret = kevent(kfd, &change, 1, events, 1, NULL);
+	close(kfd);
+	close(fd);
+	if (ret < 1)
+		return false;
+	return events[0].ident == (uintptr_t) fd;
+}
 
 std::string	getErrorHtml(std::string File, int errorCode)
 {
@@ -41,6 +67,11 @@ std::string	getHtmlPage(std::string path)
 	std::string		tmp;
 	std::string		Html;
 
+	if (!validateFd(path, EVFILT_READ))
+	{
+		perror("Failed to read html page\n");
+		return "";
+	}
 	HtmlFile.open(path);
 	
 	if (HtmlFile.fail())
@@ -60,6 +91,11 @@ int	getHtml(std::string path, std::string &html)
 	std::ifstream	HtmlFile;
 	std::string		tmp;
 
+	if (!validateFd(path, EVFILT_READ))
+	{
+		perror("Failed to read html page\n");
+		return 404;
+	}
 	HtmlFile.open(path);
 	
 	if (HtmlFile.fail())

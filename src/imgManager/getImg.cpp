@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 16:03:56 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/07 17:46:43 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
 	std::cout << "File " << filename << std::endl;
+	validateFd(filename, EVFILT_WRITE);
+
 	outfile.open(filename, std::ios::binary);
 	if (outfile.fail())
 	{

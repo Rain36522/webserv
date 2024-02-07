@@ -6,14 +6,17 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 14:53:34 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 16:31:04 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/WebServer.hpp"
 #include "../includes/ParseConfig.hpp"
 
-WebServer::~WebServer(void) {}
+WebServer::~WebServer(void) {
+	if (_kfd != -1)
+		close(_kfd);
+}
 
 WebServer::WebServer(std::string file)
 {
@@ -21,27 +24,26 @@ WebServer::WebServer(std::string file)
 	std::vector<Server>::iterator i;
 	std::set<int> ports;
 	_kfd = kqueue();
+	std::vector<struct kevent> change(servers.size());
 	if (_kfd == -1) {
 		perror("Error creating kqueue");
 		exit(EXIT_FAILURE);
 	}
 	for (i = servers.begin(); i != servers.end(); i++)
 	{
-		
 		std::string host_port = (*i).get_host() + ":" + std::to_string((*i).get_port());
 		_servers.insert(std::map<std::string, Server>::value_type(host_port, *i));
-		
 		if (ports.insert((*i).get_port()).second)
 		{
 			int server_fd = getServerSocket(*i);
 			_serverFds.push_back(server_fd);
-			struct kevent change;
-			EV_SET(&change, server_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-			if (kevent(_kfd, &change, 1, nullptr, 0, nullptr) == -1) {
-				perror("Error adding server socket to kqueue");
-				exit(EXIT_FAILURE);
-			}
+			EV_SET(&change[2 * ports.size() - 2], server_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+			EV_SET(&change[2 * ports.size() - 1], server_fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
 		}
+	}
+	if (kevent(_kfd, &change[0], 2 * ports.size(), nullptr, 0, nullptr) == -1) {
+		perror("Error adding server socket to kqueue");
+		exit(EXIT_FAILURE);
 	}
 }
 
