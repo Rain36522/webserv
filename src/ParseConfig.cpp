@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/07 16:26:53 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/07 17:48:53 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void ParseConfig::validServer(Server server)
 		|| server._port == -1 || server._bodyLimit == -1)
 	{
 		std::cout << "Error: Invalid server" << std::endl;
-		std::cout << server._name << server._host << server._port << server._bodyLimit << std::endl;
 		exit(1);
 	}
 }
@@ -101,7 +100,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._listDir)
 		{
-			std::cout << "error: duplicate key" << std::endl;
+			std::cout << "Error: duplicate key" << std::endl;
 			exit(1);
 		}
 		if (value == "true")
@@ -113,7 +112,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._allowUpload)
 		{
-			std::cout << "error: duplicate key" << std::endl;
+			std::cout << "Error: duplicate key" << std::endl;
 			exit(1);
 		}
 		if (value == "true")
@@ -125,7 +124,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._methods.size() > 0)
 		{
-			std::cout << "error: duplicate method" << std::endl;
+			std::cout << "Error: duplicate method" << std::endl;
 		}
 		if (line.find("GET") != std::string::npos)
 			route._methods.insert(_GET);
@@ -158,7 +157,7 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 	else if (key == "port:" || key == "bodyLimit:")
 	{
 		if (!isNum(value)){
-			std::cout << "error: expected number for " << key << std::endl;
+			std::cout << "Error: expected number for " << key << std::endl;
 			exit(1);
 		}
 		if (key == "port:")
@@ -169,16 +168,16 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 	else if (isNum(key.substr(0, key.length() - 1)))
 	{
 		if (key.size() > 4){
-			std::cout << "Invalid html error code " << key << std::endl;
+			std::cout << "Error: Invalid html error code " << key << std::endl;
 			exit(1);
 		}
 		if (value.empty()){
-			std::cout << "No html page given for code " << key << std::endl;
+			std::cout << "Error: No html page given for code " << key << std::endl;
 			exit(1);
 		}
 		if (!server._errPages.insert(std::pair<int, std::string>(std::stoi(key), value)).second)
 		{
-			std::cout << "Duplicate error code" << std::endl;
+			std::cout << "Error: Duplicate error code" << std::endl;
 			exit(1);
 		}
 	}
@@ -194,7 +193,6 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 {
 	for (size_t i = 0; i < servers.size(); i++)
 	{
-		std::cout << "pages: " << servers[i]._errPages.size() << std::endl;
 		for (size_t j = i + 1; j < servers.size(); j++)
 			if (servers[i]._host == servers[j]._host && servers[i]._port == servers[j]._port)
 			{
@@ -205,7 +203,6 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 		size_t len = servers[i]._routes.size();
 		for (size_t j = 0; j < len; j++)
 		{
-			std::cout << "METHODS " << servers[i]._routes[j]._methods.size();
 			for (size_t k = j + 1; k < len; k++)
 			{
 				if (servers[i]._routes[j]._path == servers[i]._routes[k]._path)
@@ -240,7 +237,6 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 		iss >> key >> value;
 		if (key.empty() || key[0] == '#')
 			continue;
-		std::cout << "Read <" << key << " " << value << std::endl;
 		if (state == OUT && key != "server:")
 		{
 			std::cout << "error: key not assigned to server" << std::endl;
