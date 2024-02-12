@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<title>PYTHON CGI</title>
+		<style>
+
+			body{
+				background-color: #252525;
+				color: rgb(148, 145, 145);
+				font-size: 15px;
+				text-align: center;
+			}
+
+
+		</style>
+		<h1>Calculator</h1>
+		<form action="asdf/cgi.py" method="get">
+			<label for="input_text">Input Texte:</label><br>
+			<input type="text" id="input_text" name="calcul"><br> <!-- Utilisation du même nom que le paramètre de l'URL -->
+			<input type="submit" value="Calcul">
+		</form>
+	</body>
+</html>

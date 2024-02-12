@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 17:01:02 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 18:23:20 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,12 @@ int Route::runCGI(HttpRequest request, std::string &html)
 {
 	int	fd[2];
 	int	exev;
+	char	value[] = "/Users/pudry/Documents/git_webserv/Html_code/cgi.py";
+	char	py[] = "/usr/bin/python3";
+	char	*a[3];
+	a[0] = py;
+	a[1] = value;
+	a[2] = NULL;
 
 	if (pipe(fd) == -1)
 	{
@@ -101,12 +107,23 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	}
 	else if (pid > 0)
 	{
+		std::vector<const char *>params;
+		for (size_t i = 0; env[i]; i++)
+			params.push_back(env[i]);
 		for(size_t i = 0; i < request.parameters.size(); i ++)
-			putenv(&request.parameters[i][0]);
+		{
+			std::cout << BLUE << "add env variable : " << request.parameters[i] << RESET << std::endl;
+			//putenv(&request.parameters[i]);
+			params.push_back(request.parameters[i].c_str());
+		}
+		params.push_back(NULL);
+		DEBUG
+		for (int i = 0; env[i]; i ++)
+			std::cout << GREEN << "env : " << env[i] << RESET << std::endl;
 		dup2(fd[1], 1);
 		close(fd[1]);
 		close(fd[0]);
-		execve((_dir + "/" + request.fileName).c_str(), NULL, env);
+		execve(py, a, (char **)&params[0]);
 		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
 		exit(1);
 	}
