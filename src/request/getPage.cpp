@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 17:46:48 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 11:03:19 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,23 @@ int	getHtml(std::string path, std::string &html)
 	return 200;	
 }
 
+int	getHtmlFd(int fd, std::string &html)
+{
+	char	buffer[256];
+	int		i = 255;
+
+	while (i == 255)
+	{
+		i = read(fd, buffer, 255);
+		html += buffer;
+		for (int j = 0; j <= 255; j ++)
+			buffer[j] = 0;
+	}
+	if (i < 0)
+		return 500;
+	return 200;
+	
+}
 // Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
 void sendHTMLResponse(int client_fd, const std::string& htmlPage)
 {
@@ -128,4 +145,35 @@ void sendHTMLResponse(int client_fd, const std::string& htmlPage)
 		perror("Error sending HTML content");
 		// Gérer l'erreur appropriée, fermer la connexion, etc.
 	}
+}
+
+// Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
+void sendErrorReponse(int client_fd, int errorCode)
+{
+	std::string	htmlPage = "Error: " + std::to_string(errorCode);
+	std::string responseHeaders = "HTTP/1.1 " + std::to_string(errorCode) + " OK\r\n";
+	responseHeaders += "Content-Type: text/html\r\n";
+	responseHeaders += "Content-Length: " + std::to_string(10) + "\r\n";
+	responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
+	responseHeaders += "\r\n";
+	ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
+	if (sent == -1)
+	{
+		perror("Error sending response headers");
+		// Gérer l'erreur appropriée, fermer la connexion, etc.
+	}
+	sent = send(client_fd, htmlPage.c_str(), htmlPage.size(), 0);
+	if (sent == -1) {
+		perror("Error sending HTML content");
+		// Gérer l'erreur appropriée, fermer la connexion, etc.
+	}
+}
+
+void	erraseHtmlVar(std::string &html)
+{
+	size_t	i;
+
+	if ((i = html.find("{Delete_list}")) == std::string::npos)
+		return ;
+	html.erase(i, 13);
 }

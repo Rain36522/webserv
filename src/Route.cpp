@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/07 17:54:50 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 11:02:51 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,18 @@ int Route::execute(HttpRequest request)
 		code = delMethod(request);
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
 		code = addListBox(html);
-	sendHTMLResponse(request.clientFd, html);
+	else if (code == 200)
+	{
+		std::cout << "Errase\n";
+		erraseHtmlVar(html);
+	}
+	else
+		std::cout << "Do nothing\n";
+	if (code < 400)
+		sendHTMLResponse(request.clientFd, html);
+	else
+		sendErrorReponse(request.clientFd, code);
+	std::cout << "Html code :" + std::to_string(code) << std::endl;
 	return code;
 }
 
@@ -82,20 +93,22 @@ int Route::getMethod(HttpRequest request, std::string &html)
 int Route::runCGI(HttpRequest request, std::string &html)
 {
 	int	fd[2];
+	int	exev;
 
-	pipe(fd);
+	if (pipe(fd) == -1)
+	{
+		std::cerr << "Pipe Error\n";
+		return 500;
+	}
 	pid_t pid = fork();
 	
 	(void) request, (void) html;
 	if (pid == -1)
 	{
-
+		std::cerr << "Error Fork\n";
+		return 500;
 	}
 	else if (pid > 0)
-	{
-
-	}
-	else
 	{
 		for(size_t i = 0; i < request.parameters.size(); i ++)
 			putenv(&request.parameters[i][0]);
@@ -106,7 +119,16 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
 		exit(1);
 	}
-	return 200;
+	else
+	{
+		close(fd[1]);
+		waitpid(pid, &exev, 0);
+		if (WEXITSTATUS(exev))
+			return 500;
+		exev = getHtmlFd(fd[0], html);
+		close(fd[0]);
+	}
+	return exev;
 }
 
 int	Route::uploadClientFile(HttpRequest request, std::string &html)

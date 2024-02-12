@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 17:46:21 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 11:04:28 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ bool validateFd(std::string file, int type);
 // Send news request
 std::string	getHtmlPage(std::string path);
 std::string	getErrorHtml(std::string File, int errorCode);
-int	getHtml(std::string path, std::string &html);
+int			getHtml(std::string path, std::string &html);
+int			getHtmlFd(int fd, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage);
+void		sendErrorReponse(int client_fd, int errorCode);
+void		erraseHtmlVar(std::string &html);
 
 // Read new request;
 HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request);
