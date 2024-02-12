@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 16:06:59 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 17:01:02 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		dup2(fd[1], 1);
 		close(fd[1]);
 		close(fd[0]);
-		// execve((_dir + "/" + request.fileName).c_str(), NULL, env);
+		execve((_dir + "/" + request.fileName).c_str(), NULL, env);
 		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
 		exit(1);
 	}

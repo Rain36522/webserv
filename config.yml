@@ -31,6 +31,7 @@ server:
     listDir: false
     allowUpload: true
     uploadPath: ./upload
+    CGIs: .py
   route:
     path: hello
     dir: ./Html_code/
@@ -42,7 +43,8 @@ server:
     path: hello2
     dir: ./Html_code
     default: file.html
-    methods:
+    methods: GET POST DELETE
+    CGIs: .py
 
 server: 
   name: 3
