@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/07 17:48:53 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 14:02:25 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 void ParseConfig::validServer(Server server)
 {
-	if (server._name.empty() || server._host.empty()
+	if (server._name.empty() || server._host.empty() || server._defaultError.empty()
 		|| server._port == -1 || server._bodyLimit == -1)
 	{
 		std::cout << "Error: Invalid server" << std::endl;
@@ -85,7 +85,6 @@ bool isNum(std::string s)
 
 void ParseConfig::setRoute(std::string key, std::string value, std::string line, Route &route)
 {
-	
 	if (key == "path:")
 		setIfNot(value, route._path, true);
 	else if (key == "dir:")
@@ -154,6 +153,8 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 		setIfNot(value, server._name, false);
 	else if (key == "host:")
 		setIfNot(value, server._host, false);
+	else if (key == "defaultError:")
+		setIfNot(value, server._defaultError, false);
 	else if (key == "port:" || key == "bodyLimit:")
 	{
 		if (!isNum(value)){

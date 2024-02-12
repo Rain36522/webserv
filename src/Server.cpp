@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 16:30:33 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 14:01:05 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ bool	Server::makeRequest(HttpRequest request)
 void	Server::handleError(int code, int fd)
 {
 	if (_errPages.find(code) != _errPages.end())
-		sendHTMLResponse(fd, getHtmlPage(_errPages[code]));
+		sendHTMLResponse(fd, getErrorHtml(_errPages[code], code));
 	else
-		;//TODO add default error string
+		sendHTMLResponse(fd,  getErrorHtml(_defaultError, code));;
 }
 
 Route *Server::matchRoute(const HttpRequest & req)

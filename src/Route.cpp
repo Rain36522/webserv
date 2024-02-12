@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 11:02:51 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 14:33:05 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,7 @@ int Route::execute(HttpRequest request)
 		code = delMethod(request);
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
 		code = addListBox(html);
-	else if (code == 200)
-	{
-		std::cout << "Errase\n";
-		erraseHtmlVar(html);
-	}
-	else
-		std::cout << "Do nothing\n";
-	if (code < 400)
-		sendHTMLResponse(request.clientFd, html);
-	else
-		sendErrorReponse(request.clientFd, code);
+	sendHTMLResponse(request.clientFd, html);
 	std::cout << "Html code :" + std::to_string(code) << std::endl;
 	return code;
 }

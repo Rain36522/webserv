@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 16:31:04 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 14:27:43 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,11 @@ int WebServer::getServerSocket(Server s) {
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_port = htons(s.get_port());
-
+	int optval = 1;
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+		perror("Error setting socket option SO_REUSEADDR");
+		exit(EXIT_FAILURE);
+	}
 	if (bind(sockfd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
 		perror("Error binding socket");
 		exit(EXIT_FAILURE);
