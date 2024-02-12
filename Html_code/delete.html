@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete File</title>
+</head>
+<body>
+    <h1>Delete File</h1>
+    <button onclick="deleteFile()">Delete the File</button>
+
+    <script>
+        function deleteFile() {
+            fetch('127.0.0.1:8080/hello', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: 'file-to-delete.txt'
+            });
+        }
+    </script>
+</body>
+</html>

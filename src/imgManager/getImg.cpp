@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getImg.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 17:46:43 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 15:32:46 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ bool	putInBinary(std::string filename, std::string content)
 	return (true);
 }
 
-HttpRequest	requestToFile(HttpRequest request, std::string uploadPath)
+HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath)
 {
 	std::string	header;
 	std::string	FileContent;

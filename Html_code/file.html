@@ -66,28 +66,13 @@
 			<p></p>
 			{Delete_list}
 			<script>
-				function submitDelete() {
+				function deleteFile() {
 					const fileName = document.getElementById("DeleteFile").value;
 					const form = document.getElementById("deleteForm");
-					const actionUrl = ""; // L'URL de votre ressource DELETE
-			
-					fetch(actionUrl, {
-						method: "DELETE",
-						body: JSON.stringify({ file: fileName }),
-						headers: {
-							"Content-Type": "application/json"
-						}
-					})
-					.then(response => {
-						if (response.ok) {
-							console.log('Resource deleted successfully.');
-							// Peut-être actualiser la liste des fichiers après la suppression
-						} else {
-							console.error('Failed to delete resource. Status: ' + response.status);
-						}
-					})
-					.catch(error => {
-						console.error('Request failed:', error);
+					fetch('', {
+						method: 'DELETE',
+						headers: {'Content-Type': 'application/json'},
+						body: "delete_file:" + fileName
 					});
 				}
 			</script>

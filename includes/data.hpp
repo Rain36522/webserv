@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 11:04:28 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/12 15:33:01 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,4 @@ void processFileUpload(const std::string& httpRequest);
 int	put_in_file(std::string filename, std::string content, int length);
 
 // Download image
-HttpRequest	requestToFile(HttpRequest request, std::string uploadPath);
+HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath);

@@ -34,8 +34,10 @@ server:
   route:
     path: hello
     dir: ./Html_code/
-    default: file.html
+    default: delete.html
     methods: GET POST DELETE
+    allowUpload: true
+    uploadPath: ./upload
   route:
     path: hello2
     dir: ./Html_code

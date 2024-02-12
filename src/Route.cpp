@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 14:33:05 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/12 16:06:59 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int Route::delMethod(HttpRequest request)
 {
 	// figure it out
 	(void) request;
+	//std::cout << request.body.find("delete_file:") ;
 	return (404);
 }
 
@@ -155,8 +156,8 @@ int	Route::addListBox(std::string &html)
 		return (500);
 	}
 	file = false;
-	listBox = "<form action=\"\" method=\"DEL\">\n";
-	listBox += "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n";
+	//listBox = "<form action=\"\" method=\"DEL\">\n";
+	listBox = "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n";
 	listBox += "<select name=\"DeleteFile\" id=\"DeleteFile\">\n";
 	DEBUG
 	while ((entry = readdir(dir)) != nullptr)
@@ -172,8 +173,9 @@ int	Route::addListBox(std::string &html)
 	if (file)
 	{
 		listBox += "</select>\n";
-		listBox += "<input type=\"submit\" value=\"Delete\">\n";
-		listBox += "</form>";
+		//listBox += "<input type=\"submit\" value=\"Delete\">\n";
+		//listBox += "</form>";
+		listBox += "<button onclick=\"deleteFile()\">Delete Selected File</button>";
 		html.insert(i, listBox);
 	}
 	return (200);
