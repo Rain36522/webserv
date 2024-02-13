@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 17:26:56 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/13 16:51:29 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage);
 void		sendErrorReponse(int client_fd, int errorCode);
+void		sendRedirectResponse(int client_fd, const std::string& redirectLocation);
 void		erraseHtmlVar(std::string &html);
 
 // Read new request;

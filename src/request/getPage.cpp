@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getPage.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 11:03:19 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/13 16:51:02 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,9 @@ int	getHtmlFd(int fd, std::string &html)
 	return 200;
 	
 }
+
+
+
 // Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
 void sendHTMLResponse(int client_fd, const std::string& htmlPage)
 {
@@ -145,6 +148,19 @@ void sendHTMLResponse(int client_fd, const std::string& htmlPage)
 		perror("Error sending HTML content");
 		// Gérer l'erreur appropriée, fermer la connexion, etc.
 	}
+}
+
+
+void sendRedirectResponse(int client_fd, const std::string& redirectLocation) {
+    std::string responseHeaders = "HTTP/1.1 302 Found\r\n";
+    responseHeaders += "Location: " + redirectLocation + "\r\n";
+    responseHeaders += "Server: salut\r\n";
+    responseHeaders += "\r\n";
+
+    ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
+    if (sent == -1) {
+        perror("Error sending redirect response");
+    }
 }
 
 // Envoi de la réponse HTTP (en-têtes et contenu HTML) au client

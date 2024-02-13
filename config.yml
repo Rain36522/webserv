@@ -24,6 +24,13 @@ server:
   bodyLimit: 256
   defaultError: 418.html
   route:
+    path:
+    dir: ./Html_code
+    default: cgi.html
+    methods:    GET  DELETE POST
+    listDir: false
+    redirPath: asdf
+  route:
     path: asdf
     dir: ./Html_code
     default: cgi.html

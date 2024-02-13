@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 14:27:43 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 16:42:37 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ void WebServer::run(void)
 				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
 				if (client_fd == -1) {
 					perror("Error accepting connection");
-					//exit(EXIT_FAILURE);
 				}
 				request = requestToStruct(client_fd);
 				std::cout << request.body << std::endl;

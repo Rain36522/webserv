@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 18:23:20 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/13 16:56:05 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,10 @@ int Route::execute(HttpRequest request)
 		code = delMethod(request);
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
 		code = addListBox(html);
-	sendHTMLResponse(request.clientFd, html);
-	std::cout << "Html code :" + std::to_string(code) << std::endl;
+	if (code == 302)
+		sendRedirectResponse(request.clientFd, _redirPath);
+	else if (code < 400 && code != 302)
+		sendHTMLResponse(request.clientFd, html);
 	return code;
 }
 
@@ -66,6 +68,10 @@ int Route::postMethod(HttpRequest request, std::string &html)
 
 int Route::getMethod(HttpRequest request, std::string &html)
 {
+	if (!_redirPath.empty())
+	{
+		return 302;
+	}
 	if (request.fileName.empty())
 	{
 		if (!_default.empty())
