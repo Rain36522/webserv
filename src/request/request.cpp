@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/06 15:56:16 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 16:38:26 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,9 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 	if (j == std::string::npos || j <= i + 1)
 		return (request);
 	request.emptyPath = false;
+	std::cout << GREEN << "j : " << httpRequest[j - 1] << RESET << std::endl;
+	if (httpRequest[j - 1] == '/')
+		j --;
 	request.path = httpRequest.substr(i, j - i);
 	request.htmlFile = false;
 	if (request.fileName.find(".html") != std::string::npos)

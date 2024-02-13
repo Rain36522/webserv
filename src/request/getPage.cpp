@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 16:51:02 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 17:07:21 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ std::string	getErrorHtml(std::string File, int errorCode)
 	
 	if (HtmlFile.fail())
 	{
-		perror("Failed to read html page\n");
+		perror("Failed to read html page1\n");
 		return "";	
 	}
 	while (getline(HtmlFile, tmp))
@@ -69,14 +69,14 @@ std::string	getHtmlPage(std::string path)
 
 	if (!validateFd(path, EVFILT_READ))
 	{
-		perror("Failed to read html page\n");
+		perror("Failed to read html page2\n");
 		return "";
 	}
 	HtmlFile.open(path);
 	
 	if (HtmlFile.fail())
 	{
-		perror("Failed to read html page\n");
+		perror("Failed to read html page3\n");
 		return "";	
 	}
 	while (getline(HtmlFile, tmp))
@@ -93,14 +93,14 @@ int	getHtml(std::string path, std::string &html)
 
 	if (!validateFd(path, EVFILT_READ))
 	{
-		perror("Failed to read html page\n");
+		perror("Failed to read html page4\n");
 		return 404;
 	}
 	HtmlFile.open(path);
 	
 	if (HtmlFile.fail())
 	{
-		perror("Failed to read html page\n");
+		perror("Failed to read html page5\n");
 		return 404;	
 	}
 	while (getline(HtmlFile, tmp))
@@ -130,9 +130,9 @@ int	getHtmlFd(int fd, std::string &html)
 
 
 // Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
-void sendHTMLResponse(int client_fd, const std::string& htmlPage)
+void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code)
 {
-	std::string responseHeaders = "HTTP/1.1 200 OK\r\n";
+	std::string responseHeaders = "HTTP/1.1 " + std::to_string(code) +  " \r\n";
 	responseHeaders += "Content-Type: text/html\r\n";
 	responseHeaders += "Content-Length: " + std::to_string(htmlPage.size()) + "\r\n";
 	responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
@@ -161,28 +161,6 @@ void sendRedirectResponse(int client_fd, const std::string& redirectLocation) {
     if (sent == -1) {
         perror("Error sending redirect response");
     }
-}
-
-// Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
-void sendErrorReponse(int client_fd, int errorCode)
-{
-	std::string	htmlPage = "Error: " + std::to_string(errorCode);
-	std::string responseHeaders = "HTTP/1.1 " + std::to_string(errorCode) + " OK\r\n";
-	responseHeaders += "Content-Type: text/html\r\n";
-	responseHeaders += "Content-Length: " + std::to_string(10) + "\r\n";
-	responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
-	responseHeaders += "\r\n";
-	ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
-	if (sent == -1)
-	{
-		perror("Error sending response headers");
-		// Gérer l'erreur appropriée, fermer la connexion, etc.
-	}
-	sent = send(client_fd, htmlPage.c_str(), htmlPage.size(), 0);
-	if (sent == -1) {
-		perror("Error sending HTML content");
-		// Gérer l'erreur appropriée, fermer la connexion, etc.
-	}
 }
 
 void	erraseHtmlVar(std::string &html)
