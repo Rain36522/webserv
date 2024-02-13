@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 14:46:39 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/13 16:28:59 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 18:15:33 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,19 @@
 #include <cstdio>
 #include <cstring>
 #include <dirent.h>
+#include <filesystem>
 
-
-int main(int ac, char*av[], char*env[])
+int main()
 {
 	const char* val = std::getenv("inputNum");
 	const char* folder = std::getenv("uploadFolder");
-	if (!val || std::atoi(val) < 1 || std::atoi(val) > 3 || !folder)
-		return (1);
+	const char* path_t = std::getenv("PWD");
+	if (!val || std::atoi(val) < 1 || std::atoi(val) > 3 || !folder || !path_t)
+		return (EXIT_FAILURE);
+	std::string temp1(folder);
+	std::string temp2(path_t);
+	std::string temp3 =  temp2 + "/" + temp1;
+	const char* full = temp3.c_str();
 	std::string path(folder);
 	std::srand(std::time(nullptr));
 	std::cout <<"<!DOCTYPE html>"
@@ -46,13 +51,13 @@ int main(int ac, char*av[], char*env[])
 						"</body>";
 	if (std::atoi(val) == std::rand() % 3 + 1)
 	{
-		DIR *directory = opendir(folder);
+		DIR *directory = opendir(full);
 		struct dirent *entry;
 		if (directory != NULL) {
         	while ((entry = readdir(directory)) != NULL) {
             	if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
             	    char file_path[256];
-            	    sprintf(file_path, "%s/%s", folder, entry->d_name);
+            	    sprintf(file_path, "%s/%s", full, entry->d_name);
             	    if (remove(file_path) != 0)
             	        std::cout << "<p>Error deleting file: " << file_path << "</p>";
             	    else 
@@ -61,9 +66,9 @@ int main(int ac, char*av[], char*env[])
         	}
         closedir(directory);
 		} else {
-			std::cout << "<p>Error opening directory.</p>";
+			std::cout << "<p>Error opening directory " << std::string(full) << ".</p>";
 			std::cout << "</html>";
-			return (EXIT_FAILURE);
+			return (3);
 		}
 	}
 	else
