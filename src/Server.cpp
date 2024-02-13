@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 14:01:05 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 16:41:54 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,16 @@ bool	Server::makeRequest(HttpRequest request)
 
 void	Server::handleError(int code, int fd)
 {
+	std::string		html;
+
+
 	if (_errPages.find(code) != _errPages.end())
-		sendHTMLResponse(fd, getErrorHtml(_errPages[code], code));
+		html = getErrorHtml(_errPages[code], code);
 	else
-		sendHTMLResponse(fd,  getErrorHtml(_defaultError, code));;
+		html = getErrorHtml(_defaultError, code);
+	if (html == "")
+		html = "Error 500 : No file found for error :" + std::to_string(code);
+	sendHTMLResponse(fd, html, code);
 }
 
 Route *Server::matchRoute(const HttpRequest & req)

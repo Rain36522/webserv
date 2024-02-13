@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/12 18:23:20 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/13 16:41:43 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ int Route::execute(HttpRequest request)
 		code = delMethod(request);
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
 		code = addListBox(html);
-	sendHTMLResponse(request.clientFd, html);
+	if (code < 400)
+		sendHTMLResponse(request.clientFd, html, code);
 	std::cout << "Html code :" + std::to_string(code) << std::endl;
 	return code;
 }
@@ -83,11 +84,13 @@ int Route::getMethod(HttpRequest request, std::string &html)
 
 int Route::runCGI(HttpRequest request, std::string &html)
 {
+	DEBUG
 	int	fd[2];
 	int	exev;
-	char	value[] = "/Users/pudry/Documents/git_webserv/Html_code/cgi.py";
+	char	value[] = "./Html_code/cgi.py";
 	char	py[] = "/usr/bin/python3";
 	char	*a[3];
+
 	a[0] = py;
 	a[1] = value;
 	a[2] = NULL;
@@ -105,21 +108,14 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		std::cerr << "Error Fork\n";
 		return 500;
 	}
-	else if (pid > 0)
+	else if (!pid)
 	{
 		std::vector<const char *>params;
 		for (size_t i = 0; env[i]; i++)
 			params.push_back(env[i]);
 		for(size_t i = 0; i < request.parameters.size(); i ++)
-		{
-			std::cout << BLUE << "add env variable : " << request.parameters[i] << RESET << std::endl;
-			//putenv(&request.parameters[i]);
 			params.push_back(request.parameters[i].c_str());
-		}
 		params.push_back(NULL);
-		DEBUG
-		for (int i = 0; env[i]; i ++)
-			std::cout << GREEN << "env : " << env[i] << RESET << std::endl;
 		dup2(fd[1], 1);
 		close(fd[1]);
 		close(fd[0]);
@@ -131,8 +127,12 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	{
 		close(fd[1]);
 		waitpid(pid, &exev, 0);
+		std::cout << CYAN << "Wexit status : " << std::to_string(WEXITSTATUS(exev)) << RESET << std::endl;
 		if (WEXITSTATUS(exev))
+		{
+			close(fd[0]);
 			return 500;
+		}
 		exev = getHtmlFd(fd[0], html);
 		close(fd[0]);
 	}

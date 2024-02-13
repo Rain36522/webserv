@@ -16,13 +16,14 @@
 
 # CGI
 # - Path
+# defaultError: ./Html_code/418.html
 
 server: 
   name: 3
   port: 8080
   host: 127.0.0.1
   bodyLimit: 256
-  defaultError: 418.html
+  defaultError: ./Html_code/401.html
   route:
     path: asdf
     dir: ./Html_code
