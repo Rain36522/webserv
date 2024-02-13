@@ -1,3 +1,4 @@
 *.o
 webserv
 settings.json
+.DS_store
