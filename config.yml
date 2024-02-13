@@ -34,9 +34,8 @@ server:
   route:
     path: asdf
     dir: ./Html_code
-    default: cgi.html
     methods:    GET  DELETE POST
-    listDir: false
+    listDir: true
     allowUpload: true
     uploadPath: ./upload
     CGIs: .py .out

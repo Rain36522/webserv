@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/13 17:59:02 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/13 18:24:36 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,27 @@ int Route::postMethod(HttpRequest request, std::string &html)
 	return 404;// Is this correct?
 }
 
+int	Route::doListDir(std::string &html) const
+{
+	DIR		*dir;
+	dirent	*entry;
+
+	dir = opendir(_dir.c_str());
+	if (dir == nullptr)
+	{
+		std::cerr << "Could not acces path for list dire\n";
+		return (500);
+	}
+	html = "";
+	while ((entry = readdir(dir)) != nullptr)
+	{
+		if (std::string(entry->d_name)[0] != '.')
+			html += "<p>" + std::string(entry->d_name) + "</p>";
+	}
+	closedir(dir);
+	return (200);
+}
+
 int Route::getMethod(HttpRequest request, std::string &html)
 {
 	if (!_redirPath.empty())
@@ -77,12 +98,12 @@ int Route::getMethod(HttpRequest request, std::string &html)
 		if (!_default.empty())
 			return getHtml(_dir + "/" + _default, html);
 		else if (_listDir)
-			;// list dir
+			return (doListDir(html));
 		return 404;
 	}
 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
 		return runCGI(request, html);
-	if (request.htmlFile)
+	if (request.extension == ".html")
 		return getHtml(_dir + "/" +request.fileName, html);
 	return 404;
 }

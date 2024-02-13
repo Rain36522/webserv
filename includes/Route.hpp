@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/07 09:44:00 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/13 18:14:23 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Route
 		int delMethod(HttpRequest request);
 		int	uploadClientFile(HttpRequest request, std::string &html);
 		int	addListBox(std::string &html);
+		int	doListDir(std::string &html) const;
 		friend class ParseConfig;
 };
 
