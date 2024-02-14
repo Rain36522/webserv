@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   getPage.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 17:07:21 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:54:58 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,21 +121,39 @@ int	getHtmlFd(int fd, std::string &html)
 		for (int j = 0; j <= 255; j ++)
 			buffer[j] = 0;
 	}
-	if (i < 0)
+	if (i <= 0)
 		return 500;
 	return 200;
 	
 }
 
+static std::string	getCodeText(int code)
+{
+	switch (code)
+	{
+	case 400:
+		return ("400 Bad Request");
+	case 404:
+		return ("404 Not Found");
+	case 413:
+		return ("413 Payload to large");
+	case 418:
+		return ("418 I'm a tea pot");
+	case 500:
+		return ("400 Internal server error");
+	default:
+		return ("200 Ok");
+	}
+}
 
 
 // Envoi de la réponse HTTP (en-têtes et contenu HTML) au client
-void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code)
+void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name)
 {
-	std::string responseHeaders = "HTTP/1.1 " + std::to_string(code) +  " \r\n";
+	std::string responseHeaders = "HTTP/1.1 " + getCodeText(code) +  " \r\n";
 	responseHeaders += "Content-Type: text/html\r\n";
 	responseHeaders += "Content-Length: " + std::to_string(htmlPage.size()) + "\r\n";
-	responseHeaders += "Server: salut\r\n"; // Ajouter le nom du serveur dans le header Server
+	responseHeaders += "Server: " + server_name +"\r\n";
 	responseHeaders += "\r\n";
 	ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);
 	if (sent == -1)

@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/13 18:14:23 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:16:11 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Route
 		bool						_allowUpload;
 		std::string					_uploadPath;
 		std::vector<std::string>	_CGIs;
+		std::string					_server_name; // Contain server name for send in request.
 		
 	public:
 		Route();

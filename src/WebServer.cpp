@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 16:42:37 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:37:02 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,11 @@ void WebServer::run(void)
 					perror("Error accepting connection");
 				}
 				request = requestToStruct(client_fd);
-				std::cout << request.body << std::endl;
+				if (request.errorCode == 500)
+				{
+					std::string	html = "Error 500 : Get error while reading request";
+					sendHTMLResponse(client_fd, html, 500, "master");
+				}
 				if (_servers.find(request.hostPort) != _servers.end())
 					_servers[request.hostPort].makeRequest(request);
 				else

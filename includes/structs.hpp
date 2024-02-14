@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/12 16:55:52 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:45:54 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ struct HttpRequest
 {
 	m_type method;
 	std::string					hostPort;
+	std::string					servName;
 	std::string					path; // route
 	std::string					fileName;
 	std::vector<std::string>	parameters;
@@ -49,6 +50,7 @@ struct HttpRequest
 	bool						emptyPath;
 	bool						PostFile;
 	int							clientFd;
+	int							errorCode;
 };
 
 struct HttpResponse

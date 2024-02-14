@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 17:06:01 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:14:36 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string	getHtmlPage(std::string path);
 std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
-void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code);
+void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name);
 void		sendRedirectResponse(int client_fd, const std::string& redirectLocation);
 void		erraseHtmlVar(std::string &html);
 
@@ -50,7 +50,7 @@ HttpRequest 	pathToData(HttpRequest request);
 
 // Download gpt, useless?
 void processFileUpload(const std::string& httpRequest);
-int	put_in_file(std::string filename, std::string content, int length);
+int	put_in_file(std::string filename, std::string content, int length); // UNUSED FONCTION TO REMOVE!!!!
 
 // Download image
 HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath);
