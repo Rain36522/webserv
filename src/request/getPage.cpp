@@ -115,12 +115,12 @@ static std::string	getCodeText(int code)
 		return ("413 Payload to large");
 	case 418:
 		return ("418 I'm a tea pot");
-	case 500:
-		return ("400 Internal server error");
+	case 200:
+		return ("200 Ok");
 	case 302:
 		return ("302 Found");
 	default:
-		return ("200 Ok");
+		return ("500 Internal server error");
 	}
 }
 
@@ -147,10 +147,10 @@ void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std:
 }
 
 
-void sendRedirectResponse(int client_fd, const std::string& redirectLocation) {
+void sendRedirectResponse(int client_fd, const std::string& redirectLocation, std::string server_name) {
     std::string responseHeaders = "HTTP/1.1 302 Found\r\n";
     responseHeaders += "Location: " + redirectLocation + "\r\n";
-    responseHeaders += "Server: salut\r\n";
+    responseHeaders += "Server: " + server_name + "\r\n";
     responseHeaders += "\r\n";
 
     ssize_t sent = send(client_fd, responseHeaders.c_str(), responseHeaders.size(), 0);

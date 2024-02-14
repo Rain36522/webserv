@@ -29,7 +29,8 @@ int Route::execute(HttpRequest request)
 	std::string html;
 	std::cout << CYAN << request.path << " ROUTED TO PATH: " << _path << RESET << "\n";
 	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
-	request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size()) + "/" + request.fileName;
+	if (!request.fileName.empty())
+		request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size()) + "/" + request.fileName;
 	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
 	if (_methods.find(request.method) == _methods.end())
 		code = 405;
@@ -211,8 +212,6 @@ int	Route::addListBox(std::string &html)
 	if (file)
 	{
 		listBox += "</select>\n";
-		//listBox += "<input type=\"submit\" value=\"Delete\">\n";
-		//listBox += "</form>";
 		listBox += "<button onclick=\"deleteFile()\">Delete Selected File</button>";
 		html.insert(i, listBox);
 	}
