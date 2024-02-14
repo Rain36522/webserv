@@ -38,7 +38,7 @@ server:
     listDir: true
     allowUpload: true
     uploadPath: ./upload
-    CGIs: .py
+    CGIs: .py .out
   route:
     path: hello
     dir: ./Html_code/

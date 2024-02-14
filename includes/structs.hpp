@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/14 10:45:54 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:09 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,28 @@
 #include <sys/event.h>
 #include <sys/time.h>
 
-enum m_type{
+
+#define OK					200
+#define CREATED				201
+#define NO_CONTENT			204
+#define FOUND				302
+// Bad request includes bad syntax, size too large, weird routing
+#define BAD_REQUEST			400
+// attempting something without permission (bad file permission?)
+#define FORBIDDEN			 403
+#define NOT_FOUND			 404
+#define METHOD_NOT_ALLOWED	 405
+// attempting to brew coffee with a teapot
+#define IM_A_TEAPOT			 418
+#define WINDOWS_PARENT_BLOCK 450
+#define UNAVALIABLE_LEGAL	 451
+// generic error message
+#define INTERNAL_ERROR		500
+#define INSUFFICIENT_STORAGE 507
+
+
+enum m_type
+{
 	_GET,
 	_POST,
 	_DEL,

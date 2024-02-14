@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/14 10:16:11 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:04 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,15 @@ class Route
 		
 	public:
 		Route();
-		Route(std::string const path, m_type type, std::string default_page);
-		bool match(HttpRequest req);
+
+		/**
+		 * @brief Returns the size of the matching path to the request
+		 * 
+		 * @param req The http request
+		 * @return size_t: the size of the path if matching, otherwise -1
+		 */
+		int match(HttpRequest req);
+
 		int execute(HttpRequest req);
 		int runCGI(HttpRequest request, std::string &html);
 		int getMethod(HttpRequest request, std::string &html);

@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/14 10:46:42 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:12 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,20 @@ Route::Route(){
 	_listDir = false;
 }
 
-Route::Route(std::string const path, m_type type, std::string default_page)
+int	Route::match(HttpRequest req)
 {
-	_path = path;
-	_methods.insert(type);
-	_default = default_page;
-	(void)_listDir, (void)_allowUpload;
-}
-
-
-bool Route::match(HttpRequest req)
-{
-	return req.path == _path && _methods.find(req.method) != _methods.end();
+	if (req.path.find(_path) == 0 && (req.path.size() == _path.size() || req.path[_path.size()] == '/'))
+		return (int)_path.size();
+	return -1;
 }
 
 int Route::execute(HttpRequest request)
 {
 	int code = 404;
 	std::string html;
-	if (request.method == _GET)
+	if (_methods.find(request.method) == _methods.end())
+		code = 405;
+	else if (request.method == _GET)
 		code = getMethod(request, html);
 	else if (request.method == _POST)
 		code = postMethod(request, html);
@@ -113,22 +108,16 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	DEBUG
 	int	fd[2];
 	int	exev;
-	char	value[] = "./Html_code/cgi.py";
+	std::string value = _dir + "/" + request.fileName;
 	char	py[] = "/usr/bin/python3";
-	char	*a[3];
-
-	a[0] = py;
-	a[1] = value;
-	a[2] = NULL;
-
+	
+	char	*a[3] = {py, (char *)value.c_str(), NULL};
 	if (pipe(fd) == -1)
 	{
 		std::cerr << "Pipe Error\n";
 		return 500;
 	}
 	pid_t pid = fork();
-	
-	(void) request, (void) html;
 	if (pid == -1)
 	{
 		std::cerr << "Error Fork\n";
@@ -140,12 +129,19 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		for (size_t i = 0; env[i]; i++)
 			params.push_back(env[i]);
 		for(size_t i = 0; i < request.parameters.size(); i ++)
+		{
+			std::cout << i << " " << request.parameters[i] << std::endl;
 			params.push_back(request.parameters[i].c_str());
+		}
+		params.push_back(("uploadFolder=" + _uploadPath).c_str());
 		params.push_back(NULL);
 		dup2(fd[1], 1);
 		close(fd[1]);
 		close(fd[0]);
-		execve(py, a, (char **)&params[0]);
+		if (request.extension == ".py")
+			execve(py, a, (char **)&params[0]);
+		 if (request.extension == ".out")
+			execve((char *)value.c_str(), 0, (char **)&params[0]);
 		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
 		exit(1);
 	}
@@ -154,12 +150,14 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		close(fd[1]);
 		waitpid(pid, &exev, 0);
 		std::cout << CYAN << "Wexit status : " << std::to_string(WEXITSTATUS(exev)) << RESET << std::endl;
+		exev = getHtmlFd(fd[0], html);
+		std::cout << exev << std::endl;
 		if (WEXITSTATUS(exev))
 		{
 			close(fd[0]);
 			return 500;
 		}
-		exev = getHtmlFd(fd[0], html);
+		
 		close(fd[0]);
 	}
 	return exev;
@@ -204,7 +202,6 @@ int	Route::addListBox(std::string &html)
 	//listBox = "<form action=\"\" method=\"DEL\">\n";
 	listBox = "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n";
 	listBox += "<select name=\"DeleteFile\" id=\"DeleteFile\">\n";
-	DEBUG
 	while ((entry = readdir(dir)) != nullptr)
 	{
 		if (entry->d_name[0] != '.')
@@ -213,7 +210,6 @@ int	Route::addListBox(std::string &html)
 			listBox += "<option value=\"" + std::string(entry->d_name) + "\">" + std::string(entry->d_name) + "</option>\n";
 		}
 	}
-	DEBUG
 	closedir(dir);
 	if (file)
 	{

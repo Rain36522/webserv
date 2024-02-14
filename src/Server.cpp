@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:56:25 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:22 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,22 @@ bool	Server::makeRequest(HttpRequest request)
 	int code = 404;
 	request.servName = _name;
 	std::vector<Route>::iterator i;
+	Route bestRoute;
+	int	maxMatch = -1;
+
 	for (i = _routes.begin(); i != _routes.end(); i++)
 	{
-		if ((*i).match(request))
+		int curMatch = (*i).match(request);
+		if (curMatch > maxMatch)
 		{
-			code = (*i).execute(request);
+			bestRoute = *i;
+			maxMatch = curMatch;
 			break;
 		}
 	}
-	if (code != 200)
+	if (maxMatch != -1)
+		code = bestRoute.execute(request);
+	if (code >= 400)
 		handleError(code, request.clientFd);
 	return true;
 }
