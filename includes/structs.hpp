@@ -55,9 +55,19 @@ enum m_type
 	_UNKNOW
 };
 
+enum m_dataType
+{
+	_UPLOAD,
+	_LOGIN,
+	_CGI,
+	_STANDARD,
+	_COOKIES
+};
+
 struct HttpRequest
 {
-	m_type method;
+	m_type 						method;
+	m_dataType					type;
 	std::string					hostPort;
 	std::string					servName;
 	std::string					path; // route

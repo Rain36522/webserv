@@ -64,6 +64,42 @@ static m_type	setMethod(std::string httpRequest)
 		return (_UNKNOW);
 }
 
+static void	getLogin(HttpRequest &request)
+{
+	size_t	i;
+	size_t	j;
+
+	if ((i = request.body.find("name=\"username\"")) == std::string::npos)
+	{
+		request.errorCode = 500;
+		return;
+	}
+	i += 19;
+	if ((j = request.body.find("\n")) == std::string::npos)
+	{
+		request.errorCode = 500;
+		return;
+	}
+	request.parameters.push_back(request.body.substr(i, j - i));
+	if ((i = request.body.find("name=\"pwd\"")) == std::string::npos)
+	{
+		request.errorCode = 500;
+		return;
+	}
+	i += 14;
+	if ((j = request.body.find("\n")) == std::string::npos)
+	{
+		request.errorCode = 500;
+		return;
+	}
+	request.type = _LOGIN;
+	request.parameters.push_back(request.body.substr(i, j - i));
+	DEBUG
+	std::cout << YELLOW << "username : " <<request.parameters[0] << std::endl;
+	std::cout  << "password : " << request.parameters[1] << RESET << std::endl;
+	DEBUG
+}
+
 static void	setPath(std::string httpRequest, HttpRequest &request)
 {
 	size_t			i;
@@ -108,24 +144,26 @@ int	getRequestLength(std::string str)
 
 static void	printHttpRequest(HttpRequest request)
 {
-	std::cout << "\033[35m\n";
+	// std::cout << YELLOW;
 	// std::cout << "method    : " << request.method << "|" <<std::endl;
-	// std::cout << "path      : " << request.path << "|"  << std::endl;
+	// // std::cout << "path      : " << request.path << "|"  << std::endl;
 	// std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
 	// std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
 	// std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
 	// std::cout << "body      : " << request.body << "|"  << std::endl;
 
-	std::cout << "path      : " << request.path << "|\n";
-	std::cout << "filename  : " << request.fileName << "|\n";
-	std::cout << "extension : " << request.extension << "|\n";
-	std::cout << "\033[39m\n";
+	// std::cout << "path      : " << request.path << "|\n";
+	// std::cout << "filename  : " << request.fileName << "|\n";
+	// std::cout << "extension : " << request.extension << "|\n";
+	// std::cout << RESET;
+	(void) request;
 }
 
 HttpRequest	requestToStruct(int fd)
 {
 	HttpRequest	request;
 
+	request.type = _STANDARD;
 	receiveHTTPRequest(fd, 0, request);
 	if (request.errorCode == 500)
 		return (request); 
@@ -136,11 +174,10 @@ HttpRequest	requestToStruct(int fd)
 	if (request.method == _POST)
 	{
 		request.requestLength = getRequestLength(request.body);
-		// if (request.length < request.requestLength)
-		// {
-		// 	request = receiveHTTPRequest(fd, request.requestLength, request);
-		// }
-		// request = requestToFile(request);
+		if (request.body.find("Content-Disposition: form-data; name=\"username\""))
+			getLogin(request);
+		else
+			request.type = _UPLOAD;
 	}
 	request.hostPort = setHostPort(request.body);
 	setPath(request.body, request);

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<style>
+			body{
+				background-color: #252525;
+				color: #AAAAAA;
+				font-size: 18px;
+				text-align: center;
+			}
+			.login_div{
+				border-style: double;
+				margin-right: 100px;
+				margin-left: 100px;
+				background-color: #858585;
+				color: #252525;
+				top: 50%;
+				-ms-transform: translateY(+100%);
+				transform: translateY(+100%);
+				border-width: 8px;
+			}
+			input::text-button{
+			  padding: 4px 2px;
+			  text-align: center;
+			  margin: auto;
+			  font-size: 20px;
+			  cursor: grab;
+			  border-radius: 15px;
+			  background-color: rgb(152, 152, 158);
+			  box-shadow: none;
+			}
+
+		</style>
+		<br><br><p><h2>Login page</h2></p>
+		<div class="login_div">
+			<form action="" method="post" enctype="multipart/form-data">
+				<br><br>
+				<label for="username"> <b>Username :</b></label>
+				<input type="text" id="username" name="username" required><br><br>
+				<label for="pwd"> <b>Password :</b></label>
+				<input type="password" id="pwd" name="pwd" required><br><br>
+				<input type="submit" value="login">
+			</form>
+			<br><br>
+		</div>
+	</body>
+</html>

@@ -35,14 +35,32 @@ static HttpRequest	pathFilename(HttpRequest request, size_t istart)
 	k = request.path.find("?", istart);
 	if (k == std::string::npos)
 		k = request.path.length();
+	else
+		request.type = _CGI;
 	j = istart;
 	while (request.path.find(".", j + 1) != std::string::npos && request.path.find(".", j + 1) <= k)
 		j = request.path.find(".", j + 1);
 	if (j == istart || j == std::string::npos || j >= k)
 		return (request);
+	std::cout << MAGENTA << request.path << " " << request.method << RESET << std::endl;
 	request.extension = request.path.substr(j, k - j);
 	request.fileName = request.path.substr(istart, k - istart);
 	return (request);	
+}
+
+static HttpRequest	delFilename(HttpRequest request)
+{
+	size_t	i;
+
+	if ((i = request.body.find("delete_file:")) == std::string::npos)
+	{
+		std::cerr << ORANGE << "Delete methode without filename\n" << RESET;
+		request.errorCode = 500;
+		return request;
+	}
+	i += 12;
+	request.fileName = request.body.substr(i, request.body.size() - i);
+	return request;
 }
 
 void 	pathToData(HttpRequest &request)
@@ -57,7 +75,10 @@ void 	pathToData(HttpRequest &request)
 	if ((i == 0 && request.path.find("/", i) == std::string::npos) || i + 1 == request.path.length())
 		return ;
 	i ++;
-	request = pathFilename(request, i);
+	if (request.method != _DEL)
+		request = pathFilename(request, i);
+	else
+		request = delFilename(request);
 	j = request.path.find("?", i);
 	if (j != std::string::npos && request.fileName != "")
 		request = setParameters(request, j + 1);
