@@ -15,21 +15,15 @@
 static HttpRequest	setParameters(HttpRequest request, size_t start)
 {
 	size_t	i;
-	std::cout << "\033[35m\n";
 	i = start;
 	while (request.path.find("&", start) != std::string::npos)
 	{
 		i = request.path.find("&", start);
 		request.parameters.push_back(request.path.substr(start, i - start));
-		std::cout << "parametres : " << request.path.substr(start, i - start) << "|\n";
 		start = i + 1;
 	}
 	if (start != request.path.length())
-	{
 		request.parameters.push_back(request.path.substr(start, i - start - 1));
-		std::cout << "parametres = " << request.path.substr(start, i - start - 1) << "|\n";
-	}
-	std::cout << "\033[39m\n";
 	return (request);
 }
 
@@ -69,6 +63,4 @@ void 	pathToData(HttpRequest &request)
 		request = setParameters(request, j + 1);
 	if (request.fileName != "")
 		request.path = request.path.substr(0, i - 1);
-	std::cout << "word : " << request.fileName << ", origine : " << request.path <<std::endl;
-
 }

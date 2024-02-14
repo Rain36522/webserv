@@ -54,7 +54,7 @@ static std::string	getFileContent(std::string header, std::string body)
 	i = body.find("\r\n\r\n", i);
 	if (i == std::string::npos)
 	{
-		std::cerr << "Wrong end header\n";
+		std::cerr << RED << "Wrong end header\n" << RESET;
 		return ("");
 	}
 	i += 4;
@@ -73,13 +73,12 @@ static std::string	getFileContent(std::string header, std::string body)
 bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
-	std::cout << "File " << filename << std::endl;
 	validateFd(filename, EVFILT_WRITE);
 
 	outfile.open(filename, std::ios::binary);
 	if (outfile.fail())
 	{
-		std::cerr << "Opening fail error\n";
+		std::cerr << ORANGE << "Opening fail error\n" << RESET;
 		return (false);
 	}
 	outfile << content;
@@ -100,12 +99,12 @@ void	requestToFile(HttpRequest &request, std::string uploadPath)
 	if (header != "" || FileName != "")
 		FileContent = getFileContent(header, request.body);
 	else
-		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
+		std::cerr << RED << "Header or filename invalide\n" << RESET;
 	if (FileContent == "")
-		std::cerr << "\033[94mPost methode with invalide file content\033[39m" << std::endl;
+		std::cerr << RED << "Post methode with invalide file content" << RESET << std::endl;
 	else
 	{
-		std::cout << "\033[94mDownload image on : " << uploadPath + "/"+ FileName << "\033[39m\n";
+		std::cout << GREEN << "Download image on : " << uploadPath + "/"+ FileName << std::endl << RESET;
 		if (putInBinary(uploadPath + "/" + FileName, FileContent))
 			request.PostFile = true;
 	}

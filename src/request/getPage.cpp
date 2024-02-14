@@ -62,31 +62,6 @@ std::string	getErrorHtml(std::string File, int errorCode)
 	return (Html);
 }
 
-std::string	getHtmlPage(std::string path)
-{
-	std::ifstream	HtmlFile;
-	std::string		tmp;
-	std::string		Html;
-
-	if (!validateFd(path, EVFILT_READ))
-	{
-		perror("Failed to read html page2\n");
-		return "";
-	}
-	HtmlFile.open(path);
-	
-	if (HtmlFile.fail())
-	{
-		perror("Failed to read html page3\n");
-		return "";	
-	}
-	while (getline(HtmlFile, tmp))
-		Html += tmp;
-	HtmlFile.close();
-	return (Html);
-}
-
-
 int	getHtml(std::string path, std::string &html)
 {
 	std::ifstream	HtmlFile;

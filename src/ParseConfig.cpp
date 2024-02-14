@@ -19,7 +19,7 @@ void ParseConfig::validServer(Server server)
 	if (server._name.empty() || server._host.empty() || server._defaultError.empty()
 		|| server._port == -1 || server._bodyLimit == -1)
 	{
-		std::cout << "Error: Invalid server" << std::endl;
+		std::cout << ORANGE << "Error: Invalid server" << RESET << std::endl;
 		exit(1);
 	}
 }
@@ -52,12 +52,12 @@ void setIfNot(std::string val, std::string &ref, bool allowEmpty)
 {
 	if (!allowEmpty && val.empty())
 	{
-		std::cout << "error: value can not be empty" << std::endl;
+		std::cout << ORANGE << "error: value can not be empty" << std::endl << RESET;
 		exit(1);
 	}
 	if (!ref.empty())
 	{
-		std::cout << "error: duplicate key" << std::endl;
+		std::cout << ORANGE << "error: duplicate key" << std::endl << RESET;
 		exit(1);
 	}
 	ref = val;
@@ -67,7 +67,7 @@ void setIfNot(int val,int &ref)
 {
 	if (ref != -1)
 	{
-		std::cout << "error: duplicate key" << std::endl;
+		std::cout << ORANGE << "error: duplicate key" << std::endl << RESET;
 		exit(1);
 	}
 	ref = val;
@@ -99,7 +99,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._listDir)
 		{
-			std::cout << "Error: duplicate key" << std::endl;
+			std::cout << ORANGE << "Error: duplicate key" << std::endl << RESET;
 			exit(1);
 		}
 		if (value == "true")
@@ -111,7 +111,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._allowUpload)
 		{
-			std::cout << "Error: duplicate key" << std::endl;
+			std::cout << ORANGE << "Error: duplicate key" << std::endl << RESET;
 			exit(1);
 		}
 		if (value == "true")
@@ -123,7 +123,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	{
 		if (route._methods.size() > 0)
 		{
-			std::cout << "Error: duplicate method" << std::endl;
+			std::cout << ORANGE << "Error: duplicate method" << std::endl << RESET;
 		}
 		if (line.find("GET") != std::string::npos)
 			route._methods.insert(_GET);
@@ -142,7 +142,7 @@ void ParseConfig::setRoute(std::string key, std::string value, std::string line,
 	}
 	else
 	{
-		std::cout << "Error: Unknown key " << key << std::endl;
+		std::cout << ORANGE << "Error: Unknown key " << key << std::endl << RESET;
 		exit(1);
 	}
 }
@@ -158,7 +158,7 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 	else if (key == "port:" || key == "bodyLimit:")
 	{
 		if (!isNum(value)){
-			std::cout << "Error: expected number for " << key << std::endl;
+			std::cout << ORANGE << "Error: expected number for " << key << std::endl << RESET;
 			exit(1);
 		}
 		if (key == "port:")
@@ -169,22 +169,22 @@ void ParseConfig::setServer(std::string key, std::string value, Server &server)
 	else if (isNum(key.substr(0, key.length() - 1)))
 	{
 		if (key.size() > 4){
-			std::cout << "Error: Invalid html error code " << key << std::endl;
+			std::cout << ORANGE << "Error: Invalid html error code " << key << std::endl << RESET;
 			exit(1);
 		}
 		if (value.empty()){
-			std::cout << "Error: No html page given for code " << key << std::endl;
+			std::cout << ORANGE << "Error: No html page given for code " << key << std::endl << RESET;
 			exit(1);
 		}
 		if (!server._errPages.insert(std::pair<int, std::string>(std::stoi(key), value)).second)
 		{
-			std::cout << "Error: Duplicate error code" << std::endl;
+			std::cout << ORANGE << "Error: Duplicate error code" << std::endl << RESET;
 			exit(1);
 		}
 	}
 	else
 	{
-		std::cout << "Error: Unknown key " << key << std::endl;
+		std::cout << ORANGE << "Error: Unknown key " << key << std::endl << RESET;
 		exit(1);
 	}
 }
@@ -208,7 +208,7 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 			{
 				if (servers[i]._routes[j]._path == servers[i]._routes[k]._path)
 				{
-					std::cout << "Error: Duplicate path" << std::endl;
+					std::cout << ORANGE << "Error: Duplicate path" << std::endl << RESET;
 					exit(1);
 				}
 			}
@@ -222,7 +222,7 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 	std::string line;
 	if (infile.fail())
 	{
-		std::cout << "error: Unable to open config file" << std::endl;
+		std::cout << ORANGE << "Error: Unable to open config file" << std::endl << RESET;
 		exit(1);
 	}
 
@@ -240,7 +240,7 @@ std::vector<Server> ParseConfig::generate_servers(std::string file)
 			continue;
 		if (state == OUT && key != "server:")
 		{
-			std::cout << "error: key not assigned to server" << std::endl;
+			std::cout << ORANGE << "Error: key not assigned to server" << std::endl << RESET;
 			exit(1);
 		}
 		setState(key, state, curS, curR, servers);

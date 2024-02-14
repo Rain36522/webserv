@@ -27,7 +27,6 @@ void receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest &request)
 		request.length += bytesRead;
 		if (bytesRead <= 0)
 		{
-			std::cerr << "Recieving http request\n";
 			request.errorCode = 500;
 			return ;
 		}
@@ -93,10 +92,8 @@ int	getRequestLength(std::string str)
 	size_t			j;
 	std::string	value;
 
-	std::cout << "str : " << str << std::endl;
 
 	i = str.find("Content-Length: ");
-	std::cout << "i : " << i << std::endl;
 	if (i == std::string::npos)
 		return (-1);
 	i += 16;

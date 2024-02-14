@@ -73,7 +73,7 @@ int	Route::doListDir(std::string &html) const
 	dir = opendir(_dir.c_str());
 	if (dir == nullptr)
 	{
-		std::cerr << "Could not acces path for list dire\n";
+		std::cerr << RED << "Could not access path for list directory\n" << RESET;
 		return (500);
 	}
 	html = "";
@@ -110,7 +110,7 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	DEBUG
 	int	fd[2];
 	int	exev;
-	std::string value = PATH_INFO + "/" + request.fileName;
+	std::string value = std::string(PATH_INFO) + "/" + request.fileName;
 	char	py[] = "/usr/bin/python3";
 	
 	char	*a[3] = {py, (char *)value.c_str(), NULL};
@@ -131,10 +131,7 @@ int Route::runCGI(HttpRequest request, std::string &html)
 		for (size_t i = 0; env[i]; i++)
 			params.push_back(env[i]);
 		for(size_t i = 0; i < request.parameters.size(); i ++)
-		{
-			std::cout << i << " " << request.parameters[i] << std::endl;
 			params.push_back(request.parameters[i].c_str());
-		}
 		params.push_back(("uploadFolder=" + _uploadPath).c_str());
 		params.push_back(NULL);
 		dup2(fd[1], 1);
@@ -195,7 +192,7 @@ int	Route::addListBox(std::string &html)
 	html.erase(i, 13);
 	if (dir == nullptr)
 	{
-		std::cerr << "Could not acces to upload path\n";
+		std::cerr << RED << "Could not acces to upload path\n" << RESET;
 		return (500);
 	}
 	file = false;

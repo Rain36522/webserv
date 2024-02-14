@@ -71,7 +71,7 @@ int WebServer::getServerSocket(Server s) {
 		perror("Error listening on socket");
 		exit(EXIT_FAILURE);
 	}
-	std::cout << "listening on port: " << s.get_port() << std::endl;
+	std::cout << GREEN << "listening on port: " << s.get_port() << std::endl << RESET;
 	return sockfd;
 }
 
@@ -104,7 +104,7 @@ void WebServer::run(void)
 				if (_servers.find(request.hostPort) != _servers.end())
 					_servers[request.hostPort].makeRequest(request);
 				else
-					std::cout << "request to " << request.hostPort << "did not match server" << std::endl;
+					std::cout << ORANGE << "request to " << request.hostPort << "did not match server" << std::endl << RESET;
 			}
 		}
 	}
