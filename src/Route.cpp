@@ -27,6 +27,8 @@ int Route::execute(HttpRequest request)
 {
 	int code = 404;
 	std::string html;
+	std::cout << CYAN << request.path << " ROUTED TO PATH: " << _path << RESET << "\n";
+	request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size());
 	if (_methods.find(request.method) == _methods.end())
 		code = 405;
 	else if (request.method == _GET)
@@ -168,11 +170,11 @@ int	Route::uploadClientFile(HttpRequest request, std::string &html)
 	(void)  html;
 	if (request.length < request.requestLength)
 	{
-		request = receiveHTTPRequest(request.clientFd, request.requestLength, request);
+		receiveHTTPRequest(request.clientFd, request.requestLength, request);
 	}
 	if (request.errorCode == 500)
 		return (request.errorCode);
-	request = requestToFile(request, _uploadPath);
+	requestToFile(request, _uploadPath);
 	if (!request.PostFile)
 	{
 		html = getErrorHtml("./Html_code/400.html", 413);

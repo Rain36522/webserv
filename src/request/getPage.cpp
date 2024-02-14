@@ -48,7 +48,8 @@ std::string	getErrorHtml(std::string File, int errorCode)
 	
 	if (HtmlFile.fail())
 	{
-		perror("Failed to read html page1\n");
+		std::string err = "Failed to read html page (1) " + File;
+		perror(err.c_str());
 		return "";	
 	}
 	while (getline(HtmlFile, tmp))

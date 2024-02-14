@@ -18,12 +18,14 @@
 # - Path
 # defaultError: ./Html_code/418.html
 
+# redir path cannot be empty unlike path. Use a slash to denote an empty path
+
 server: 
   name: 3
   port: 8080
   host: 127.0.0.1
   bodyLimit: 256
-  defaultError: ./Html_code/401.html
+  defaultError: ./Html_code/400.html
   route:
     path:
     dir: ./Html_code
@@ -42,6 +44,7 @@ server:
   route:
     path: asdf/haha
     dir: ./Html_code
+    default: cgi.html
     methods:    GET  DELETE POST
     listDir: true
     allowUpload: true

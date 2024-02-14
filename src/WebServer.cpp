@@ -104,7 +104,7 @@ void WebServer::run(void)
 				if (_servers.find(request.hostPort) != _servers.end())
 					_servers[request.hostPort].makeRequest(request);
 				else
-					std::cout << "request did not match server" << std::endl;
+					std::cout << "request to " << request.hostPort << "did not match server" << std::endl;
 			}
 		}
 	}

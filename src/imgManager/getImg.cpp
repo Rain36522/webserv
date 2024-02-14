@@ -87,7 +87,7 @@ bool	putInBinary(std::string filename, std::string content)
 	return (true);
 }
 
-HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath)
+void	requestToFile(HttpRequest &request, std::string uploadPath)
 {
 	std::string	header;
 	std::string	FileContent;
@@ -97,7 +97,7 @@ HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath)
 	request.PostFile = false;
 	header = getHeader(request.body);
 	FileName = getFileName(request.body);
-		if (header != "" || FileName != "")
+	if (header != "" || FileName != "")
 		FileContent = getFileContent(header, request.body);
 	else
 		std::cerr << "\033[94mHeader or filename invalide\033[39m\n";
@@ -109,5 +109,4 @@ HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath)
 		if (putInBinary(uploadPath + "/" + FileName, FileContent))
 			request.PostFile = true;
 	}
-	return (request);
 }

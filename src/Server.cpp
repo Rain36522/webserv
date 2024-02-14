@@ -43,7 +43,6 @@ bool	Server::makeRequest(HttpRequest request)
 		{
 			bestRoute = *i;
 			maxMatch = curMatch;
-			break;
 		}
 	}
 	if (maxMatch != -1)
@@ -64,7 +63,7 @@ void	Server::handleError(int code, int fd)
 		html = getErrorHtml(_defaultError, code);
 	if (html == "")
 	{
-		html = "Error 500 : No file found for error :" + std::to_string(code);
+		html = "Error 500 : No file found for error: " + std::to_string(code);
 		code = 500;
 	}
 	sendHTMLResponse(fd, html, code, _name);

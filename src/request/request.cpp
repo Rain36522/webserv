@@ -13,7 +13,7 @@
 #include "../../includes/data.hpp"
 
 // Fonction pour recevoir une requête HTTP du client
-HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request) 
+void receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest &request) 
 {
 	const int 		bufferSize = 1024;
 	char 			buffer[bufferSize];
@@ -29,14 +29,13 @@ HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest req
 		{
 			std::cerr << "Recieving http request\n";
 			request.errorCode = 500;
-			return request;
+			return ;
 		}
 		buf2 = std::string(buffer, bytesRead);
 		request.body += buf2;
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	return request;
 }
 
 static std::string	setHostPort(std::string httpRequest)
@@ -66,7 +65,7 @@ static m_type	setMethod(std::string httpRequest)
 		return (_UNKNOW);
 }
 
-static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
+static void	setPath(std::string httpRequest, HttpRequest &request)
 {
 	size_t			i;
 	size_t			j;
@@ -76,18 +75,16 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 	Ref = "/";
 	i = httpRequest.find(Ref);
 	if (i == std::string::npos)
-		return (request);
+		return ;
 	i += Ref.size();
 	j = httpRequest.find(" ", i);
 	if (j == std::string::npos || j <= i + 1)
-		return (request);
+		return ;
 	request.emptyPath = false;
-	std::cout << GREEN << "j : " << httpRequest[j - 1] << RESET << std::endl;
 	if (httpRequest[j - 1] == '/')
 		j --;
 	request.path = httpRequest.substr(i, j - i);
 	request.htmlFile = (request.fileName.find(".html") != std::string::npos);
-	return (request);
 }
 
 int	getRequestLength(std::string str)
@@ -132,7 +129,7 @@ HttpRequest	requestToStruct(int fd)
 {
 	HttpRequest	request;
 
-	request = receiveHTTPRequest(fd, 0, request);
+	receiveHTTPRequest(fd, 0, request);
 	if (request.errorCode == 500)
 		return (request); 
 	request.requestLength = request.body.length();
@@ -149,10 +146,10 @@ HttpRequest	requestToStruct(int fd)
 		// request = requestToFile(request);
 	}
 	request.hostPort = setHostPort(request.body);
-	request = setPath(request.body, request);
+	setPath(request.body, request);
 	if (request.hostPort.find(":") == std::string::npos)
 		request.hostPort += ":80";
-	request = pathToData(request);
+	pathToData(request);
 	printHttpRequest(request);
 	return (request);
 }

@@ -44,9 +44,9 @@ void		sendRedirectResponse(int client_fd, const std::string& redirectLocation);
 void		erraseHtmlVar(std::string &html);
 
 // Read new request;
-HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request);
+void receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest &request);
 HttpRequest	requestToStruct(int fd);
-HttpRequest 	pathToData(HttpRequest request);
+void 	pathToData(HttpRequest &request);
 
 // Download image
-HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath);
+void	requestToFile(HttpRequest &request, std::string uploadPath);

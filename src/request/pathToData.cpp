@@ -51,7 +51,7 @@ static HttpRequest	pathFilename(HttpRequest request, size_t istart)
 	return (request);	
 }
 
-HttpRequest 	pathToData(HttpRequest request)
+void 	pathToData(HttpRequest &request)
 {
 	size_t	i;
 	size_t	j;
@@ -61,7 +61,7 @@ HttpRequest 	pathToData(HttpRequest request)
 	while (request.path.find("/", i + 1) != std::string::npos)
 		i = request.path.find("/", i + 1);
 	if ((i == 0 && request.path.find("/", i) == std::string::npos) || i + 1 == request.path.length())
-		return (request);
+		return ;
 	i ++;
 	request = pathFilename(request, i);
 	j = request.path.find("?", i);
@@ -70,5 +70,5 @@ HttpRequest 	pathToData(HttpRequest request)
 	if (request.fileName != "")
 		request.path = request.path.substr(0, i - 1);
 	std::cout << "word : " << request.fileName << ", origine : " << request.path <<std::endl;
-	return (request);
+
 }
