@@ -28,7 +28,9 @@ int Route::execute(HttpRequest request)
 	int code = 404;
 	std::string html;
 	std::cout << CYAN << request.path << " ROUTED TO PATH: " << _path << RESET << "\n";
-	request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size());
+	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
+	request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size()) + "/" + request.fileName;
+	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
 	if (_methods.find(request.method) == _methods.end())
 		code = 405;
 	else if (request.method == _GET)
@@ -87,9 +89,7 @@ int	Route::doListDir(std::string &html) const
 int Route::getMethod(HttpRequest request, std::string &html)
 {
 	if (!_redirPath.empty())
-	{
 		return 302;
-	}
 	if (request.fileName.empty())
 	{
 		if (!_default.empty())
