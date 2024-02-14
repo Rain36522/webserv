@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 16:38:26 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:56:33 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,29 +65,6 @@ static m_type	setMethod(std::string httpRequest)
 		return (_UNKNOW);
 }
 
-/* Old:
-static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
-{
-	int			i;
-	int			j;
-	std::string	Ref;
-
-	request.emptyPath = true;
-	Ref = "Referer: http://" + request.HostPort + "/";
-	i = httpRequest.find(Ref);
-	if (i == std::string::npos)
-		return (request);
-	i += Ref.size();
-	j = httpRequest.find("\n", i);
-	if (j == std::string::npos || j <= i + 1)
-		return (request);
-	request.emptyPath = false;
-	request.path = httpRequest.substr(i, j - i - 1);
-	return (request);
-
-}
-*/
-
 static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 {
 	size_t			i;
@@ -108,11 +85,8 @@ static HttpRequest	setPath(std::string httpRequest, HttpRequest request)
 	if (httpRequest[j - 1] == '/')
 		j --;
 	request.path = httpRequest.substr(i, j - i);
-	request.htmlFile = false;
-	if (request.fileName.find(".html") != std::string::npos)
-		request.htmlFile = true;
+	request.htmlFile = (request.fileName.find(".html") != std::string::npos);
 	return (request);
-
 }
 
 int	getRequestLength(std::string str)

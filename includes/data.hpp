@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 17:06:01 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:52:18 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,6 @@ void		erraseHtmlVar(std::string &html);
 HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest request);
 HttpRequest	requestToStruct(int fd);
 HttpRequest 	pathToData(HttpRequest request);
-
-// Download gpt, useless?
-void processFileUpload(const std::string& httpRequest);
-int	put_in_file(std::string filename, std::string content, int length);
 
 // Download image
 HttpRequest	requestToFile(HttpRequest &request, std::string uploadPath);

@@ -5,7 +5,7 @@ NAME = webserv
 CC = c++
 
 MAIN = src/main.cpp
-GETIMG = getImg.cpp downloadGPT.cpp put_in_file.cpp
+GETIMG = getImg.cpp put_in_file.cpp
 REQUEST = getPage.cpp request.cpp pathToData.cpp
 SRC1 = Route.cpp Server.cpp WebServer.cpp ParseConfig.cpp
 

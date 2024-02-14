@@ -40,6 +40,14 @@ server:
     uploadPath: ./upload
     CGIs: .py .out
   route:
+    path: asdf/haha
+    dir: ./Html_code
+    methods:    GET  DELETE POST
+    listDir: true
+    allowUpload: true
+    uploadPath: ./upload
+    CGIs: .py .out
+  route:
     path: hello
     dir: ./Html_code/
     default: delete.html
@@ -96,3 +104,14 @@ server:
     methods:    GET  DELETE POST
     listDir: false
     allowUpload: false
+
+  server:
+    name: 4
+    port: 80
+    host: example.com
+    bodyLimit: 256
+    defaultError: ./Html_code/418.html
+    route:
+      path:
+      dir: ./Html_code/
+      default: 418.html
