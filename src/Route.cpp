@@ -110,19 +110,19 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	DEBUG
 	int	fd[2];
 	int	exev;
-	std::string value = _dir + "/" + request.fileName;
+	std::string value = PATH_INFO + "/" + request.fileName;
 	char	py[] = "/usr/bin/python3";
 	
 	char	*a[3] = {py, (char *)value.c_str(), NULL};
 	if (pipe(fd) == -1)
 	{
-		std::cerr << "Pipe Error\n";
+		std::cerr << RED << "Pipe Error\n" << RESET;
 		return 500;
 	}
 	pid_t pid = fork();
 	if (pid == -1)
 	{
-		std::cerr << "Error Fork\n";
+		std::cerr << RED << "Error Fork\n" << RESET;
 		return 500;
 	}
 	else if (!pid)
@@ -144,16 +144,14 @@ int Route::runCGI(HttpRequest request, std::string &html)
 			execve(py, a, (char **)&params[0]);
 		 if (request.extension == ".out")
 			execve((char *)value.c_str(), 0, (char **)&params[0]);
-		std::cerr << "Error executing CGI : " << request.fileName << std::endl;
+		std::cerr << RED << "Error executing CGI : " << request.fileName << std::endl << RESET;
 		exit(1);
 	}
 	else
 	{
 		close(fd[1]);
 		waitpid(pid, &exev, 0);
-		std::cout << CYAN << "Wexit status : " << std::to_string(WEXITSTATUS(exev)) << RESET << std::endl;
 		exev = getHtmlFd(fd[0], html);
-		std::cout << exev << std::endl;
 		if (WEXITSTATUS(exev))
 		{
 			close(fd[0]);

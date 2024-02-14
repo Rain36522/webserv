@@ -142,6 +142,8 @@ static std::string	getCodeText(int code)
 		return ("418 I'm a tea pot");
 	case 500:
 		return ("400 Internal server error");
+	case 302:
+		return ("302 Found");
 	default:
 		return ("200 Ok");
 	}

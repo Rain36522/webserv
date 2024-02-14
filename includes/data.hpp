@@ -24,6 +24,9 @@
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
+
+#define PATH_INFO "./CGI"
+
 #define RESET   "\033[0m"
 #define RED     "\033[31m"      
 #define GREEN   "\033[32m"      
