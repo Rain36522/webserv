@@ -75,7 +75,7 @@ static void	getLogin(HttpRequest &request)
 		return;
 	}
 	i += 19;
-	if ((j = request.body.find("\n")) == std::string::npos)
+	if ((j = request.body.find("\r\n", i)) == std::string::npos)
 	{
 		request.errorCode = 500;
 		return;
@@ -87,17 +87,13 @@ static void	getLogin(HttpRequest &request)
 		return;
 	}
 	i += 14;
-	if ((j = request.body.find("\n")) == std::string::npos)
+	if ((j = request.body.find("\r\n", i)) == std::string::npos)
 	{
 		request.errorCode = 500;
 		return;
 	}
 	request.type = _LOGIN;
 	request.parameters.push_back(request.body.substr(i, j - i));
-	DEBUG
-	std::cout << YELLOW << "username : " <<request.parameters[0] << std::endl;
-	std::cout  << "password : " << request.parameters[1] << RESET << std::endl;
-	DEBUG
 }
 
 static void	setPath(std::string httpRequest, HttpRequest &request)

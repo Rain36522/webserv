@@ -43,7 +43,7 @@ std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name);
-void		sendRedirectResponse(int client_fd, const std::string& redirectLocation);
+void 		sendRedirectResponse(int client_fd, const std::string& redirectLocation, std::string server_name);
 void		erraseHtmlVar(std::string &html); // Not USED ONE TO DELETE? TODO
 
 // Read new request;

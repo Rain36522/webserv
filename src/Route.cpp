@@ -43,7 +43,7 @@ int Route::execute(HttpRequest request)
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
 		code = addListBox(html);
 	if (code == 302)
-		sendRedirectResponse(request.clientFd, _redirPath);
+		sendRedirectResponse(request.clientFd, _redirPath, request.servName);
 	else if (code < 400)
 		sendHTMLResponse(request.clientFd, html, code, request.servName);
 	return code;
