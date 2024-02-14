@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/13 18:24:36 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:46:05 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,20 @@ Route::Route(){
 	_listDir = false;
 }
 
-Route::Route(std::string const path, m_type type, std::string default_page)
+int	Route::match(HttpRequest req)
 {
-	_path = path;
-	_methods.insert(type);
-	_default = default_page;
-	(void)_listDir, (void)_allowUpload;
-}
-
-
-bool Route::match(HttpRequest req)
-{
-	return req.path == _path && _methods.find(req.method) != _methods.end();
+	if (req.path.find(_path) == 0 && (req.path.size() == _path.size() || req.path[_path.size()] == '/'))
+		return (int)_path.size();
+	return -1;
 }
 
 int Route::execute(HttpRequest request)
 {
 	int code = 404;
 	std::string html;
-	if (request.method == _GET)
+	if (_methods.find(request.method) == _methods.end())
+		code = 405;
+	else if (request.method == _GET)
 		code = getMethod(request, html);
 	else if (request.method == _POST)
 		code = postMethod(request, html);

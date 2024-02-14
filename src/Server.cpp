@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/13 16:41:54 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/14 10:35:17 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,22 @@ bool	Server::makeRequest(HttpRequest request)
 {
 	int code = 404;
 	std::vector<Route>::iterator i;
+	Route bestRoute;
+	int	maxMatch = -1;
+
 	for (i = _routes.begin(); i != _routes.end(); i++)
 	{
-		if ((*i).match(request))
+		int curMatch = (*i).match(request);
+		if (curMatch > maxMatch)
 		{
-			code = (*i).execute(request);
+			bestRoute = *i;
+			maxMatch = curMatch;
 			break;
 		}
 	}
-	if (code != 200)
+	if (maxMatch != -1)
+		code = bestRoute.execute(request);
+	if (code >= 400)
 		handleError(code, request.clientFd);
 	return true;
 }
