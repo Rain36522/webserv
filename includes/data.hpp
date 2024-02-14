@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:52:18 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 11:00:40 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string	getHtmlPage(std::string path);
 std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
-void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code);
+void sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name);
 void		sendRedirectResponse(int client_fd, const std::string& redirectLocation);
 void		erraseHtmlVar(std::string &html);
 

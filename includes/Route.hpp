@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/14 10:46:09 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:04 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Route
 		bool						_allowUpload;
 		std::string					_uploadPath;
 		std::vector<std::string>	_CGIs;
+		std::string					_server_name; // Contain server name for send in request.
 		
 	public:
 		Route();

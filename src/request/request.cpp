@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:56:33 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 11:00:44 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ HttpRequest receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest req
 	{
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
 		request.length += bytesRead;
-		if (bytesRead == -1) {
-			perror("Error receiving HTTP request");
-			// Gérer l'erreur appropriée, fermer la connexion, etc.
+		if (bytesRead <= 0)
+		{
+			std::cerr << "Recieving http request\n";
+			request.errorCode = 500;
 			return request;
 		}
 		buf2 = std::string(buffer, bytesRead);
@@ -132,6 +133,8 @@ HttpRequest	requestToStruct(int fd)
 	HttpRequest	request;
 
 	request = receiveHTTPRequest(fd, 0, request);
+	if (request.errorCode == 500)
+		return (request); 
 	request.requestLength = request.body.length();
 	request.length = request.requestLength;
 	request.clientFd = fd;

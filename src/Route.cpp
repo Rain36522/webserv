@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/14 10:46:05 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:12 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int Route::execute(HttpRequest request)
 	if (code == 302)
 		sendRedirectResponse(request.clientFd, _redirPath);
 	else if (code < 400)
-		sendHTMLResponse(request.clientFd, html, code);
+		sendHTMLResponse(request.clientFd, html, code, request.servName);
 	return code;
 }
 
@@ -170,6 +170,8 @@ int	Route::uploadClientFile(HttpRequest request, std::string &html)
 	{
 		request = receiveHTTPRequest(request.clientFd, request.requestLength, request);
 	}
+	if (request.errorCode == 500)
+		return (request.errorCode);
 	request = requestToFile(request, _uploadPath);
 	if (!request.PostFile)
 	{

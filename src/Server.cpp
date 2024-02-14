@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:35:17 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/14 10:58:22 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ Server::Server(ServConf Conf)
 bool	Server::makeRequest(HttpRequest request)
 {
 	int code = 404;
+	request.servName = _name;
 	std::vector<Route>::iterator i;
 	Route bestRoute;
 	int	maxMatch = -1;
@@ -62,8 +63,11 @@ void	Server::handleError(int code, int fd)
 	else
 		html = getErrorHtml(_defaultError, code);
 	if (html == "")
+	{
 		html = "Error 500 : No file found for error :" + std::to_string(code);
-	sendHTMLResponse(fd, html, code);
+		code = 500;
+	}
+	sendHTMLResponse(fd, html, code, _name);
 }
 
 Route *Server::matchRoute(const HttpRequest & req)
