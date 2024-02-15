@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 11:00:44 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:22:41 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,14 @@ void receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest &request)
 	std::string		buf2;
 
 	bytesRead = bufferSize - 1;
+	request.errorCode = 200;
 	while (bytesRead == bufferSize - 1 || request.length < RequestLength)
 	{
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
 		request.length += bytesRead;
-		if (bytesRead <= 0)
+		if (bytesRead < 0)
 		{
+			DEBUG
 			request.errorCode = 500;
 			return ;
 		}
@@ -140,19 +142,19 @@ int	getRequestLength(std::string str)
 
 static void	printHttpRequest(HttpRequest request)
 {
-	// std::cout << YELLOW;
+	std::cout << YELLOW;
 	// std::cout << "method    : " << request.method << "|" <<std::endl;
 	// // std::cout << "path      : " << request.path << "|"  << std::endl;
-	// std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
+	std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
 	// std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
 	// std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
-	// std::cout << "body      : " << request.body << "|"  << std::endl;
+	std::cout << "body      : " << request.body << "|"  << std::endl;
 
 	// std::cout << "path      : " << request.path << "|\n";
 	// std::cout << "filename  : " << request.fileName << "|\n";
 	// std::cout << "extension : " << request.extension << "|\n";
-	// std::cout << RESET;
-	(void) request;
+	std::cout << RESET;
+	// (void) request;
 }
 
 HttpRequest	requestToStruct(int fd)
@@ -161,6 +163,7 @@ HttpRequest	requestToStruct(int fd)
 
 	request.type = _STANDARD;
 	receiveHTTPRequest(fd, 0, request);
+	std::cout << RED << "Error code : " << request.errorCode << RESET << std::endl;
 	if (request.errorCode == 500)
 		return (request); 
 	request.requestLength = request.body.length();
@@ -181,5 +184,6 @@ HttpRequest	requestToStruct(int fd)
 		request.hostPort += ":80";
 	pathToData(request);
 	printHttpRequest(request);
+	std::cout << YELLOW << "Host port in function : " << request.hostPort << "|\n" << RESET << std::endl;
 	return (request);
 }

@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:54:58 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 09:47:32 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,12 @@ static std::string	getCodeText(int code)
 	{
 	case 400:
 		return ("400 Bad Request");
+	case 401:
+		return ("401 Unauthorized");
 	case 404:
 		return ("404 Not Found");
+	case 405:
+		return ("405 Method Not Allowed");
 	case 413:
 		return ("413 Payload to large");
 	case 418:

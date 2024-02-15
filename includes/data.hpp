@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 11:00:40 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:06:00 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@
 #include <string>
 #include <dirent.h>
 #include <cstdlib>
+#include <cstdio>
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
 
 #define PATH_INFO "./CGI"
 
-#define RESET   "\033[0m"
+#define RESET   __FILE__ << __LINE__ << " \033[0m"
 #define RED     "\033[31m"      
 #define GREEN   "\033[32m"      
 #define YELLOW  "\033[33m"

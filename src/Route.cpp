@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/14 10:58:12 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 10:02:19 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,11 @@ int Route::execute(HttpRequest request)
 
 int Route::delMethod(HttpRequest request)
 {
-	// figure it out
-	(void) request;
-	//std::cout << request.body.find("delete_file:") ;
-	return (404);
+	request.fileName = _uploadPath + request.fileName;
+	if (remove(request.fileName.c_str()))
+		return (401);
+	std::cout << GREEN << "Deleted file : " << request.fileName << RESET << std::endl;
+	return (200);
 }
 
 int Route::postMethod(HttpRequest request, std::string &html)
