@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    cgi.py                                             :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/13 14:46:49 by dvandenb          #+#    #+#              #
-#    Updated: 2024/02/13 14:46:55 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/02/15 15:30:50 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,9 +58,9 @@ def	doCGI():
 		html3 = "</body>\n</html>"
 		tm ="<p>" + tm + "</p>"
 		if (result == 69):
-			result = "<a href=\"https://bit.ly/3UH3TNg\" target=\"_blank\">Secret web page</a>"
+			result = "<a href=\"https://bit.ly/3UH3TNg\" target=\"_blank\"> 69 </a>"
 		elif (result == 42):
-			result = "<a href=\"https://bit.ly/49bGzfa\" target=\"_blank\">Secret web page</a>"
+			result = "<a href=\"https://bit.ly/49bGzfa\" target=\"_blank\"> 42 </a>"
 		value = "<p>" + calcul + str(result) + "</b></p>"
 
 		print(html1 + tm + html2 + value + html3)

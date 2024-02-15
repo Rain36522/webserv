@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 10:22:41 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 12:23:17 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,16 +143,17 @@ int	getRequestLength(std::string str)
 static void	printHttpRequest(HttpRequest request)
 {
 	std::cout << YELLOW;
-	// std::cout << "method    : " << request.method << "|" <<std::endl;
+	std::cout << "method    : " << request.method << "|" <<std::endl;
 	// // std::cout << "path      : " << request.path << "|"  << std::endl;
 	std::cout << "hostport  : " << request.hostPort << "|"  << std::endl;
-	// std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
-	// std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
+	std::cout << "Html?     : " << request.htmlFile << "|"  << std::endl;
+	std::cout << "Nopath    : " << request.emptyPath << "|"  << std::endl;
 	std::cout << "body      : " << request.body << "|"  << std::endl;
 
-	// std::cout << "path      : " << request.path << "|\n";
-	// std::cout << "filename  : " << request.fileName << "|\n";
-	// std::cout << "extension : " << request.extension << "|\n";
+	std::cout << "path      : " << request.path << "|\n";
+	std::cout << "filename  : " << request.fileName << "|\n";
+	std::cout << "extension : " << request.extension << "|\n";
+	std::cout << "Change to file  : " << request.fileToChange << "|\n";
 	std::cout << RESET;
 	// (void) request;
 }

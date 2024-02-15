@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 12:54:08 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/07 12:40:59 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 12:26:42 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ static HttpRequest	pathFilename(HttpRequest request, size_t istart)
 		j = request.path.find(".", j + 1);
 	if (j == istart || j == std::string::npos || j >= k)
 		return (request);
-	std::cout << MAGENTA << request.path << " " << request.method << RESET << std::endl;
 	request.extension = request.path.substr(j, k - j);
 	request.fileName = request.path.substr(istart, k - istart);
 	return (request);	
@@ -59,7 +58,7 @@ static HttpRequest	delFilename(HttpRequest request)
 		return request;
 	}
 	i += 12;
-	request.fileName = request.body.substr(i, request.body.size() - i);
+	request.fileToChange = request.body.substr(i, request.body.size() - i);
 	return request;
 }
 

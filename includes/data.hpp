@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 10:06:00 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 14:42:49 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@
 #include <dirent.h>
 #include <cstdlib>
 #include <cstdio>
+#include <map>
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
 
 #define PATH_INFO "./CGI"
 
-#define RESET   __FILE__ << __LINE__ << " \033[0m"
+#define RESET   " \033[0m"
 #define RED     "\033[31m"      
 #define GREEN   "\033[32m"      
 #define YELLOW  "\033[33m"

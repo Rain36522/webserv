@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 10:13:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 09:47:32 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 10:34:33 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ std::string	getErrorHtml(std::string File, int errorCode)
 	
 	if (HtmlFile.fail())
 	{
-		std::string err = "Failed to read html page (1) " + File;
-		perror(err.c_str());
+		std::cerr << ORANGE << "Failed to read html file : " << File << RESET << std::endl;
 		return "";	
 	}
 	while (getline(HtmlFile, tmp))
@@ -67,9 +66,10 @@ int	getHtml(std::string path, std::string &html)
 	std::ifstream	HtmlFile;
 	std::string		tmp;
 
+	std::cout << RED << "Path : " << path << RESET << std::endl;
 	if (!validateFd(path, EVFILT_READ))
 	{
-		perror("Failed to read html page4\n");
+		std::cerr << ORANGE << "Failed to read html file"<< RESET << std::endl;
 		return 404;
 	}
 	HtmlFile.open(path);

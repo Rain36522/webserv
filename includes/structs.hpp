@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/14 10:58:09 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 15:10:52 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,17 @@ struct HttpRequest
 	m_type 						method;
 	m_dataType					type;
 	std::string					hostPort;
-	std::string					servName;
-	std::string					path; // route
+	std::string					path; // route with filename.
 	std::string					fileName;
-	std::vector<std::string>	parameters;
-	std::string					body;
+	std::vector<std::string>	Query;
+	std::string					body; // look for remove TODO
 	std::string					extension;
+	std::string					bodyFile;
+	std::string					usr;
+	std::string					pwd;
 	int							requestLength; // total request length of download file
 	int							length; // actual request length
-	bool						htmlFile;
-	bool						emptyPath;
-	bool						PostFile;
 	int							clientFd;
-	int							errorCode;
 };
 
 struct HttpResponse

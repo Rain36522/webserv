@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/14 10:58:22 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 12:34:31 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ bool	Server::makeRequest(HttpRequest request)
 {
 	int code = 404;
 	request.servName = _name;
+	std::cout << "RED" << "ACTUAL FILENAME : " << request.fileName << RESET << std::endl;
 	std::vector<Route>::iterator i;
 	Route bestRoute;
 	int	maxMatch = -1;

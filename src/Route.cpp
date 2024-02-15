@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/15 10:02:19 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 13:09:36 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,11 @@ int Route::execute(HttpRequest request)
 	else if (request.method == _GET)
 		code = getMethod(request, html);
 	else if (request.method == _POST)
+	{
+		std::cout << "<================= POST RESULT ======================>\n";
 		code = postMethod(request, html);
+		
+	}
 	else if (request.method == _DEL)
 		code = delMethod(request);
 	if (code == 200 && _methods.find(_DEL) != _methods.end())
@@ -51,8 +55,8 @@ int Route::execute(HttpRequest request)
 
 int Route::delMethod(HttpRequest request)
 {
-	request.fileName = _uploadPath + request.fileName;
-	if (remove(request.fileName.c_str()))
+	request.fileToChange = _uploadPath + request.fileToChange;
+	if (remove(request.fileToChange.c_str()))
 		return (401);
 	std::cout << GREEN << "Deleted file : " << request.fileName << RESET << std::endl;
 	return (200);
@@ -166,18 +170,23 @@ int	Route::uploadClientFile(HttpRequest request, std::string &html)
 {
 	(void)  html;
 	if (request.length < request.requestLength)
-	{
 		receiveHTTPRequest(request.clientFd, request.requestLength, request);
-	}
 	if (request.errorCode == 500)
+	{
+		DEBUG
 		return (request.errorCode);
+	}
+	DEBUG
 	requestToFile(request, _uploadPath);
 	if (!request.PostFile)
 	{
 		html = getErrorHtml("./Html_code/400.html", 413);
 		return (413);
 	}
-	return (getHtml(this->_default, html));
+	if (request.fileName == "")
+		request.fileName = _default;
+	std::cout << RED << "DEFAULT PAGE : " <<this->_dir << request.fileName << RESET << std::endl;
+	return (getHtml(this->_dir + request.fileName, html));
 }
 
 int	Route::addListBox(std::string &html)
