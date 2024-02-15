@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/15 18:51:23 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/15 18:58:57 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int Route::execute(HttpRequest request, Response &response)
 		case _CGI:
 			runCGI(request, response);break;
 		case _UPLOAD:
-			uploadClientFile(request, response._htmlContent);break;
+			uploadClientFile(request, response);break;
 		case _COOKIES: // TODO
 		case _LOGIN: // TODO
 		case _DEL:
@@ -46,7 +46,7 @@ int Route::execute(HttpRequest request, Response &response)
 	}
 }
 
-int Route::delMethod(HttpRequest request, Reponse &response)
+int Route::delMethod(HttpRequest request, Response &response)
 {
 	std::string fileFullPath = _uploadPath + "/" +request.fileToChange;
 	if (remove(fileFullPath.c_str()))
@@ -184,23 +184,23 @@ void Route::runCGI(HttpRequest request, Response &response)
 	response._errorCode = exev;
 }
 
-int	Route::uploadClientFile(HttpRequest request, std::string &html)
+void	Route::uploadClientFile(HttpRequest request, Response &response)
 {
 	(void)  html;
 	if (request.length < request.requestLength)
 		receiveHTTPRequest(request.clientFd, request.requestLength, request);
-	if (request.errorCode == 500)
+	if (reponse._errorCode == 500)
 	{
 		DEBUG
 		return (request.errorCode);
 	}
 	DEBUG
 	requestToFile(request, _uploadPath);
-	if (!request.PostFile)
-	{
-		html = getErrorHtml("./Html_code/400.html", 413);
-		return (413);
-	}
+	// if (!request.PostFile)
+	// {
+	// 	response._errorCode = 413;
+	// 	return;
+	// } TODO make sure this is already done
 	if (request.fileName == "")
 		request.fileName = _default;
 	std::cout << RED << "DEFAULT PAGE : " <<this->_dir << request.fileName << RESET << std::endl;

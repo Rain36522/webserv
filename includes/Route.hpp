@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 18:51:01 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/15 18:57:29 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ class Route
 		void runCGI(HttpRequest request, Response &response);
 		int getMethod(HttpRequest request, std::string &html);
 		int postMethod(HttpRequest request, std::string &html);
-		void delMethod(HttpRequest request, Reponse &response);
-		int	uploadClientFile(HttpRequest request, std::string &html);
+		void delMethod(HttpRequest request, Response &response);
+		void	uploadClientFile(HttpRequest request, Response &response);
 		int	addListBox(std::string &html);
 		int	doListDir(std::string &html) const;
 		void setHtml(std::string file, std::string dir, Response response);
