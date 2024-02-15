@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/15 13:09:36 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 18:51:23 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,53 +23,49 @@ int	Route::match(HttpRequest req)
 	return -1;
 }
 
-int Route::execute(HttpRequest request)
+int Route::execute(HttpRequest request, Response &response)
 {
-	int code = 404;
-	std::string html;
-	std::cout << CYAN << request.path << " ROUTED TO PATH: " << _path << RESET << "\n";
-	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
-	if (!request.fileName.empty())
-		request.fileName = request.path.substr(_path.size(), request.path.size() - _path.size()) + "/" + request.fileName;
-	std::cout << GREEN << "filename:<" << BLUE << request.fileName << GREEN << ">" << RESET << "\n";
-	if (_methods.find(request.method) == _methods.end())
-		code = 405;
-	else if (request.method == _GET)
-		code = getMethod(request, html);
-	else if (request.method == _POST)
+
+	if (!_redirPath.empty())
 	{
-		std::cout << "<================= POST RESULT ======================>\n";
-		code = postMethod(request, html);
-		
+		response._redirLocation = _redirPath;
+		response._errorCode = 302;
 	}
-	else if (request.method == _DEL)
-		code = delMethod(request);
-	if (code == 200 && _methods.find(_DEL) != _methods.end())
-		code = addListBox(html);
-	if (code == 302)
-		sendRedirectResponse(request.clientFd, _redirPath, request.servName);
-	else if (code < 400)
-		sendHTMLResponse(request.clientFd, html, code, request.servName);
-	return code;
+	switch (request.type)
+	{
+		case _CGI:
+			runCGI(request, response);break;
+		case _UPLOAD:
+			uploadClientFile(request, response._htmlContent);break;
+		case _COOKIES: // TODO
+		case _LOGIN: // TODO
+		case _DEL:
+			delMethod(request, response);
+		default:
+			setHtml(request.fileName, _dir, response);
+	}
 }
 
-int Route::delMethod(HttpRequest request)
+int Route::delMethod(HttpRequest request, Reponse &response)
 {
-	request.fileToChange = _uploadPath + request.fileToChange;
-	if (remove(request.fileToChange.c_str()))
-		return (401);
-	std::cout << GREEN << "Deleted file : " << request.fileName << RESET << std::endl;
-	return (200);
+	std::string fileFullPath = _uploadPath + "/" +request.fileToChange;
+	if (remove(fileFullPath.c_str()))
+		response._errorCode = 401;
+	else
+	{
+		response._errorCode = 200;
+		setHtml(request.fileName, _dir, response);
+	}
 }
 
-int Route::postMethod(HttpRequest request, std::string &html)
-{
-	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
-		return runCGI(request, html);
-	else // move download here
-		return (uploadClientFile(request, html));
-	return 404;// Is this correct?
-}
+// int Route::postMethod(HttpRequest request, std::string &html)
+// {
+// 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
+// 		return runCGI(request, html);
+// 	else // move download here
+// 		return (uploadClientFile(request, html));
+// 	return 404;// Is this correct?
+// }
 
 int	Route::doListDir(std::string &html) const
 {
@@ -92,28 +88,47 @@ int	Route::doListDir(std::string &html) const
 	return (200);
 }
 
-int Route::getMethod(HttpRequest request, std::string &html)
+void	Route::setHtml(std::string file, std::string dir, Response response)
 {
-	if (!_redirPath.empty())
-		return 302;
-	if (request.fileName.empty())
+	if (file.empty())
 	{
 		if (!_default.empty())
-			return getHtml(_dir + "/" + _default, html);
+			getHtml(dir + "/" + _default, response._htmlContent);
 		else if (_listDir)
-			return (doListDir(html));
-		return 404;
+			doListDir(response._htmlContent);
+		else
+			response._errorCode = 404;
 	}
-	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
-		return runCGI(request, html);
-	if (request.extension == ".html")
-		return getHtml(_dir + "/" +request.fileName, html);
-	return 404;
+	else
+		getHtml(dir + "/" + file, response._htmlContent);
 }
 
-int Route::runCGI(HttpRequest request, std::string &html)
+// int Route::getMethod(HttpRequest request, std::string &html)
+// {
+// 	if (!_redirPath.empty())
+// 		return 302;
+// 	if (request.fileName.empty())
+// 	{
+// 		if (!_default.empty())
+// 			return getHtml(_dir + "/" + _default, html);
+// 		else if (_listDir)
+// 			return (doListDir(html));
+// 		return 404;
+// 	}
+// 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
+// 		return runCGI(request, html);
+// 	if (request.extension == ".html")
+// 		return getHtml(_dir + "/" +request.fileName, html);
+// 	return 404;
+// }
+
+void Route::runCGI(HttpRequest request, Response &response)
 {
-	DEBUG
+	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) == _CGIs.end())
+	{
+		response._errorCode = 404;
+		return ;
+	}
 	int	fd[2];
 	int	exev;
 	std::string value = std::string(PATH_INFO) + "/" + request.fileName;
@@ -123,13 +138,15 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	if (pipe(fd) == -1)
 	{
 		std::cerr << RED << "Pipe Error\n" << RESET;
-		return 500;
+		response._errorCode = 500;
+		return;
 	}
 	pid_t pid = fork();
 	if (pid == -1)
 	{
 		std::cerr << RED << "Error Fork\n" << RESET;
-		return 500;
+		response._errorCode = 500;
+		return;
 	}
 	else if (!pid)
 	{
@@ -154,16 +171,17 @@ int Route::runCGI(HttpRequest request, std::string &html)
 	{
 		close(fd[1]);
 		waitpid(pid, &exev, 0);
-		exev = getHtmlFd(fd[0], html);
+		response._errorCode = getHtmlFd(fd[0], response._htmlContent);
 		if (WEXITSTATUS(exev))
 		{
 			close(fd[0]);
-			return 500;
+			response._errorCode = 500;
+			return;
 		}
 		
 		close(fd[0]);
 	}
-	return exev;
+	response._errorCode = exev;
 }
 
 int	Route::uploadClientFile(HttpRequest request, std::string &html)
