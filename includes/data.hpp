@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 11:33:04 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/16 12:32:41 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 #define WHITE   "\033[37m"  
 
 bool validateFd(std::string file, int type);
-// Send news request
+// Send news request  DELETE TODO
 std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
@@ -49,10 +49,6 @@ void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, st
 void 		sendRedirectResponse(int client_fd, const std::string& redirectLocation, std::string server_name);
 void		erraseHtmlVar(std::string &html); // Not USED ONE TO DELETE? TODO
 
-// Read new request;
-void receiveHTTPRequest(int client_fd, int RequestLength, HttpRequest &request);
-HttpRequest	requestToStruct(int fd);
-void 	pathToData(HttpRequest &request);
 
-// Download image
+// Download image TODO DELETE
 void	requestToFile(HttpRequest &request, std::string uploadPath);

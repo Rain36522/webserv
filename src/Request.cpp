@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 11:34:35 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/16 11:41:30 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ void	Request::getQuery(void)
 	std::cout << GREEN << "Query <" << BLUE << " ";
 	for (int i = 0; i < _Query.size(); i ++)
 		std::cout << _Query[i] << ", ";
-	std::cout << GREEN << ">" RESETN
+	std::cout << GREEN << ">" RESETN;
 }
 
 bool	Request::getBoundary(int &error)
@@ -276,6 +276,11 @@ int	Request::getBodyContent(int error)
 	if (_totaLength != _length)
 		return receiveHTTPRequest(_clientFd, _totaLength);
 	return error;
+}
+
+int	setUrlFile(std::string route_path)
+{
+	(void)route_path; // TODO
 }
 
 int	Request::setBody(int bodySize)
