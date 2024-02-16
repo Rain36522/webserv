@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 16:14:00 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 18:25:48 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,12 @@ int WebServer::getServerSocket(Server s) {
 		perror("Error creating socket");
 		exit(EXIT_FAILURE);
 	}
-	if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
-	{
-		close(sockfd);
-		exit(EXIT_FAILURE);
-	}
+	// if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
+	// {
+	// 	close(sockfd);
+	// 	perror("Error setting socket to nonblocking");
+	// 	exit(EXIT_FAILURE);
+	// }
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
@@ -96,35 +97,59 @@ void WebServer::run(void)
 		
 		for (int i = 0; i < n_events; ++i) {
 			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
-				DEBUG
-				std::cout << "EVENT FILTER TYPE: " << BLUE << events[i].filter RESETN;
+				if (events[i].flags & EV_EOF) {
+					close(events[i].ident);
+					continue;
+				}
 				socklen_t client_len = sizeof(client_addr);
 				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
 				if (client_fd == -1) {
 					perror("Error accepting connection");
-					// TODO kill client?
 					continue ;
 				}
-				DEBUG
+				 std::cout << "Accepted connection from client" << std::endl;
+                // Add the client socket to the kqueue for monitoring
+                struct kevent client_event[3];
+                EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+				EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD, 0, 0, NULL);
+
+                if (kevent(_kfd, client_event, 3, NULL, 0, NULL) == -1) {
+                    perror("Error adding client socket to kqueue");
+                    close(client_fd);
+                }
+			}
+			else
+			{
+				std::cout << "EVENT FILTER TYPE: " << BLUE << events[i].filter << RESET << "fd:" << GREEN << events[i].ident RESETN;
+				int client_fd = events[i].ident;
+				if (events[i].flags & EV_EOF) {
+                    std::cout << "Client socket encountered EOF, closing it" << std::endl;
+					struct kevent event[2];
+					EV_SET(&event[0], client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
+					EV_SET(&event[0], client_fd, EVFILT_WRITE, EV_DELETE, 0, 0, nullptr);
+					kevent(_kfd, event, 2, nullptr, 0, nullptr);
+                    close(client_fd);
+					continue;
+                }
+				//EVFILT_EXCEPT
 				Response response(client_fd);
-				DEBUG
 				Request request(client_fd, response._errorCode);
 				if (response._errorCode == 500)
 				{
-					struct kevent event;
-					EV_SET(&event, client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
-					kevent(_kfd, &event, 1, nullptr, 0, nullptr);
+					struct kevent event[2];
+					EV_SET(&event[0], client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
+					EV_SET(&event[0], client_fd, EVFILT_WRITE, EV_DELETE, 0, 0, nullptr);
+					kevent(_kfd, event, 2, nullptr, 0, nullptr);
 					std::cout << "Invalid request, deleted event" << std::endl;
 					continue;
 				}
-				DEBUG
 				response._clientFd = client_fd;
 				if (response._errorCode != 500 && _servers.find(request._hostPort) != _servers.end())
 					_servers[request._hostPort].genReponse(request, response);
-				DEBUG
 				response.sendResponse();
-				DEBUG
 			}
+			
 		}
 	}
 }

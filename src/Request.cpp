@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 15:55:43 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 17:30:41 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,20 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 	char 			buffer[bufferSize];
 	ssize_t 		bytesRead;
 
-	DEBUG
 	bytesRead = bufferSize - 1;
 	while (bytesRead == bufferSize - 1 || _length < length)
 	{
-		DEBUG
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
-		std::cout << BLUE << bytesRead RESETN;
-		std::cout << GREEN << buffer RESETN;
-		DEBUG
 		if (bytesRead < 0 || (!length && !bytesRead))
+		{
+			perror("read failed :( )");
 			return 500;
+		}
 		_length += bytesRead;
 		_body += std::string(buffer, bytesRead);
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	DEBUG
 	return (200);
 }
 
@@ -275,7 +272,6 @@ int	Request::getDelete(int error)
 
 int	Request::getBodyContent(int error)
 {
-	DEBUG
 	if (_totaLength != _length)
 		return receiveHTTPRequest(_clientFd, _totaLength);
 	return error;
@@ -317,21 +313,17 @@ int	Request::setBody(int bodySize)
 
 Request::Request(const int client_Fd, int &error)
 {
-	DEBUG
 	_clientFd = client_Fd;
 	if (receiveHTTPRequest(_clientFd, 0) && getMethode() && getHostPort() \
 		&& getPath() && getExtension() && getType())
 	{
-		DEBUG
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)
 			getQuery();
-		DEBUG
 	}
 	else
 	{
-		DEBUG
 		error = 500;
 		std::cout << RED << "Error getting request" RESETN;
 	}

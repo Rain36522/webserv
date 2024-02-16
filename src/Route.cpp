@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/16 14:34:22 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 17:30:53 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	Route::match(Request req)
 
 void Route::execute(Request request, Response &response)
 {
-	DEBUG
 	request.setUrlFile(_path);
 	if (!_redirPath.empty())
 	{
@@ -92,7 +91,6 @@ int	Route::doListDir(std::string &html) const
 
 void	Route::setHtml(std::string file, std::string dir, Response &response)
 {
-	DEBUG
 	if (file.empty())
 	{
 		if (!_default.empty())
