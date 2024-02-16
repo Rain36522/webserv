@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 12:18:23 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 16:58:30 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,22 +94,16 @@ void WebServer::run(void)
 				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
 				if (client_fd == -1) {
 					perror("Error accepting connection");
+					// TODO kill client?
+					continue ;
 				}
-				request = requestToStruct(client_fd);
-				DEBUG
-				std::cout << MAGENTA << "Host port : " << request.hostPort << std::endl << RESET << std::endl << std::endl;
-				if (request.errorCode == 500)
-				{
-					std::string	html = "Error 500 : Get error while reading request";
-					sendHTMLResponse(client_fd, html, 500, "master");
-				}
-				DEBUG
-				std::cout << MAGENTA << "Host port : " << request.hostPort << RESET << std::endl << std::endl;
-				if (_servers.find(request.hostPort) != _servers.end())
-					_servers[request.hostPort].makeRequest(request);
-				else
-					std::cout << ORANGE << "request to " << request.hostPort << "did not match server" << RESET << std::endl;
-				DEBUG
+				Response response;
+
+				request = requestToStruct(client_fd, response._errorCode);
+				
+				if (response._errorCode != 500 && _servers.find(request.hostPort) != _servers.end())
+					_servers[request.hostPort].genReponse(request, response);
+				response.sendResponse();
 			}
 		}
 	}

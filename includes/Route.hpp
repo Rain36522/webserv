@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/14 10:58:04 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 18:57:29 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,15 @@ class Route
 		 */
 		int match(HttpRequest req);
 
-		int execute(HttpRequest req);
-		int runCGI(HttpRequest request, std::string &html);
+		int execute(HttpRequest req, Response &response);
+		void runCGI(HttpRequest request, Response &response);
 		int getMethod(HttpRequest request, std::string &html);
 		int postMethod(HttpRequest request, std::string &html);
-		int delMethod(HttpRequest request);
-		int	uploadClientFile(HttpRequest request, std::string &html);
+		void delMethod(HttpRequest request, Response &response);
+		void	uploadClientFile(HttpRequest request, Response &response);
 		int	addListBox(std::string &html);
 		int	doListDir(std::string &html) const;
+		void setHtml(std::string file, std::string dir, Response response);
 		friend class ParseConfig;
 };
 

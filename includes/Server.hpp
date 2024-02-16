@@ -6,14 +6,14 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:30 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/12 13:58:28 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/15 16:49:37 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Route.hpp"
-#include "structs.hpp"
+#include "Response.hpp"
 #include "ParseConfig.hpp"
 
 class ParseConfig;
@@ -45,7 +45,7 @@ class Server
 		{
 			return _host;
 		}
-		bool	makeRequest(HttpRequest request);
-		void	handleError(int code, int fd);
+		bool	genReponse(HttpRequest request, Response res);
+		void	handleError(int code, int fd, std::string &html);
 		friend class ParseConfig;
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 12:34:31 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 17:03:12 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,14 @@ Server::Server(ServConf Conf)
 	
 }
 
-bool	Server::makeRequest(HttpRequest request)
+bool	Server::genReponse(HttpRequest request, Response res)
 {
-	int code = 404;
-	request.servName = _name;
-	std::cout << "RED" << "ACTUAL FILENAME : " << request.fileName << RESET << std::endl;
 	std::vector<Route>::iterator i;
 	Route bestRoute;
 	int	maxMatch = -1;
 
+	res._servName = _name;
+	res._errorCode = 404;
 	for (i = _routes.begin(); i != _routes.end(); i++)
 	{
 		int curMatch = (*i).match(request);
@@ -47,13 +46,13 @@ bool	Server::makeRequest(HttpRequest request)
 		}
 	}
 	if (maxMatch != -1)
-		code = bestRoute.execute(request);
-	if (code >= 400)
-		handleError(code, request.clientFd);
+		bestRoute.execute(request);
+	if (res._errorCode >= 400)
+		handleError(res._errorCode, request.clientFd, res._htmlContent);
 	return true;
 }
 
-void	Server::handleError(int code, int fd)
+void	Server::handleError(int code, int fd, std::string &html)
 {
 	std::string		html;
 
@@ -63,11 +62,7 @@ void	Server::handleError(int code, int fd)
 	else
 		html = getErrorHtml(_defaultError, code);
 	if (html == "")
-	{
 		html = "Error 500 : No file found for error: " + std::to_string(code);
-		code = 500;
-	}
-	sendHTMLResponse(fd, html, code, _name);
 }
 
 Route *Server::matchRoute(const HttpRequest & req)
