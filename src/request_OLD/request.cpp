@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 16:29:51 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 12:23:17 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/15 16:56:14 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ static std::string	setHostPort(std::string httpRequest)
 //TODO: make more rigourous (ex 127.0.0.1/GET)
 static m_type	setMethod(std::string httpRequest)
 {
-	if (httpRequest.find("GET") != std::string::npos)
+	if (httpRequest.find("GET ") == 0)
 		return (_GET);
-	else if (httpRequest.find("POST") != std::string::npos)
-		return (_POST);
-	else if (httpRequest.find("DELETE") != std::string::npos)
+	else if (httpRequest.find("DELETE ") == 0)
 		return (_DEL);
+	else if (httpRequest.find("POST") == 0)
+		return (_POST);
 	else
 		return (_UNKNOW);
 }

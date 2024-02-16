@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 14:42:49 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/16 11:33:04 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@
 #define PATH_INFO "./CGI"
 
 #define RESET   " \033[0m"
+#define RESETN   << "\033[0m\n"
 #define RED     "\033[31m"      
 #define GREEN   "\033[32m"      
 #define YELLOW  "\033[33m"
-#define ORANGE  "\033[33m"      
+#define ORANGE  "\033[38;5;208m"      
 #define BLUE    "\033[34m"      
 #define MAGENTA "\033[35m"      
 #define CYAN    "\033[36m"      
