@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:30 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 16:49:37 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 14:30:46 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Route.hpp"
 #include "Response.hpp"
 #include "ParseConfig.hpp"
+#include "Request.hpp"
 
 class ParseConfig;
 class Route;
@@ -35,7 +36,7 @@ class Server
 		Server();
 		Server(ServConf Conf);
 		~Server(void);
-		Route *matchRoute(const HttpRequest & req);
+		Route *matchRoute(Request & req);
 		void addRoute(Route r);
 		int get_port()
 		{
@@ -45,7 +46,7 @@ class Server
 		{
 			return _host;
 		}
-		bool	genReponse(HttpRequest request, Response res);
-		void	handleError(int code, int fd, std::string &html);
+		bool	genReponse(Request request, Response &res);
+		void	handleError(int code, std::string &html);
 		friend class ParseConfig;
 };

@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 18:47:16 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 13:27:20 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ enum m_dataType
 	_CGI,
 	_STANDARD,
 	_COOKIES,
-	_DEL
+	_DELETE
 };
 
 struct HttpRequest

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 11:41:30 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/16 15:55:43 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#include "../includes/Request.hpp"
 
 // This function read the request. She stop when the length is good and there is a null char.
 int Request::receiveHTTPRequest(const int client_fd, const int length)
@@ -19,18 +19,23 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 	char 			buffer[bufferSize];
 	ssize_t 		bytesRead;
 
-
+	DEBUG
 	bytesRead = bufferSize - 1;
 	while (bytesRead == bufferSize - 1 || _length < length)
 	{
+		DEBUG
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
-		if (bytesRead < 0)
+		std::cout << BLUE << bytesRead RESETN;
+		std::cout << GREEN << buffer RESETN;
+		DEBUG
+		if (bytesRead < 0 || (!length && !bytesRead))
 			return 500;
 		_length += bytesRead;
 		_body += std::string(buffer, bytesRead);
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
+	DEBUG
 	return (200);
 }
 
@@ -68,8 +73,9 @@ bool	Request::getHostPort(void)
 
 bool	Request::getPath(void)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
+	size_t	k;
 
 	switch (_method)
 	{
@@ -82,14 +88,11 @@ bool	Request::getPath(void)
 	default:
 		i = 7;
 	}
-	if ((j = _body.find("?")) == std::string::npos)
-	{
-		if (j = _body.find("HTTP/1.1\r\n") == std::string::npos)
-			return (false);
-		j --;
-	}
-	j --;
-	if (_body[j] == '/')
+	if ((k = _body.find(" HTTP")) == std::string::npos)
+		return (false);
+	if ((j = _body.find("?")) == std::string::npos || j > k)
+		j = k;
+	if (_body[j - 1] == '/')
 		j --;
 	_path = _body.substr(i, j - i);
 	std::cout << GREEN << "Path <" << BLUE << _path << GREEN << ">" RESETN;
@@ -105,12 +108,12 @@ bool	Request::getExtension(void)
 	while (_path.find("/", i + 1) != std::string::npos)
 		i = _path.find("/", i + 1);
 	j = i;
-	while (_path.find(".", j + 1) != std::string::npos)
-		j = _path.find(".", j + 1);
+	while (_path.find(".", i + 1) != std::string::npos)
+		i = _path.find(".", i + 1);
 	if (j == i)
 		_extension = "";
 	else
-		_extension = _path.substr(i, j - i);
+		_extension = _path.substr(i, _path.length() - i);
 	std::cout << GREEN << "Extension <" << BLUE << _extension << GREEN << ">" RESETN;
 	return true;
 }
@@ -125,12 +128,15 @@ bool	Request::getType(void)
 		_type = _UPLOAD;
 	else if (_body.find("\r\ncookie:") != std::string::npos && _type == _LOGIN)
 		_type = _COOKIES;
+	else
+		_type = _STANDARD;
+	return true;
 }
 
 int	Request::getTotalLength(int error)
 {
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 	std::string	value;
 
 	if ((i = _body.find("\r\nContent-Length: ")) == std::string::npos)
@@ -173,15 +179,15 @@ void	Request::getQuery(void)
 	if (start < max - 2)
 		_Query.push_back(_body.substr(start, i - max - 1));
 	std::cout << GREEN << "Query <" << BLUE << " ";
-	for (int i = 0; i < _Query.size(); i ++)
+	for (size_t i = 0; i < _Query.size(); i ++)
 		std::cout << _Query[i] << ", ";
 	std::cout << GREEN << ">" RESETN;
 }
 
 bool	Request::getBoundary(int &error)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 	// Content-Type: multipart/form-data; boundary=
 	if ((i = _body.find("\r\nContent-Type: multipart/form-data; boundary=")) == std::string::npos)
 	{
@@ -205,8 +211,8 @@ bool	Request::getBoundary(int &error)
 int	Request::getUploadName(int error)
 {
 	std::string	search;
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 
 	search = "--" + _boundary + "\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=\"";
 	if ((i = _body.find(search)) == std::string::npos)
@@ -225,8 +231,8 @@ int	Request::getUploadName(int error)
 int	Request::getLogin(int error)
 {
 	std::string	search;
-	int			i;
-	int			j;
+	size_t			i;
+	size_t			j;
 
 	search = "--" + _boundary + "\r\nContent-Disposition: form-data; name=\"username\"\r\n\r\n";
 	if ((i = _body.find(search)) == std::string::npos)
@@ -269,18 +275,19 @@ int	Request::getDelete(int error)
 
 int	Request::getBodyContent(int error)
 {
-	std::string	search;
-	int			start;
-	int			i;
-
+	DEBUG
 	if (_totaLength != _length)
 		return receiveHTTPRequest(_clientFd, _totaLength);
 	return error;
 }
 
-int	setUrlFile(std::string route_path)
+int	Request::setUrlFile(std::string route_path)
 {
-	(void)route_path; // TODO
+	if (route_path[route_path.size() - 1] != '/')
+		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
+	else
+		_fileName = _path.substr(route_path.size() + 1, _path.size() - route_path.size() - 1);
+	return 200;
 }
 
 int	Request::setBody(int bodySize)
@@ -296,9 +303,9 @@ int	Request::setBody(int bodySize)
 			return 500;
 		else if (getBodyContent(error) == 500)
 			return 500;
-		if (_method == _LOGIN)
+		if (_type == _LOGIN)
 			return getLogin(error);
-		else if (_method == _UPLOAD)
+		else if (_type == _UPLOAD)
 			error = getUploadName(error);			
 	}
 	else if (_method == _DEL)
@@ -310,15 +317,22 @@ int	Request::setBody(int bodySize)
 
 Request::Request(const int client_Fd, int &error)
 {
+	DEBUG
+	_clientFd = client_Fd;
 	if (receiveHTTPRequest(_clientFd, 0) && getMethode() && getHostPort() \
 		&& getPath() && getExtension() && getType())
 	{
+		DEBUG
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)
 			getQuery();
+		DEBUG
 	}
 	else
+	{
+		DEBUG
 		error = 500;
 		std::cout << RED << "Error getting request" RESETN;
+	}
 }

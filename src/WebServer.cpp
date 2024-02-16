@@ -6,11 +6,13 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 16:58:30 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 16:14:00 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/WebServer.hpp"
+#include "../includes/Request.hpp"
+#include "../includes/Response.hpp"
 #include "../includes/ParseConfig.hpp"
 
 WebServer::~WebServer(void) {
@@ -53,7 +55,11 @@ int WebServer::getServerSocket(Server s) {
 		perror("Error creating socket");
 		exit(EXIT_FAILURE);
 	}
-
+	if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
+	{
+		close(sockfd);
+		exit(EXIT_FAILURE);
+	}
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
@@ -87,9 +93,11 @@ void WebServer::run(void)
 			perror("Error in kevent");
 			exit(EXIT_FAILURE);
 		}
-
+		
 		for (int i = 0; i < n_events; ++i) {
 			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
+				DEBUG
+				std::cout << "EVENT FILTER TYPE: " << BLUE << events[i].filter RESETN;
 				socklen_t client_len = sizeof(client_addr);
 				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
 				if (client_fd == -1) {
@@ -97,13 +105,25 @@ void WebServer::run(void)
 					// TODO kill client?
 					continue ;
 				}
-				Response response;
-
-				request = requestToStruct(client_fd, response._errorCode);
-				
-				if (response._errorCode != 500 && _servers.find(request.hostPort) != _servers.end())
-					_servers[request.hostPort].genReponse(request, response);
+				DEBUG
+				Response response(client_fd);
+				DEBUG
+				Request request(client_fd, response._errorCode);
+				if (response._errorCode == 500)
+				{
+					struct kevent event;
+					EV_SET(&event, client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
+					kevent(_kfd, &event, 1, nullptr, 0, nullptr);
+					std::cout << "Invalid request, deleted event" << std::endl;
+					continue;
+				}
+				DEBUG
+				response._clientFd = client_fd;
+				if (response._errorCode != 500 && _servers.find(request._hostPort) != _servers.end())
+					_servers[request._hostPort].genReponse(request, response);
+				DEBUG
 				response.sendResponse();
+				DEBUG
 			}
 		}
 	}

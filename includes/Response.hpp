@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:08:22 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 18:35:50 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 14:15:07 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ class Route;
 class Response
 {
 	public:
-		Response(void);
+		Response(int clientFd);
 		void sendResponse();
-		friend Server;
-		friend WebServer;
-		friend Route;
+		friend class Server;
+		friend class WebServer;
+		friend class Route;
 	protected:
 		std::string _servName;
 		int			_errorCode;

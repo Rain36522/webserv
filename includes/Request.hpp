@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 11:19:53 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/16 13:36:55 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ class Request
 {
 	public:
 		Request(const int client_Fd, int &error);
+		friend class WebServer;
+		friend class Server;
+		friend class Route;
 
 		// Add << operator;
 	protected:

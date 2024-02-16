@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/15 17:03:12 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 14:30:34 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Server::Server(ServConf Conf)
 	
 }
 
-bool	Server::genReponse(HttpRequest request, Response res)
+bool	Server::genReponse(Request request, Response &res)
 {
 	std::vector<Route>::iterator i;
 	Route bestRoute;
@@ -46,17 +46,14 @@ bool	Server::genReponse(HttpRequest request, Response res)
 		}
 	}
 	if (maxMatch != -1)
-		bestRoute.execute(request);
+		bestRoute.execute(request, res);
 	if (res._errorCode >= 400)
-		handleError(res._errorCode, request.clientFd, res._htmlContent);
+		handleError(res._errorCode, res._htmlContent);
 	return true;
 }
 
-void	Server::handleError(int code, int fd, std::string &html)
+void	Server::handleError(int code, std::string &html)
 {
-	std::string		html;
-
-
 	if (_errPages.find(code) != _errPages.end())
 		html = getErrorHtml(_errPages[code], code);
 	else
@@ -65,7 +62,7 @@ void	Server::handleError(int code, int fd, std::string &html)
 		html = "Error 500 : No file found for error: " + std::to_string(code);
 }
 
-Route *Server::matchRoute(const HttpRequest & req)
+Route *Server::matchRoute(Request & req)
 {
 	for (size_t i = 0; i < _routes.size(); i++)
 		if (_routes[i].match(req))

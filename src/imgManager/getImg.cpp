@@ -6,11 +6,12 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/12 15:32:46 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 13:44:25 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
+#include "../../Request.hpp"
 
 static std::string	getFileName(std::string str)
 {
@@ -86,7 +87,7 @@ bool	putInBinary(std::string filename, std::string content)
 	return (true);
 }
 
-void	requestToFile(HttpRequest &request, std::string uploadPath)
+void	requestToFile(Request &request, std::string uploadPath)
 {
 	std::string	header;
 	std::string	FileContent;

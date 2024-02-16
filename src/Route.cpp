@@ -6,32 +6,34 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/15 18:58:57 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 14:34:22 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Route.hpp"
+#include "../includes/Response.hpp"
 
 Route::Route(){
 	_listDir = false;
 }
 
-int	Route::match(HttpRequest req)
+int	Route::match(Request req)
 {
-	if (req.path.find(_path) == 0 && (req.path.size() == _path.size() || req.path[_path.size()] == '/'))
+	if (req._path.find(_path) == 0 && (req._path.size() == _path.size() || req._path[_path.size()] == '/'))
 		return (int)_path.size();
 	return -1;
 }
 
-int Route::execute(HttpRequest request, Response &response)
+void Route::execute(Request request, Response &response)
 {
-
+	DEBUG
+	request.setUrlFile(_path);
 	if (!_redirPath.empty())
 	{
 		response._redirLocation = _redirPath;
 		response._errorCode = 302;
 	}
-	switch (request.type)
+	switch (request._type)
 	{
 		case _CGI:
 			runCGI(request, response);break;
@@ -39,22 +41,22 @@ int Route::execute(HttpRequest request, Response &response)
 			uploadClientFile(request, response);break;
 		case _COOKIES: // TODO
 		case _LOGIN: // TODO
-		case _DEL:
+		case _DELETE:
 			delMethod(request, response);
 		default:
-			setHtml(request.fileName, _dir, response);
+			setHtml(request._fileName, _dir, response);
 	}
 }
 
-int Route::delMethod(HttpRequest request, Response &response)
+void Route::delMethod(Request request, Response &response)
 {
-	std::string fileFullPath = _uploadPath + "/" +request.fileToChange;
+	std::string fileFullPath = _uploadPath + "/" +request._bodyFileName;
 	if (remove(fileFullPath.c_str()))
 		response._errorCode = 401;
 	else
 	{
 		response._errorCode = 200;
-		setHtml(request.fileName, _dir, response);
+		setHtml(request._fileName, _dir, response);
 	}
 }
 
@@ -88,8 +90,9 @@ int	Route::doListDir(std::string &html) const
 	return (200);
 }
 
-void	Route::setHtml(std::string file, std::string dir, Response response)
+void	Route::setHtml(std::string file, std::string dir, Response &response)
 {
+	DEBUG
 	if (file.empty())
 	{
 		if (!_default.empty())
@@ -122,16 +125,16 @@ void	Route::setHtml(std::string file, std::string dir, Response response)
 // 	return 404;
 // }
 
-void Route::runCGI(HttpRequest request, Response &response)
+void Route::runCGI(Request request, Response &response)
 {
-	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) == _CGIs.end())
+	if (std::find(_CGIs.begin(), _CGIs.end(), request._extension) == _CGIs.end())
 	{
 		response._errorCode = 404;
 		return ;
 	}
 	int	fd[2];
 	int	exev;
-	std::string value = std::string(PATH_INFO) + "/" + request.fileName;
+	std::string value = std::string(PATH_INFO) + "/" + request._fileName;
 	char	py[] = "/usr/bin/python3";
 	
 	char	*a[3] = {py, (char *)value.c_str(), NULL};
@@ -153,18 +156,18 @@ void Route::runCGI(HttpRequest request, Response &response)
 		std::vector<const char *>params;
 		for (size_t i = 0; env[i]; i++)
 			params.push_back(env[i]);
-		for(size_t i = 0; i < request.parameters.size(); i ++)
-			params.push_back(request.parameters[i].c_str());
+		for(size_t i = 0; i < request._Query.size(); i ++)
+			params.push_back(request._Query[i].c_str());
 		params.push_back(("uploadFolder=" + _uploadPath).c_str());
 		params.push_back(NULL);
 		dup2(fd[1], 1);
 		close(fd[1]);
 		close(fd[0]);
-		if (request.extension == ".py")
+		if (request._extension == ".py")
 			execve(py, a, (char **)&params[0]);
-		 if (request.extension == ".out")
+		 if (request._extension == ".out")
 			execve((char *)value.c_str(), 0, (char **)&params[0]);
-		std::cerr << RED << "Error executing CGI : " << request.fileName << std::endl << RESET;
+		std::cerr << RED << "Error executing CGI : " << request._fileName << std::endl << RESET;
 		exit(1);
 	}
 	else
@@ -184,27 +187,19 @@ void Route::runCGI(HttpRequest request, Response &response)
 	response._errorCode = exev;
 }
 
-void	Route::uploadClientFile(HttpRequest request, Response &response)
+void	Route::uploadClientFile(Request request, Response &response)
 {
-	(void)  html;
-	if (request.length < request.requestLength)
-		receiveHTTPRequest(request.clientFd, request.requestLength, request);
-	if (reponse._errorCode == 500)
-	{
-		DEBUG
-		return (request.errorCode);
-	}
-	DEBUG
-	requestToFile(request, _uploadPath);
-	// if (!request.PostFile)
-	// {
-	// 	response._errorCode = 413;
-	// 	return;
-	// } TODO make sure this is already done
-	if (request.fileName == "")
-		request.fileName = _default;
-	std::cout << RED << "DEFAULT PAGE : " <<this->_dir << request.fileName << RESET << std::endl;
-	return (getHtml(this->_dir + request.fileName, html));
+	(void) request, (void) response;
+	// requestToFile(request, _uploadPath);
+	// // if (!request.PostFile)
+	// // {
+	// // 	response._errorCode = 413;
+	// // 	return;
+	// // } TODO make sure this is already done
+	// if (request.fileName == "")
+	// 	request.fileName = _default;
+	// std::cout << RED << "DEFAULT PAGE : " <<this->_dir << request.fileName << RESET << std::endl;
+	// return (getHtml(this->_dir + request.fileName, html));
 }
 
 int	Route::addListBox(std::string &html)

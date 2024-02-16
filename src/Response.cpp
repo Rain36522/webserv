@@ -6,20 +6,23 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 17:00:19 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 15:53:24 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Response.hpp"
+#include "../includes/Response.hpp"
 
-Response::Response(void)
+Response::Response(int clientFd)
 {
+	_clientFd = clientFd;
 	_servName = "master";
 	_errorCode = 200;
 }
 
 void Response::sendHTML()
 {
+	DEBUG
+	std::cout << "read content: " << _htmlContent << std::endl;
 	std::string responseHeaders = "HTTP/1.1 " + getCodeText() +  " \r\n";
 	responseHeaders += "Content-Type: text/html\r\n";
 	responseHeaders += "Content-Length: " + std::to_string(_htmlContent.size()) + "\r\n";
@@ -34,6 +37,7 @@ void Response::sendHTML()
 	if (sent == -1) {
 		perror("Error sending HTML content");
 	}
+	DEBUG
 }
 
 
@@ -77,6 +81,7 @@ std::string	Response::getCodeText()
 
 void Response::sendResponse()
 {
+	DEBUG
 	if (_errorCode == 302)
 		sendRedirect();
 	else

@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/15 18:57:29 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/16 13:51:24 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 #include "data.hpp"
 #include "ParseConfig.hpp"
+#include "Response.hpp"
+#include "Request.hpp"
 
 class ParseConfig;
+class Response;
 
 class Route
 {
@@ -43,17 +46,17 @@ class Route
 		 * @param req The http request
 		 * @return size_t: the size of the path if matching, otherwise -1
 		 */
-		int match(HttpRequest req);
+		int match(Request req);
 
-		int execute(HttpRequest req, Response &response);
-		void runCGI(HttpRequest request, Response &response);
-		int getMethod(HttpRequest request, std::string &html);
-		int postMethod(HttpRequest request, std::string &html);
-		void delMethod(HttpRequest request, Response &response);
-		void	uploadClientFile(HttpRequest request, Response &response);
+		void execute(Request req, Response &response);
+		void runCGI(Request request, Response &response);
+		int getMethod(Request request, std::string &html);
+		int postMethod(Request request, std::string &html);
+		void delMethod(Request request, Response &response);
+		void	uploadClientFile(Request request, Response &response);
 		int	addListBox(std::string &html);
 		int	doListDir(std::string &html) const;
-		void setHtml(std::string file, std::string dir, Response response);
+		void setHtml(std::string file, std::string dir, Response &response);
 		friend class ParseConfig;
 };
 

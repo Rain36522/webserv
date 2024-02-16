@@ -6,7 +6,7 @@ CC = c++
 
 MAIN = src/main.cpp
 # GETIMG = getImg.cpp
-SRC1 = Route.cpp Server.cpp WebServer.cpp ParseConfig.cpp Request.cpp
+SRC1 = Route.cpp Server.cpp WebServer.cpp ParseConfig.cpp Request.cpp Response.cpp sendPage.cpp
 
 SRC1 += $(addprefix imgManager/, $(GETIMG))
 SRC1 += $(addprefix request/, $(REQUEST))
