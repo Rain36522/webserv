@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 13:21:49 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 14:04:07 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,12 @@ bool	Request::getPath(void)
 		return (false);
 	if ((j = _body.find("?")) == std::string::npos || j > k)
 		j = k;
+	if (j == i || j - 1 == i)
+	{
+		_path = "";
+		std::cout << GREEN << "Path <" << GREEN << ">" RESETN;
+		return true;
+	}
 	if (_body[j - 1] == '/')
 		j --;
 	_path = _body.substr(i, j - i);
