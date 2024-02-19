@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 14:30:34 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 10:27:26 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ bool	Server::genReponse(Request request, Response &res)
 	Route bestRoute;
 	int	maxMatch = -1;
 
+	request.setBody(_bodyLimit);
 	res._servName = _name;
 	res._errorCode = 404;
 	for (i = _routes.begin(); i != _routes.end(); i++)

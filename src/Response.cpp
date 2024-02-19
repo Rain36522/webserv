@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/16 17:31:24 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 08:57:00 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ std::string	Response::getCodeText()
 
 void Response::sendResponse()
 {
-	if (_errorCode == 302)
-		sendRedirect();
-	else
+	// if (_errorCode == 302)
+	// sendRedirect();
+	if (_errorCode != 302)
 		sendHTML();
 }

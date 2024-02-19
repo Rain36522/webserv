@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 17:30:41 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 10:35:04 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
+	std::cout << MAGENTA << _body RESETN;
 	return (200);
 }
 
 bool	Request::getMethode(void)
 {
+	DEBUG
 	if (_body.find("GET ") == 0)
 		_method = _GET;
 	else if (_body.find("DELETE ") == 0)
@@ -47,6 +49,7 @@ bool	Request::getMethode(void)
 	else
 	{
 		_method = _UNKNOW;
+		DEBUG
 		return false;
 	}
 	return true;
@@ -54,6 +57,7 @@ bool	Request::getMethode(void)
 
 bool	Request::getHostPort(void)
 {
+	DEBUG
 	size_t			i;
 	size_t			j;
 
@@ -70,6 +74,7 @@ bool	Request::getHostPort(void)
 
 bool	Request::getPath(void)
 {
+	DEBUG
 	size_t	i;
 	size_t	j;
 	size_t	k;
@@ -77,13 +82,13 @@ bool	Request::getPath(void)
 	switch (_method)
 	{
 	case _GET:
-		i = 4;
-		break;
-	case _POST:
 		i = 5;
 		break;
+	case _POST:
+		i = 6;
+		break;
 	default:
-		i = 7;
+		i = 8;
 	}
 	if ((k = _body.find(" HTTP")) == std::string::npos)
 		return (false);
@@ -98,6 +103,7 @@ bool	Request::getPath(void)
 
 bool	Request::getExtension(void)
 {
+	DEBUG
 	int	i;
 	int	j;
 
@@ -115,23 +121,37 @@ bool	Request::getExtension(void)
 	return true;
 }
 
+// TODO Remove coment if useless
 bool	Request::getType(void)
 {
+	DEBUG
 	if (_extension != ".html" && _method != _DEL)
 		_type = _CGI;
-	else if (_body.find("\r\nContent-Disposition: form-data; name=\"username\"") != std::string::npos)
-		_type = _LOGIN;
-	else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
-		_type = _UPLOAD;
-	else if (_body.find("\r\ncookie:") != std::string::npos && _type == _LOGIN)
-		_type = _COOKIES;
+	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"username\"") != std::string::npos)
+	// 	_type = _LOGIN;
+	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
+	// 	_type = _UPLOAD;
+	// else if (_body.find("\r\ncookie:") != std::string::npos && _type == _LOGIN)
+	// 	_type = _COOKIES;
 	else
 		_type = _STANDARD;
 	return true;
 }
 
+bool	Request::getSpecialType()
+{
+	if (_body.find("\r\nContent-Disposition: form-data; name=\"username\"") != std::string::npos)
+		_type = _LOGIN;
+	else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
+		_type = _UPLOAD;
+	else
+		return false;
+	return true;
+}
+
 int	Request::getTotalLength(int error)
 {
+	DEBUG
 	size_t			i;
 	size_t			j;
 	std::string	value;
@@ -211,10 +231,11 @@ int	Request::getUploadName(int error)
 	size_t			i;
 	size_t			j;
 
-	search = "--" + _boundary + "\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=\"";
+	DEBUG
+	search = "Content-Disposition: form-data; name=\"fileUpload\"; filename=\"";
 	if ((i = _body.find(search)) == std::string::npos)
 		return 500;
-	i += search.length();
+	i += search.size();
 	j = i;
 	while (_body[j] && _body[j] != '\"')
 		j ++;
@@ -279,6 +300,7 @@ int	Request::getBodyContent(int error)
 
 int	Request::setUrlFile(std::string route_path)
 {
+	std::cout << "Route path : " << route_path << std::endl;
 	if (route_path[route_path.size() - 1] != '/')
 		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
 	else
@@ -290,15 +312,21 @@ int	Request::setBody(int bodySize)
 {
 	int	error;
 
+	DEBUG
 	error = 200;
 	if (_totaLength > bodySize)
 		return 413;
+	DEBUG
 	if (_method == _POST)
 	{
+		DEBUG
 		if (!getBoundary(error))
 			return 500;
 		else if (getBodyContent(error) == 500)
 			return 500;
+		else if (_type == _STANDARD && !getSpecialType())
+			return 500;
+		DEBUG
 		if (_type == _LOGIN)
 			return getLogin(error);
 		else if (_type == _UPLOAD)
@@ -306,6 +334,7 @@ int	Request::setBody(int bodySize)
 	}
 	else if (_method == _DEL)
 		error = getDelete(error);
+	DEBUG
 	if (error == 500)
 		std::cout << RED << "Error getting body request" RESETN;
 	return error;

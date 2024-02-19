@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 13:36:55 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 10:22:00 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ class Request
 		bool	getPath(void);
 		bool	getExtension(void);
 		bool	getType(void);
+		bool	getSpecialType();
 		int		getTotalLength(int error);
 		void	getQuery(void);
 		bool	getBoundary(int &error);

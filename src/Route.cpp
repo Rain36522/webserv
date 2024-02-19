@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/16 17:30:53 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 10:00:13 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,22 @@ Route::Route(){
 
 int	Route::match(Request req)
 {
+	std::cout << "compared route " << _path << " to request " << req._path; 
 	if (req._path.find(_path) == 0 && (req._path.size() == _path.size() || req._path[_path.size()] == '/'))
+	{
+		std::cout << GREEN << "match" RESETN;
 		return (int)_path.size();
+	}
+	std::cout << RED << "no match" RESETN;
 	return -1;
 }
 
 void Route::execute(Request request, Response &response)
 {
 	request.setUrlFile(_path);
+	std::cout << "Incoming request method is " << request._method << std::endl;
+		std::cout << "Incoming request type is " << request._type << std::endl;
+
 	if (!_redirPath.empty())
 	{
 		response._redirLocation = _redirPath;
@@ -94,14 +102,14 @@ void	Route::setHtml(std::string file, std::string dir, Response &response)
 	if (file.empty())
 	{
 		if (!_default.empty())
-			getHtml(dir + "/" + _default, response._htmlContent);
+			response._errorCode = getHtml(dir + "/" + _default, response._htmlContent);
 		else if (_listDir)
 			doListDir(response._htmlContent);
 		else
 			response._errorCode = 404;
 	}
 	else
-		getHtml(dir + "/" + file, response._htmlContent);
+		response._errorCode = getHtml(dir + "/" + file, response._htmlContent);
 }
 
 // int Route::getMethod(HttpRequest request, std::string &html)
