@@ -6,13 +6,13 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 16:05:55 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/16 13:33:49 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 13:03:14 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include "Server.hpp"
-#define MAX_EVENTS 100
+#define MAX_EVENTS 1000
 
 class Server;
 

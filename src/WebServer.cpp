@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 09:55:08 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 14:20:18 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ WebServer::WebServer(std::string file)
 	std::vector<Server>::iterator i;
 	std::set<int> ports;
 	_kfd = kqueue();
-	std::vector<struct kevent> change(servers.size());
+	std::vector<struct kevent> change(servers.size() * 2);
 	if (_kfd == -1) {
 		perror("Error creating kqueue");
 		exit(EXIT_FAILURE);
@@ -39,8 +39,8 @@ WebServer::WebServer(std::string file)
 		{
 			int server_fd = getServerSocket(*i);
 			_serverFds.push_back(server_fd);
-			EV_SET(&change[2 * ports.size() - 2], server_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-			EV_SET(&change[2 * ports.size() - 1], server_fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+			EV_SET(&change[2 * ports.size() - 2], server_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
+			EV_SET(&change[2 * ports.size() - 1], server_fd, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, NULL);
 		}
 	}
 	if (kevent(_kfd, &change[0], 2 * ports.size(), nullptr, 0, nullptr) == -1) {
@@ -66,7 +66,7 @@ int WebServer::getServerSocket(Server s) {
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_port = htons(s.get_port());
 	int optval = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, 4)) {
 		perror("Error setting socket option SO_REUSEADDR");
 		exit(EXIT_FAILURE);
 	}
@@ -86,16 +86,19 @@ void WebServer::run(void)
 {
 	HttpRequest	request;
 	struct sockaddr_in client_addr;
-
+	// int k = 0;
 	while (true)
 	{
-		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, nullptr);
+		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, NULL);
 		if (n_events == -1) {
 			perror("Error in kevent");
 			exit(EXIT_FAILURE);
 		}
-		
+
 		for (int i = 0; i < n_events; ++i) {
+			std::cout << "================================================" RESETN;
+			
+			std::cout << GREEN << "INCOMING FD: " << events[i].ident RESETN;
 			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
 				if (events[i].flags & EV_EOF) {
 					close(events[i].ident);
@@ -110,9 +113,9 @@ void WebServer::run(void)
 				 std::cout << "Accepted connection from client" << std::endl;
                 // Add the client socket to the kqueue for monitoring
                 struct kevent client_event[3];
-                EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-				EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD, 0, 0, NULL);
+                EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
+				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, NULL);
+				EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD | EV_CLEAR, 0, 0, NULL);
 
                 if (kevent(_kfd, client_event, 3, NULL, 0, NULL) == -1) {
                     perror("Error adding client socket to kqueue");
@@ -148,6 +151,7 @@ void WebServer::run(void)
 				if (response._errorCode != 500 && _servers.find(request._hostPort) != _servers.end())
 					_servers[request._hostPort].genReponse(request, response);
 				response.sendResponse();
+				close(client_fd);
 			}
 			
 		}
