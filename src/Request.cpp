@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 10:35:04 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 13:21:49 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,6 +305,8 @@ int	Request::setUrlFile(std::string route_path)
 		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
 	else
 		_fileName = _path.substr(route_path.size() + 1, _path.size() - route_path.size() - 1);
+	if (_fileName[0] == '/')
+		_fileName = _fileName.substr(1, _fileName.size() - 1);
 	return 200;
 }
 
