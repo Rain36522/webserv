@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/16 13:51:24 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 16:17:38 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,13 @@ class Route
 		 */
 		int match(Request req);
 
-		void execute(Request req, Response &response);
-		void runCGI(Request request, Response &response);
-		int getMethod(Request request, std::string &html);
-		int postMethod(Request request, std::string &html);
-		void delMethod(Request request, Response &response);
+		void 	execute(Request req, Response &response);
+		void 	runCGI(Request request, Response &response);
+		void 	delMethod(Request request, Response &response);
 		void	uploadClientFile(Request request, Response &response);
-		int	addListBox(std::string &html);
-		int	doListDir(std::string &html) const;
-		void setHtml(std::string file, std::string dir, Response &response);
+		int		addListBox(std::string &html);
+		int		doListDir(std::string &html, std::string pathDir) const;
+		void	setHtml(Request file, std::string dir, Response &response);
 		friend class ParseConfig;
 };
 

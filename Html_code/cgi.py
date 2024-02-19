@@ -6,6 +6,8 @@ def	getCalcul(calcul):
 	calcul = calcul.replace("+", " ")
 	calcul = calcul.replace("%2B", "+")
 	calcul = calcul.replace("%2F", "/")
+	calcul = calcul.replace("%28", "(")
+	calcul = calcul.replace("%29", ")")
 	return calcul
 
 def	doCGI():

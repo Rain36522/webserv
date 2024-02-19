@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 14:20:18 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 14:41:11 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ WebServer::WebServer(std::string file)
 	for (i = servers.begin(); i != servers.end(); i++)
 	{
 		std::string host_port = (*i).get_host() + ":" + std::to_string((*i).get_port());
+		std::cout << "ADDED " << host_port RESETN;
 		_servers.insert(std::map<std::string, Server>::value_type(host_port, *i));
 		if (ports.insert((*i).get_port()).second)
 		{
@@ -150,6 +151,8 @@ void WebServer::run(void)
 				response._clientFd = client_fd;
 				if (response._errorCode != 500 && _servers.find(request._hostPort) != _servers.end())
 					_servers[request._hostPort].genReponse(request, response);
+				else
+					std::cout << RED << "Request did not match a server" RESETN;
 				response.sendResponse();
 				close(client_fd);
 			}

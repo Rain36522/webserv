@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sendPage.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 13:55:15 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/19 09:42:19 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 14:33:04 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ std::string	getErrorHtml(std::string File, int errorCode)
 		std::cerr << ORANGE << "Failed to read html file : " << File << RESET << std::endl;
 		return "";	
 	}
-	DEBUG
 	while (getline(HtmlFile, tmp))
 	{
 		if (tmp.find("{Error_code}") != std::string::npos)

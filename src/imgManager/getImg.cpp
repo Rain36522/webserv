@@ -6,12 +6,12 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 13:44:25 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/19 16:29:34 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/data.hpp"
-#include "../../Request.hpp"
+#include "../../includes/Request.hpp"
 
 static std::string	getFileName(std::string str)
 {
@@ -87,26 +87,4 @@ bool	putInBinary(std::string filename, std::string content)
 	return (true);
 }
 
-void	requestToFile(Request &request, std::string uploadPath)
-{
-	std::string	header;
-	std::string	FileContent;
-	std::string	FileName;
 
-	FileContent = "";
-	request.PostFile = false;
-	header = getHeader(request.body);
-	FileName = getFileName(request.body);
-	if (header != "" || FileName != "")
-		FileContent = getFileContent(header, request.body);
-	else
-		std::cerr << RED << "Header or filename invalide\n" << RESET;
-	if (FileContent == "")
-		std::cerr << RED << "Post methode with invalide file content" << RESET << std::endl;
-	else
-	{
-		std::cout << GREEN << "Download image on : " << uploadPath + "/"+ FileName << std::endl << RESET;
-		if (putInBinary(uploadPath + "/" + FileName, FileContent))
-			request.PostFile = true;
-	}
-}

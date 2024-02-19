@@ -60,7 +60,7 @@
 		<div class="div_file">
 			<form action="" method="post" enctype="multipart/form-data">
 				<label for="fileUpload">Choose a file to upload:</label>
-				<input type="file" id="fileUpload" name="fileUpload" multiple><br><br>
+				<input type="file" id="fileUpload" name="fileUpload"><br><br>
 				<input type="submit" value="Upload">
 			</form>
 			<p></p>
@@ -73,7 +73,15 @@
 						method: 'DELETE',
 						headers: {'Content-Type': 'application/json'},
 						body: "delete_file:" + fileName
-					});
+					}).then(response => {
+        if (response.ok) {
+			window.location.href = window.location.href;
+        } else {
+            console.error('Failed to delete file:', response.statusText);
+        }
+    }).catch(error => {
+        console.error('Error deleting file:', error);
+    });
 				}
 			</script>
 		</div>

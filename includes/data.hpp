@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/16 12:32:41 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:40:19 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,3 @@ int			getHtmlFd(int fd, std::string &html);
 void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name);
 void 		sendRedirectResponse(int client_fd, const std::string& redirectLocation, std::string server_name);
 void		erraseHtmlVar(std::string &html); // Not USED ONE TO DELETE? TODO
-
-
-// Download image TODO DELETE
-void	requestToFile(HttpRequest &request, std::string uploadPath);

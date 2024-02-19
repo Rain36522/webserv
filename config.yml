@@ -24,7 +24,7 @@ server:
   name: 3
   port: 8080
   host: 127.0.0.1
-  bodyLimit: 40000
+  bodyLimit: 4000000
   defaultError: ./Html_code/400.html
   route:
     path:
@@ -32,6 +32,7 @@ server:
     default: cgi.html
     methods:    GET  DELETE POST
     listDir: false
+    uploadPath: ./upload
     redirPath: asdf
   route:
     path: asdf
@@ -111,9 +112,9 @@ server:
   server:
     name: 4
     port: 80
-    host: example.com
+    host: 127.0.0.1
     bodyLimit: 256
-    defaultError: ./Html_code/418.html
+    defaultError: ./Html_code/400.html
     route:
       path:
       dir: ./Html_code/

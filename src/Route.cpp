@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/19 10:00:13 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 17:50:54 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@ Route::Route(){
 
 int	Route::match(Request req)
 {
-	std::cout << "compared route " << _path << " to request " << req._path; 
+	std::cout << "compared route " << _path << " to request " << req._path;
+	if (_path.size() == 0){
+		std::cout << GREEN << "match" RESETN;
+		return (0);
+	}
 	if (req._path.find(_path) == 0 && (req._path.size() == _path.size() || req._path[_path.size()] == '/'))
 	{
 		std::cout << GREEN << "match" RESETN;
@@ -31,7 +35,7 @@ int	Route::match(Request req)
 
 void Route::execute(Request request, Response &response)
 {
-	request.setUrlFile(_path);
+	request.setUrlFile(_path, _uploadPath);
 	std::cout << "Incoming request method is " << request._method << std::endl;
 		std::cout << "Incoming request type is " << request._type << std::endl;
 
@@ -44,44 +48,37 @@ void Route::execute(Request request, Response &response)
 	{
 		case _CGI:
 			runCGI(request, response);break;
-		case _UPLOAD:
-			uploadClientFile(request, response);break;
 		case _COOKIES: // TODO
 		case _LOGIN: // TODO
 		case _DELETE:
-			delMethod(request, response);
+			delMethod(request, response); break;
+		case _UPLOAD:
+			uploadClientFile(request, response);
 		default:
-			setHtml(request._fileName, _dir, response);
+			setHtml(request, _dir, response);
 	}
 }
 
 void Route::delMethod(Request request, Response &response)
 {
+	DEBUG
 	std::string fileFullPath = _uploadPath + "/" +request._bodyFileName;
+	std::cout << GREEN << fileFullPath RESETN;
 	if (remove(fileFullPath.c_str()))
 		response._errorCode = 401;
 	else
 	{
-		response._errorCode = 200;
-		setHtml(request._fileName, _dir, response);
+		DEBUG
+		setHtml(request, _dir, response);
 	}
 }
 
-// int Route::postMethod(HttpRequest request, std::string &html)
-// {
-// 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
-// 		return runCGI(request, html);
-// 	else // move download here
-// 		return (uploadClientFile(request, html));
-// 	return 404;// Is this correct?
-// }
-
-int	Route::doListDir(std::string &html) const
+int	Route::doListDir(std::string &html, std::string path_dir) const
 {
 	DIR		*dir;
 	dirent	*entry;
-
-	dir = opendir(_dir.c_str());
+	std::string fullDir = _dir + "/" + path_dir;
+	dir = opendir(fullDir.c_str());
 	if (dir == nullptr)
 	{
 		std::cerr << RED << "Could not access path for list directory\n" << RESET;
@@ -93,43 +90,46 @@ int	Route::doListDir(std::string &html) const
 		if (std::string(entry->d_name)[0] != '.')
 			html += "<p>" + std::string(entry->d_name) + "</p>";
 	}
+	if (html == "")
+		html = "<p>No file found on directory</p>";
 	closedir(dir);
 	return (200);
 }
 
-void	Route::setHtml(std::string file, std::string dir, Response &response)
+void	Route::setHtml(Request req, std::string dir, Response &response)
 {
-	if (file.empty())
+	if (req._fileName.empty())
 	{
+		std::cout << GREEN << "NO HTML PAGE IN PATH: ";
+
 		if (!_default.empty())
+		{
+			std::cout << BLUE << "get default" RESETN;
 			response._errorCode = getHtml(dir + "/" + _default, response._htmlContent);
+		}
 		else if (_listDir)
-			doListDir(response._htmlContent);
+		{
+			std::cout << BLUE << "get list" RESETN;
+			response._errorCode = doListDir(response._htmlContent, "");
+		}
 		else
+		{
+			std::cout << BLUE << "no list or default" RESETN;
 			response._errorCode = 404;
+		}
+	}
+	else if (req._extension.empty())
+	{
+		std::cout << BLUE << "get list : " << req._fileName RESETN;
+		response._errorCode = doListDir(response._htmlContent, req._fileName);
 	}
 	else
-		response._errorCode = getHtml(dir + "/" + file, response._htmlContent);
+	{
+		std::cout << GREEN << "GET HTML PAGE IN PATH" RESETN;
+		response._errorCode = getHtml(dir + "/" + req._fileName, response._htmlContent);
+	}
+	addListBox(response._htmlContent);
 }
-
-// int Route::getMethod(HttpRequest request, std::string &html)
-// {
-// 	if (!_redirPath.empty())
-// 		return 302;
-// 	if (request.fileName.empty())
-// 	{
-// 		if (!_default.empty())
-// 			return getHtml(_dir + "/" + _default, html);
-// 		else if (_listDir)
-// 			return (doListDir(html));
-// 		return 404;
-// 	}
-// 	if (std::find(_CGIs.begin(), _CGIs.end(), request.extension) != _CGIs.end())
-// 		return runCGI(request, html);
-// 	if (request.extension == ".html")
-// 		return getHtml(_dir + "/" +request.fileName, html);
-// 	return 404;
-// }
 
 void Route::runCGI(Request request, Response &response)
 {

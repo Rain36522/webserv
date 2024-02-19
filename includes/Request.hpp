@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 10:22:00 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/19 16:44:26 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ class Request
 		bool						_login;
 		
 		int				setServeur(void); // Read heder content, set Query // WEBSERVER
-		int				setBody(int body); // Read body content (file / login) //SERVER
-		int				setUrlFile(std::string route_path); //set html or CGI file to return
+		int				setBody(int bodySize); // Read body content (file / login) //SERVER
+		int				setUrlFile(std::string route_path, std::string uploadDir); //set html or CGI file to return
 	
 	private:
 		std::string	_boundary;
@@ -62,5 +62,5 @@ class Request
 		int		getLogin(int error);
 		int		getDelete(int error);
 		int		getBodyContent(int error);
-
+		int		doUpload(int error, std::string uploaddir);
 };
