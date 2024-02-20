@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/19 17:50:54 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 11:18:24 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,7 @@ void Route::runCGI(Request request, Response &response)
 		if (WEXITSTATUS(exev))
 		{
 			close(fd[0]);
+			std::cout << RED << "Error executing CGI" RESETN;
 			response._errorCode = 500;
 			return;
 		}

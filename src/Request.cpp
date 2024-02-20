@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 17:57:24 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 08:40:35 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	std::cout << MAGENTA << _body RESETN;
 	return (200);
 }
 
@@ -385,19 +384,15 @@ int	Request::doUpload(int error, std::string upload_dir)
 	start = _body.find("\r\n", start);
 	start = _body.find("\r\n", start + 1);
 	start = _body.find("\r\n", start + 1);
-	DEBUG
 	if (start == std::string::npos)
 		return 500;
-	DEBUG
 	start += 2;
 	stop = _body.find((_boundary + "--"), start);
-	DEBUG
 	std::cout << ORANGE << "Boundary : " << _boundary RESETN;
 	std::cout << BLUE << "File : " << file RESETN;
 	
 	if (stop == std::string::npos)
 		return 500;
-	DEBUG
 	stop -= 4;
 	outfile.open(file, std::ios::binary);
 	if (outfile.fail())
