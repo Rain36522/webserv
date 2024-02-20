@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/20 12:35:27 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 13:42:11 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,22 @@ int	Route::match(Request req)
 
 void Route::execute(Request request, Response &response)
 {
-	request.setUrlFile(_path, _uploadPath, _allowUpload);
+	if (std::find(_methods.begin(), _methods.end(), request._method) == _methods.end())
+	{
+		response._errorCode = 405;
+		return ;
+	}
+	response._errorCode = request.setUrlFile(_path, _uploadPath, _allowUpload);
+	if (response._errorCode >= 400)
+		return ;
 	std::cout << "Incoming request method is " << request._method << std::endl;
-		std::cout << "Incoming request type is " << request._type << std::endl;
-
+	std::cout << "Incoming request type is " << request._type << std::endl;
 	if (!_redirPath.empty())
 	{
 		response._redirLocation = _redirPath;
 		response._errorCode = 302;
 	}
+	
 	switch (request._type)
 	{
 		case _CGI:
@@ -142,8 +149,8 @@ void Route::runCGI(Request request, Response &response)
 	int	exev;
 	std::string value = std::string(PATH_INFO) + "/" + request._fileName;
 	char	py[] = "/usr/bin/python3";
-	
-	char	*a[3] = {py, (char *)value.c_str(), NULL};
+	char	*py_param[3] = {py, (char *)value.c_str(), NULL};
+	char	*cpp_param[2] = {(char *)value.c_str(), 0};
 	if (pipe(fd) == -1)
 	{
 		std::cerr << RED << "Pipe Error\n" << RESET;
@@ -170,9 +177,9 @@ void Route::runCGI(Request request, Response &response)
 		close(fd[1]);
 		close(fd[0]);
 		if (request._extension == ".py")
-			execve(py, a, (char **)&params[0]);
+			execve(py, py_param, (char **)&params[0]);
 		 if (request._extension == ".out")
-			execve((char *)value.c_str(), 0, (char **)&params[0]);
+			execve((char *)value.c_str(), cpp_param, (char **)&params[0]);
 		std::cerr << RED << "Error executing CGI : " << request._fileName << std::endl << RESET;
 		exit(1);
 	}
