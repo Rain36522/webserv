@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:30 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 12:36:17 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:31:45 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class Server
 		std::vector<Route>	_routes;
 	public:
 		Server();
-		Server(ServConf Conf);
 		~Server(void);
 		Route *matchRoute(Request & req);
 		void addRoute(Route r);

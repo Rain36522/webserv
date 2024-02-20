@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:50:25 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 13:17:32 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
+	std::cout << _body RESETN;
 	return (200);
 }
 
@@ -280,8 +281,8 @@ int	Request::getLogin(int error)
 	if (!_body[j])
 		return 500;
 	DEBUG
-	_pwd = _body.substr(i, j - i);
-	std::cout << GREEN << "login <" << BLUE << _usr << ", " << _pwd << GREEN << ">" RESETN;
+	_pass = _body.substr(i, j - i);
+	std::cout << GREEN << "login <" << BLUE << _usr << ", " << _pass << GREEN << ">" RESETN;
 	return error;
 }
 
@@ -407,7 +408,7 @@ int	Request::doUpload(int error, std::string upload_dir)
 	if (outfile.fail())
 	{
 		std::cerr << ORANGE << "Opening fail error\n" << RESET;
-		return (false);
+		return (500);
 	}
 	outfile << _body.substr(start, stop - start);
 	outfile.close();

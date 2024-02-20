@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:34:20 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 13:18:06 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Request
 		std::string					_extension;
 		std::string					_bodyContent; //Data in post methode.
 		std::string					_usr;
-		std::string					_pwd;
+		std::string					_pass;
 		std::string					_bodyFileName;
 		std::string					_CookieId;
 		int							_totaLength; // total request length of download file
@@ -43,7 +43,7 @@ class Request
 		
 		int				setBody(int bodySize); // Read body content (file / login) //SERVER
 		int				setUrlFile(std::string route_path, std::string uploadDir, bool allowUpload);
-	
+
 	private:
 		std::string	_boundary;
 		int 	receiveHTTPRequest(const int client_fd, const int length);
