@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 12:35:39 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:58:08 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Route
 		std::string					_uploadPath;
 		std::vector<std::string>	_CGIs;
 		std::string					_server_name; // Contain server name for send in request.
+		std::set<std::pair<std::string, std::string> > _logins;
 		
 	public:
 		Route();
@@ -47,6 +48,8 @@ class Route
 		int match(Request req);
 
 		void 	execute(Request req, Response &response);
+		void	login(Request request, Response &response);
+
 		void 	runCGI(Request request, Response &response);
 		void 	delMethod(Request request, Response &response);
 		int		addListBox(std::string &html);

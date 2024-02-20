@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 12:24:17 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 15:00:22 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void Response::sendHTML()
 	responseHeaders += "Content-Type: text/html\r\n";
 	responseHeaders += "Content-Length: " + std::to_string(_htmlContent.size()) + "\r\n";
 	responseHeaders += "Server: " + _servName +"\r\n";
+	responseHeaders += _headers;
 	responseHeaders += "\r\n";
 	ssize_t sent = send(_clientFd, responseHeaders.c_str(), responseHeaders.size(), 0);
 	std::cout << RED << "HEADERS:\n" << BLUE << responseHeaders RESETN;

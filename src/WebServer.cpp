@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:27:01 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:49:36 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ void WebServer::run(void)
                 struct kevent client_event[3];
                 EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
 				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, NULL);
-				EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD | EV_CLEAR, 0, 0, NULL);
+				// EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD | EV_CLEAR, 0, 0, NULL);
 
-                if (kevent(_kfd, client_event, 3, NULL, 0, NULL) == -1) {
+                if (kevent(_kfd, client_event, 2, NULL, 0, NULL) == -1) {
                     perror("Error adding client socket to kqueue");
                     close(client_fd);
                 }

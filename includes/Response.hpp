@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:08:22 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 12:34:54 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 15:00:03 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Response
 		std::string _htmlContent;
 		int			_clientFd;
 		std::string _redirLocation;
+		std::string _headers;
 		std::string	getCodeText();
 		void sendHTML();
 		void sendRedirect();

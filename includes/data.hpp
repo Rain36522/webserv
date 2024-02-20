@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:27:59 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:55:14 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
+
+#define LOGIN "abcd"
+#define PASSWORD "1234"
 
 #define PATH_INFO "./CGI"
 
