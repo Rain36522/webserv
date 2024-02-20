@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 13:17:32 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 15:30:13 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	std::cout << _body RESETN;
+	// std::cout << _body RESETN;
 	return (200);
 }
 
@@ -169,7 +169,7 @@ int	Request::getTotalLength(int error)
 		j ++;
 	if (_body[j] != '\r')
 		return 500;
-	value = _body.substr(i, j -i - 1);
+	value = _body.substr(i, j -i);
 	try
 	{
 		_totaLength = std::stoi(value);
@@ -303,8 +303,16 @@ int	Request::getDelete(int error)
 
 int	Request::getBodyContent(int error)
 {
-	if (_totaLength != _length)
-		return receiveHTTPRequest(_clientFd, _totaLength);
+	size_t	i;
+	DEBUG
+	i = 0;
+	if ((i = _body.find(("--" + _boundary))) == std::string::npos)
+		i = 0;
+	DEBUG
+	std::cout << "Total : " << _totaLength << ", length : " << _length RESETN;
+	if (_totaLength - int(i) > _length)
+		error = receiveHTTPRequest(_clientFd, _totaLength - int(i));
+	DEBUG
 	return error;
 }
 
@@ -363,11 +371,13 @@ int	Request::setBody(int bodySize)
 
 Request::Request(const int client_Fd, int &error)
 {
+	_length = 0;
 	_clientFd = client_Fd;
 	if (receiveHTTPRequest(_clientFd, 0) && getMethode() && getHostPort() \
 		&& getPath() && getExtension() && getType())
 	{
-		_totaLength = _body.size();
+		_totaLength = _length;
+		std::cout << MAGENTA << "ACTUAL LENGTH : " << _length RESETN;
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)

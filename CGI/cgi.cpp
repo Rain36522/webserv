@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/13 14:46:39 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/13 18:15:33 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:42:25 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int main()
 	const char* val = std::getenv("inputNum");
 	const char* folder = std::getenv("uploadFolder");
 	const char* path_t = std::getenv("PWD");
+
 	if (!val || std::atoi(val) < 1 || std::atoi(val) > 3 || !folder || !path_t)
 		return (EXIT_FAILURE);
 	std::string temp1(folder);
@@ -68,7 +69,7 @@ int main()
 		} else {
 			std::cout << "<p>Error opening directory " << std::string(full) << ".</p>";
 			std::cout << "</html>";
-			return (3);
+			return (EXIT_SUCCESS);
 		}
 	}
 	else
