@@ -68,7 +68,7 @@ server:
 server: 
   name: 3
   port: 8080
-  host: 127.0.0.1
+  host: 10.11.13.4
   bodyLimit: 256
   defaultError: 418.html
   route:
@@ -98,7 +98,7 @@ server:
 server: 
   name: 3
   port: 8080
-  host: 10.11.14.3
+  host: localhost
   bodyLimit: 256
   defaultError: ./Html_code/418.html
   route:
