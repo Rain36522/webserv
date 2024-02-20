@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WebServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 16:38:08 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 17:35:46 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,7 @@ int WebServer::getServerSocket(Server s) {
 		perror("Error creating socket");
 		exit(EXIT_FAILURE);
 	}
-	// if (fcntl(sockfd, F_SETFL, O_NONBLOCK) == -1)
-	// {
-	// 	close(sockfd);
-	// 	perror("Error setting socket to nonblocking");
-	// 	exit(EXIT_FAILURE);
-	// }
+
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
@@ -109,11 +104,9 @@ void WebServer::run(void)
 					continue ;
 				}
 				 std::cout << "Accepted connection from client" << std::endl;
-                // Add the client socket to the kqueue for monitoring
                 struct kevent client_event[3];
                 EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
 				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, NULL);
-				// EV_SET(&client_event[2], client_fd, EVFILT_EXCEPT, EV_ADD | EV_CLEAR, 0, 0, NULL);
 
                 if (kevent(_kfd, client_event, 2, NULL, 0, NULL) == -1) {
                     perror("Error adding client socket to kqueue");
@@ -133,7 +126,8 @@ void WebServer::run(void)
                     close(client_fd);
 					continue;
                 }
-				//EVFILT_EXCEPT
+				if (events[i].filter == -1)
+					continue;
 				Response response(client_fd);
 				Request request(client_fd, response._errorCode);
 				if (response._errorCode == 500)
@@ -147,10 +141,12 @@ void WebServer::run(void)
 				}
 				response._clientFd = client_fd;
 				if (response._errorCode != 500 && _servers.find(request._hostPort) != _servers.end())
+				{
 					_servers[request._hostPort].genReponse(request, response);
+					response.sendResponse();
+				}
 				else
 					std::cout << RED << "Request did not match a server" RESETN;
-				response.sendResponse();
 				close(client_fd);
 			}
 			

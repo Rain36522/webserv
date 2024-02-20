@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sendPage.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 13:55:15 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 16:20:37 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 17:43:03 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ std::string	getErrorHtml(std::string File, int errorCode)
 
 	HtmlFile.open(File);
 	
-	if (HtmlFile.fail())
+	if (!validateFd(File, EVFILT_READ) || HtmlFile.fail())
 	{
 		std::cerr << ORANGE << "Failed to read html file : " << File << RESET << std::endl;
 		return "";	

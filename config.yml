@@ -24,7 +24,7 @@ server:
   name: 3
   host: 127.0.0.1
   port: 8080
-  bodyLimit: 400000000
+  bodyLimit: 40000000
   defaultError: ./Html_code/400.html
   route:
     path:
@@ -113,9 +113,16 @@ server:
     name: 4
     port: 80
     host: 127.0.0.1
-    bodyLimit: 256
+    bodyLimit: 400
     defaultError: ./Html_code/400.html
     route:
       path:
       dir: ./Html_code/
       default: 418.html
+    route:
+      path: hello
+      dir: ./Html_code/
+      default: main.html
+      methods: GET
+      listDir: true
+      allowUpload: false

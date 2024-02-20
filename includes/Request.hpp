@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 16:30:08 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:23:57 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class Request
 		std::string					_usr;
 		std::string					_pass;
 		std::string					_bodyFileName;
-		int							_totaLength; // total request length of download file
-		int							_length; // actual request length
+		int							_BodyLength; // total request length of download file
+		int							_lengthHeader; // actual request length
 		int							_clientFd;
 		bool						_login;
 		

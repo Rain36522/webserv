@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 14:31:16 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:11:00 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	Server::genReponse(Request request, Response &res)
 	res._errorCode = request.setBody(_bodyLimit);
 	if (res._errorCode >= 400)
 	{
-		std::cout << RED << "Body size too large" RESETN;
+		std::cout << RED << "Body size too large" << res._errorCode RESETN;
 		handleError(res._errorCode, res._htmlContent);
 		return false;
 	}

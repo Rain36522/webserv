@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:40:14 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 16:29:34 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:46:19 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,9 @@ static std::string	getFileContent(std::string header, std::string body)
 bool	putInBinary(std::string filename, std::string content)
 {
 	std::ofstream	outfile;
-	validateFd(filename, EVFILT_WRITE);
 
 	outfile.open(filename, std::ios::binary);
-	if (outfile.fail())
+	if (!validateFd(filename, EVFILT_WRITE) || outfile.fail())
 	{
 		std::cerr << ORANGE << "Opening fail error\n" << RESET;
 		return (false);

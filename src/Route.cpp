@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/20 16:45:08 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 16:57:16 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void Route::execute(Request request, Response &response)
 
 void Route::login(Request request, Response &response)
 {
-	DEBUG
 	if (request._usr != LOGIN || request._pass != PASSWORD)
 	{
 		response._errorCode = 401;

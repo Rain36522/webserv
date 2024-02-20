@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 16:44:29 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 17:44:01 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 	const int 		bufferSize = 1024;
 	char 			buffer[bufferSize];
 	ssize_t 		bytesRead;
+	int				i;
 
+	i = 0;
 	bytesRead = bufferSize - 1;
-	while (bytesRead == bufferSize - 1 || _length < length)
+	while (bytesRead == bufferSize - 1 || i < length)
 	{
 		bytesRead = read(client_fd, buffer, bufferSize - 1);
 		if (bytesRead < 0 || (!length && !bytesRead))
@@ -28,11 +30,12 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 			perror("read failed :( )");
 			return 500;
 		}
-		_length += bytesRead;
+		i += bytesRead;
 		_body += std::string(buffer, bytesRead);
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
+	std::cout << MAGENTA << _body RESETN;
 	return (200);
 }
 
@@ -124,17 +127,12 @@ bool	Request::getExtension(void)
 	return true;
 }
 
-// TODO Remove coment if useless
 bool	Request::getType(void)
 {
 	if (_method == _DEL)
 		_type = _DELETE;	
 	else if (_extension != ".html" && _extension != "" && _method != _DEL)
 		_type = _CGI;
-	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"username\"") != std::string::npos)
-	// 	_type = _LOGIN;
-	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
-	// 	_type = _UPLOAD;
 	else
 		_type = _STANDARD;
 	return true;
@@ -169,13 +167,13 @@ int	Request::getTotalLength(int error)
 	value = _body.substr(i, j -i);
 	try
 	{
-		_totaLength = std::stoi(value);
+		_BodyLength = std::stoi(value);
 	}
 	catch(const std::exception& e)
 	{
 		return 500;
 	}
-	std::cout << GREEN << "total length <" << BLUE << _totaLength << GREEN << ">" RESETN;
+	std::cout << GREEN << "total length <" << BLUE << _BodyLength << GREEN << ">" RESETN;
 	return error;
 }
 
@@ -224,7 +222,7 @@ bool	Request::getBoundary(int &error)
 		return false;
 	}
 	_boundary = _body.substr(i, j - i);
-	// DEBUGOUT << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
+	DEBUGOUT << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
 	return true;
 }
 
@@ -297,12 +295,11 @@ int	Request::getDelete(int error)
 int	Request::getBodyContent(int error)
 {
 	size_t	i;
-	i = 0;
+	
 	if ((i = _body.find(("--" + _boundary))) == std::string::npos)
 		i = 0;
 	// DEBUGOUT << "Total : " << _totaLength << ", length : " << _length RESETN;
-	if (_totaLength - int(i) > _length)
-		error = receiveHTTPRequest(_clientFd, _totaLength - int(i));
+	error = receiveHTTPRequest(_clientFd, _BodyLength - int(i));
 	return error;
 }
 
@@ -330,17 +327,19 @@ int	Request::setBody(int bodySize)
 	int	error;
 
 	error = 200;
-	if (_totaLength > bodySize)
+	std::cout << "total : " << _BodyLength + _lengthHeader << " / " << bodySize RESETN;
+	std::cout << "header : " << _lengthHeader << "body : " << _BodyLength RESETN;
+	if (_BodyLength + _lengthHeader > bodySize)
 		return 413;
+	DEBUG
 	if (_method == _POST)
 	{
-		
 		if (!getBoundary(error))
-			return 500;
-		else if (getBodyContent(error) == 500)
-			return 500;
+			return 501;
+		else if (_body.find(("--" + _boundary + "--")) == std::string::npos && getBodyContent(error) == 500)
+			return 502;
 		else if (_type == _STANDARD && !getSpecialType())
-			return 500;
+			return 503;
 		if (_type == _LOGIN)
 			return getLogin(error);
 		else if (_type == _UPLOAD)
@@ -355,12 +354,13 @@ int	Request::setBody(int bodySize)
 
 Request::Request(const int client_Fd, int &error)
 {
-	_length = 0;
+	_lengthHeader = 0;
 	_clientFd = client_Fd;
 	if (receiveHTTPRequest(_clientFd, 0) && getMethode() && getHostPort() \
 		&& getPath() && getExtension() && getType())
 	{
-		_totaLength = _length;
+		_lengthHeader = _body.size();
+		_BodyLength = _lengthHeader;
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)
@@ -397,7 +397,7 @@ int	Request::doUpload(int error, std::string upload_dir)
 		return 500;
 	stop -= 4;
 	outfile.open(file, std::ios::binary);
-	if (outfile.fail())
+	if (!validateFd(file, EVFILT_WRITE) || outfile.fail())
 	{
 		std::cerr << ORANGE << "Opening fail error" RESETN;
 		return (500);
