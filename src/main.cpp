@@ -6,13 +6,28 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:51:05 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/12 18:19:20 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 16:10:20 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/WebServer.hpp"
+#include "../includes/data.hpp"
 
 char **env;
+
+void	doHeader(void)
+{
+	std::cout << BLUE << BOLD;
+	std::cout << "__          __  ______   ____     _____   ______   _____   __      __" << std::endl;
+	std::cout << "\\ \\        / / |  ____| |  _ \\   / ____| |  ____| |  __ \\  \\ \\    / /" << std::endl;
+	std::cout << " \\ \\  /\\  / /  | |__    | |_) | | (___   | |__    | |__) |  \\ \\  / / " << std::endl;
+	std::cout << "  \\ \\/  \\/ /   |  __|   |  _ <   \\___ \\  |  __|   |  _  /    \\ \\/ /  " << std::endl;
+	std::cout << "   \\  /\\  /    | |____  | |_) |  ____) | | |____  | | \\ \\     \\  /   " << std::endl;
+	std::cout << "    \\/  \\/     |______| |____/  |_____/  |______| |_|  \\_\\     \\/    " << NOBOLD RESETN;
+	std::cout << std::endl << std::endl;
+	std::cout << GREEN << "Starting Webserv..." RESETN;
+}
+
 
 int main(int ac, char*av[], char **env_input)
 {
@@ -21,8 +36,10 @@ int main(int ac, char*av[], char **env_input)
 		perror("Invalid number of parameters");
 		return (1);
 	}
+	doHeader();
 	env = env_input;
 	WebServer a((std::string(av[1])));
+	std::cout << GREEN << BOLD "Server is runing" << NOBOLD RESETN;
 	a.run();
 	return (0);
 }

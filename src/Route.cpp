@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/20 15:33:24 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:43:47 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,17 @@ Route::Route(){
 
 int	Route::match(Request req)
 {
-	std::cout << "compared route " << _path << " to request " << req._path;
+	// DEBUGOUT << "compared route " << _path << " to request " << req._path;
 	if (_path.size() == 0){
-		std::cout << GREEN << "match" RESETN;
+		// DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
 		return (0);
 	}
 	if (req._path.find(_path) == 0 && (req._path.size() == _path.size() || req._path[_path.size()] == '/'))
 	{
-		std::cout << GREEN << "match" RESETN;
+		// DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
 		return (int)_path.size();
 	}
-	std::cout << RED << "no match" RESETN;
+	// DEBUGOUT << BOLD << RED << " no match" << NOBOLD RESETN;
 	return -1;
 }
 
@@ -43,8 +43,8 @@ void Route::execute(Request request, Response &response)
 	response._errorCode = request.setUrlFile(_path, _uploadPath, _allowUpload);
 	if (response._errorCode >= 400)
 		return ;
-	std::cout << "Incoming request method is " << request._method << std::endl;
-	std::cout << "Incoming request type is " << request._type << std::endl;
+	// DEBUGOUT << "Incoming request method is " << request._method << std::endl;
+	// DEBUGOUT << "Incoming request type is " << request._type << std::endl;DEBUG
 	if (!_redirPath.empty())
 	{
 		response._redirLocation = _redirPath;
@@ -80,14 +80,13 @@ void Route::login(Request request, Response &response)
 
 void Route::delMethod(Request request, Response &response)
 {
-	DEBUG
 	std::string fileFullPath = _uploadPath + "/" +request._bodyFileName;
-	std::cout << GREEN << fileFullPath RESETN;
+	// DEBUGOUT << GREEN << fileFullPath RESETN;
 	if (remove(fileFullPath.c_str()))
 		response._errorCode = 401;
 	else
 	{
-		DEBUG
+		std::cout << GREEN << "Deleted file : " << BOLD << fileFullPath << NOBOLD << "successfully" RESETN;
 		setHtml(request, _dir, response);
 	}
 }
@@ -119,7 +118,7 @@ void	Route::setHtml(Request req, std::string dir, Response &response)
 {
 	if (req._fileName.empty())
 	{
-		std::cout << GREEN << "NO HTML PAGE IN PATH: ";
+		std::cout << ORANGE << "NO HTML PAGE IN PATH: ";
 
 		if (!_default.empty())
 		{
@@ -152,7 +151,6 @@ void	Route::setHtml(Request req, std::string dir, Response &response)
 
 void Route::runCGI(Request request, Response &response)
 {
-	DEBUG
 	response._errorCode = 200;
 	if (std::find(_CGIs.begin(), _CGIs.end(), request._extension) == _CGIs.end())
 	{

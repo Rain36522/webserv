@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 15:30:13 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:39:23 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	// std::cout << _body RESETN;
 	return (200);
 }
 
@@ -227,7 +226,7 @@ bool	Request::getBoundary(int &error)
 		return false;
 	}
 	_boundary = _body.substr(i, j - i);
-	std::cout << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
+	// DEBUGOUT << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
 	return true;
 }
 
@@ -258,18 +257,15 @@ int	Request::getLogin(int error)
 	size_t			i;
 	size_t			j;
 
-	DEBUG 
 	search = "Content-Disposition: form-data; name=\"username\"\r\n\r\n";
 	if ((i = _body.find(search)) == std::string::npos)
 		return 500;
-	DEBUG
 	i += search.length();
 	j = i;
 	while (_body[j] && _body[j] != '\r')
 		j ++;
 	if (!_body[j])
 		return 500;
-	DEBUG
 	_usr = _body.substr(i, j - i);
 	search = "Content-Disposition: form-data; name=\"pwd\"\r\n\r\n";
 	if ((i = _body.find(search)) == std::string::npos)
@@ -280,7 +276,6 @@ int	Request::getLogin(int error)
 		j ++;
 	if (!_body[j])
 		return 500;
-	DEBUG
 	_pass = _body.substr(i, j - i);
 	std::cout << GREEN << "login <" << BLUE << _usr << ", " << _pass << GREEN << ">" RESETN;
 	return error;
@@ -304,21 +299,17 @@ int	Request::getDelete(int error)
 int	Request::getBodyContent(int error)
 {
 	size_t	i;
-	DEBUG
 	i = 0;
 	if ((i = _body.find(("--" + _boundary))) == std::string::npos)
 		i = 0;
-	DEBUG
-	std::cout << "Total : " << _totaLength << ", length : " << _length RESETN;
+	// DEBUGOUT << "Total : " << _totaLength << ", length : " << _length RESETN;
 	if (_totaLength - int(i) > _length)
 		error = receiveHTTPRequest(_clientFd, _totaLength - int(i));
-	DEBUG
 	return error;
 }
 
 int	Request::setUrlFile(std::string route_path, std::string uploadDir, bool allowUpload)
 {
-	std::cout << "Route path : " << route_path << std::endl;
 	if (route_path[route_path.size() - 1] != '/')
 		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
 	else
@@ -340,12 +331,9 @@ int	Request::setBody(int bodySize)
 {
 	int	error;
 
-	DEBUG
-	std::cout << "BODY : " << RED << bodySize << RESET << " TOTAL " << RED << _totaLength RESETN;
 	error = 200;
 	if (_totaLength > bodySize)
 		return 413;
-	DEBUG
 	if (_method == _POST)
 	{
 		
@@ -355,7 +343,6 @@ int	Request::setBody(int bodySize)
 			return 500;
 		else if (_type == _STANDARD && !getSpecialType())
 			return 500;
-		std::cout << "Actual body : " << YELLOW << _body RESETN;
 		if (_type == _LOGIN)
 			return getLogin(error);
 		else if (_type == _UPLOAD)
@@ -363,7 +350,6 @@ int	Request::setBody(int bodySize)
 	}
 	else if (_method == _DEL)
 		error = getDelete(error);
-	DEBUG
 	if (error == 500)
 		std::cout << RED << "Error getting body request" RESETN;
 	return error;
@@ -377,7 +363,6 @@ Request::Request(const int client_Fd, int &error)
 		&& getPath() && getExtension() && getType())
 	{
 		_totaLength = _length;
-		std::cout << MAGENTA << "ACTUAL LENGTH : " << _length RESETN;
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)
@@ -398,6 +383,7 @@ int	Request::doUpload(int error, std::string upload_dir)
 	std::ofstream	outfile;
 
 	file = upload_dir + "/" + _bodyFileName;
+	std::cout << GREEN << "Start upload file on : " << BOLD << file << NOBOLD RESETN;
 	validateFd(file, EVFILT_WRITE);
 	start = _body.find(("--" + _boundary + "\r\n"));
 	start += ("--" + _boundary + "\r\n").size();
@@ -408,8 +394,6 @@ int	Request::doUpload(int error, std::string upload_dir)
 		return 500;
 	start += 2;
 	stop = _body.find((_boundary + "--"), start);
-	std::cout << ORANGE << "Boundary : " << _boundary RESETN;
-	std::cout << BLUE << "File : " << file RESETN;
 	
 	if (stop == std::string::npos)
 		return 500;
@@ -417,10 +401,11 @@ int	Request::doUpload(int error, std::string upload_dir)
 	outfile.open(file, std::ios::binary);
 	if (outfile.fail())
 	{
-		std::cerr << ORANGE << "Opening fail error\n" << RESET;
+		std::cerr << ORANGE << "Opening fail error" RESETN;
 		return (500);
 	}
 	outfile << _body.substr(start, stop - start);
 	outfile.close();
+	std::cout << GREEN << BOLD << "Upload end." << NOBOLD RESETN;
 	return error;
 }

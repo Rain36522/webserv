@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 15:00:22 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:15:34 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,10 @@ void Response::sendHTML()
 	responseHeaders += _headers;
 	responseHeaders += "\r\n";
 	ssize_t sent = send(_clientFd, responseHeaders.c_str(), responseHeaders.size(), 0);
-	std::cout << RED << "HEADERS:\n" << BLUE << responseHeaders RESETN;
 	if (sent == -1)
 	{
 		perror("Error sending response headers");
 	}
-	std::cout << ORANGE << "BODY:\n" << GREEN << _htmlContent RESETN;
 	sent = send(_clientFd, _htmlContent.c_str(), _htmlContent.size(), 0);
 	if (sent == -1) {
 		perror("Error sending HTML content");

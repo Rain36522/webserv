@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sendPage.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 13:55:15 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/19 14:33:04 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:20:37 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	getHtml(std::string path, std::string &html)
 	std::ifstream	HtmlFile;
 	std::string		tmp;
 
-	std::cout << RED << "Path : " << path << RESET << std::endl;
+	std::cout << GREEN << "Return file <" << BLUE << path << GREEN << ">" RESETN;
 	if (!validateFd(path, EVFILT_READ))
 	{
 		std::cerr << ORANGE << "Failed to read html file"<< RESET << std::endl;

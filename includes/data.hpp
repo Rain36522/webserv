@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   data.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 14:55:14 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:38:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 #define PORT 80
 #define DEBUG std::cout << "\033[31m" << __FILE__ << __LINE__ << "\033[0m" << std::endl;
+#define DEBUGOUT std::cout
 
 #define LOGIN "abcd"
 #define PASSWORD "1234"
@@ -41,7 +42,11 @@
 #define BLUE    "\033[34m"      
 #define MAGENTA "\033[35m"      
 #define CYAN    "\033[36m"      
-#define WHITE   "\033[37m"  
+#define WHITE   "\033[37m"
+#define	HBLUE	"\033[48;5;17m"
+#define HRED	"\033[41m"
+#define BOLD	"\033[1m"
+#define NOBOLD	"\033[0m"
 
 bool		validateFd(std::string file, int type);
 std::string	getErrorHtml(std::string File, int errorCode);
