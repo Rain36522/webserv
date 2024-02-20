@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/20 11:18:24 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 12:35:27 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	Route::match(Request req)
 
 void Route::execute(Request request, Response &response)
 {
-	request.setUrlFile(_path, _uploadPath);
+	request.setUrlFile(_path, _uploadPath, _allowUpload);
 	std::cout << "Incoming request method is " << request._method << std::endl;
 		std::cout << "Incoming request type is " << request._type << std::endl;
 
@@ -53,7 +53,6 @@ void Route::execute(Request request, Response &response)
 		case _DELETE:
 			delMethod(request, response); break;
 		case _UPLOAD:
-			uploadClientFile(request, response);
 		default:
 			setHtml(request, _dir, response);
 	}
@@ -133,6 +132,7 @@ void	Route::setHtml(Request req, std::string dir, Response &response)
 
 void Route::runCGI(Request request, Response &response)
 {
+	response._errorCode = 200;
 	if (std::find(_CGIs.begin(), _CGIs.end(), request._extension) == _CGIs.end())
 	{
 		response._errorCode = 404;
@@ -188,25 +188,8 @@ void Route::runCGI(Request request, Response &response)
 			response._errorCode = 500;
 			return;
 		}
-		
 		close(fd[0]);
 	}
-	response._errorCode = exev;
-}
-
-void	Route::uploadClientFile(Request request, Response &response)
-{
-	(void) request, (void) response;
-	// requestToFile(request, _uploadPath);
-	// // if (!request.PostFile)
-	// // {
-	// // 	response._errorCode = 413;
-	// // 	return;
-	// // } TODO make sure this is already done
-	// if (request.fileName == "")
-	// 	request.fileName = _default;
-	// std::cout << RED << "DEFAULT PAGE : " <<this->_dir << request.fileName << RESET << std::endl;
-	// return (getHtml(this->_dir + request.fileName, html));
 }
 
 int	Route::addListBox(std::string &html)

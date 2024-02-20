@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 08:40:35 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 12:31:55 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,7 @@ int	Request::getBodyContent(int error)
 	return error;
 }
 
-int	Request::setUrlFile(std::string route_path, std::string uploadDir)
+int	Request::setUrlFile(std::string route_path, std::string uploadDir, bool allowUpload)
 {
 	std::cout << "Route path : " << route_path << std::endl;
 	if (route_path[route_path.size() - 1] != '/')
@@ -313,8 +313,13 @@ int	Request::setUrlFile(std::string route_path, std::string uploadDir)
 	if (_fileName[0] == '/')
 		_fileName = _fileName.substr(1, _fileName.size() - 1);
 	std::cout << GREEN << "Filename <" << BLUE << _fileName << GREEN << ">" RESETN;
-	if (_type == _UPLOAD && doUpload(200, uploadDir) == 500)
+	if (_type == _UPLOAD && allowUpload && doUpload(200, uploadDir) == 500)
+	{
 		std::cout << RED << "Error while uploading file." RESETN;
+		return 500;
+	}
+	if (!allowUpload && _type == _UPLOAD)
+		return 405;
 	return 200;
 }
 

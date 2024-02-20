@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 14:41:11 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:27:01 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,7 @@ int WebServer::getServerSocket(Server s) {
 
 void WebServer::run(void)
 {
-	HttpRequest	request;
 	struct sockaddr_in client_addr;
-	// int k = 0;
 	while (true)
 	{
 		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, NULL);

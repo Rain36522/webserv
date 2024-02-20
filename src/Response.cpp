@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/19 08:57:00 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 12:24:17 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ void Response::sendHTML()
 	responseHeaders += "Server: " + _servName +"\r\n";
 	responseHeaders += "\r\n";
 	ssize_t sent = send(_clientFd, responseHeaders.c_str(), responseHeaders.size(), 0);
+	std::cout << RED << "HEADERS:\n" << BLUE << responseHeaders RESETN;
 	if (sent == -1)
 	{
 		perror("Error sending response headers");
 	}
+	std::cout << ORANGE << "BODY:\n" << GREEN << _htmlContent RESETN;
 	sent = send(_clientFd, _htmlContent.c_str(), _htmlContent.size(), 0);
 	if (sent == -1) {
 		perror("Error sending HTML content");
@@ -78,8 +80,8 @@ std::string	Response::getCodeText()
 
 void Response::sendResponse()
 {
-	// if (_errorCode == 302)
-	// sendRedirect();
+	if (_errorCode == 302)
+		sendRedirect();
 	if (_errorCode != 302)
 		sendHTML();
 }

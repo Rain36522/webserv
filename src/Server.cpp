@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 18:12:18 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:19:52 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,13 @@ bool	Server::genReponse(Request request, Response &res)
 	Route bestRoute;
 	int	maxMatch = -1;
 
-	request.setBody(_bodyLimit);//TODO FIX BODY SIZE ;-;
+	res._errorCode = request.setBody(_bodyLimit);
+	if (res._errorCode >= 400)
+	{
+		std::cout << RED << "Body size too large" RESETN;
+		handleError(res._errorCode, res._htmlContent);
+		return false;
+	}
 	res._servName = _name;
 	res._errorCode = 404;
 	for (i = _routes.begin(); i != _routes.end(); i++)

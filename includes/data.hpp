@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:01:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 16:40:19 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:27:59 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,7 @@
 #define CYAN    "\033[36m"      
 #define WHITE   "\033[37m"  
 
-bool validateFd(std::string file, int type);
-// Send news request  DELETE TODO
+bool		validateFd(std::string file, int type);
 std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
-void 		sendHTMLResponse(int client_fd, const std::string& htmlPage, int code, std::string server_name);
-void 		sendRedirectResponse(int client_fd, const std::string& redirectLocation, std::string server_name);
-void		erraseHtmlVar(std::string &html); // Not USED ONE TO DELETE? TODO

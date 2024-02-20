@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 15:59:51 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/16 13:27:20 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:36:40 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,6 @@
 #include <sys/event.h>
 #include <sys/time.h>
 
-
-#define OK					200
-#define CREATED				201
-#define NO_CONTENT			204
-#define FOUND				302
-// Bad request includes bad syntax, size too large, weird routing
-#define BAD_REQUEST			400
-// attempting something without permission (bad file permission?)
-#define FORBIDDEN			 403
-#define NOT_FOUND			 404
-#define METHOD_NOT_ALLOWED	 405
-// attempting to brew coffee with a teapot
-#define IM_A_TEAPOT			 418
-#define WINDOWS_PARENT_BLOCK 450
-#define UNAVALIABLE_LEGAL	 451
-// generic error message
-#define INTERNAL_ERROR		500
-#define INSUFFICIENT_STORAGE 507
-
-
 enum m_type
 {
 	_GET,
@@ -63,37 +43,6 @@ enum m_dataType
 	_STANDARD,
 	_COOKIES,
 	_DELETE
-};
-
-struct HttpRequest
-{
-	m_type 						method;
-	m_dataType					type;
-	std::string					hostPort;
-	std::string					path; // route with filename.
-	std::string					fileName;
-	std::vector<std::string>	Query;
-	std::string					body; // look for remove TODO
-	std::string					extension;
-	std::string					bodyFile;
-	std::string					usr;
-	std::string					pwd;
-	int							requestLength; // total request length of download file
-	int							length; // actual request length
-	int							clientFd;
-};
-
-struct HttpResponse
-{
-	// status line
-	int code;
-	std::string reason_phrase;
-	// headers
-	std::string content_type;
-	size_t		content_length;
-	// ... ?
-	// Reponse body
-	std::string body;
 };
 
 struct	ServConf
@@ -113,4 +62,3 @@ struct	ServConf
 };
 
 extern char **env;
-

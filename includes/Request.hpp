@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 13:20:35 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/19 16:44:26 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:34:20 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ class Request
 		friend class Server;
 		friend class Route;
 
-		// Add << operator;
 	protected:
 		m_type 						_method;
 		m_dataType					_type;
@@ -42,9 +41,8 @@ class Request
 		int							_clientFd;
 		bool						_login;
 		
-		int				setServeur(void); // Read heder content, set Query // WEBSERVER
 		int				setBody(int bodySize); // Read body content (file / login) //SERVER
-		int				setUrlFile(std::string route_path, std::string uploadDir); //set html or CGI file to return
+		int				setUrlFile(std::string route_path, std::string uploadDir, bool allowUpload);
 	
 	private:
 		std::string	_boundary;

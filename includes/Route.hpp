@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/26 13:50:01 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/19 16:17:38 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:35:39 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,8 @@ class Route
 {
 	//set_methode();
 	private:
-		std::string					_path; // part in the url after the port/hostname if I understand correctly
-		// required, can be empty
-		std::string					_dir; // path on server
-		// required, can be empty
+		std::string					_path;
+		std::string					_dir;
 		std::string					_default; // default page (index.html)
 		std::set<m_type>			_methods; // a set elements are unique and also has the contains() method
 		bool						_listDir; // enable or disable directory listing
@@ -51,11 +49,8 @@ class Route
 		void 	execute(Request req, Response &response);
 		void 	runCGI(Request request, Response &response);
 		void 	delMethod(Request request, Response &response);
-		void	uploadClientFile(Request request, Response &response);
 		int		addListBox(std::string &html);
 		int		doListDir(std::string &html, std::string pathDir) const;
 		void	setHtml(Request file, std::string dir, Response &response);
 		friend class ParseConfig;
 };
-
-// Helper class for creating Http Reponses?
