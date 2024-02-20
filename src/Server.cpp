@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 09:36:10 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:19:52 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 14:31:16 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,6 @@ Server::~Server(void) {}
 Server::Server() {
 	_port = -1;
 	_bodyLimit = -1;
-}
-
-Server::Server(ServConf Conf)
-{
-	_name = Conf.name;
-	_host = Conf.host;
-	_port = Conf.port;
-	_bodyLimit = Conf.bodyLimit;
-	
 }
 
 bool	Server::genReponse(Request request, Response &res)
