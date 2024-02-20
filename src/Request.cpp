@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 12:31:55 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 12:50:25 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,20 @@ int	Request::getLogin(int error)
 	size_t			i;
 	size_t			j;
 
-	search = "--" + _boundary + "\r\nContent-Disposition: form-data; name=\"username\"\r\n\r\n";
+	DEBUG 
+	search = "Content-Disposition: form-data; name=\"username\"\r\n\r\n";
+	if ((i = _body.find(search)) == std::string::npos)
+		return 500;
+	DEBUG
+	i += search.length();
+	j = i;
+	while (_body[j] && _body[j] != '\r')
+		j ++;
+	if (!_body[j])
+		return 500;
+	DEBUG
+	_usr = _body.substr(i, j - i);
+	search = "Content-Disposition: form-data; name=\"pwd\"\r\n\r\n";
 	if ((i = _body.find(search)) == std::string::npos)
 		return 500;
 	i += search.length();
@@ -266,17 +279,8 @@ int	Request::getLogin(int error)
 		j ++;
 	if (!_body[j])
 		return 500;
-	_usr = _body.substr(i, j - i - 1);
-	search = "--" + _boundary + "\r\nContent-Disposition: form-data; name=\"pwd\"\r\n\r\n";
-	if ((i = _body.find(search)) == std::string::npos)
-		return 500;
-	i += search.length();
-	j = i;
-	while (_body[j] && _body[j] != '\r')
-		j ++;
-	if (!_body[j])
-		return 500;
-	_pwd = _body.substr(i, j - i - 1);
+	DEBUG
+	_pwd = _body.substr(i, j - i);
 	std::cout << GREEN << "login <" << BLUE << _usr << ", " << _pwd << GREEN << ">" RESETN;
 	return error;
 }
@@ -342,7 +346,7 @@ int	Request::setBody(int bodySize)
 			return 500;
 		else if (_type == _STANDARD && !getSpecialType())
 			return 500;
-		
+		std::cout << "Actual body : " << YELLOW << _body RESETN;
 		if (_type == _LOGIN)
 			return getLogin(error);
 		else if (_type == _UPLOAD)
