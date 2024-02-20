@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 16:39:23 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/20 16:44:29 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,6 @@ bool	Request::getType(void)
 	// 	_type = _LOGIN;
 	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
 	// 	_type = _UPLOAD;
-	// else if (_body.find("\r\ncookie:") != std::string::npos && _type == _LOGIN)
-	// 	_type = _COOKIES;
 	else
 		_type = _STANDARD;
 	return true;
