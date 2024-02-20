@@ -6,7 +6,7 @@
 /*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 15:30:13 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 16:39:14 by dvandenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,6 @@ bool	Request::getType(void)
 	// 	_type = _LOGIN;
 	// else if (_body.find("\r\nContent-Disposition: form-data; name=\"fileUpload\"; filename=") != std::string::npos)
 	// 	_type = _UPLOAD;
-	// else if (_body.find("\r\ncookie:") != std::string::npos && _type == _LOGIN)
-	// 	_type = _COOKIES;
 	else
 		_type = _STANDARD;
 	return true;
