@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/21 13:03:36 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/21 14:32:04 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int Request::receiveHTTPRequest(const int client_fd, const int length)
 		for (int j = 0; j < bufferSize; j++)
 			buffer[j] = '\0';
 	}
-	std::cout << MAGENTA << _body RESETN;
+	// DEBUGOUT << MAGENTA << _body RESETN;
 	return (200);
 }
 
@@ -356,6 +356,8 @@ Request::Request(const int client_Fd, int &error)
 	if (receiveHTTPRequest(_clientFd, 0) && getMethode() && getHostPort() \
 		&& getPath() && getExtension() && getType())
 	{
+		// DEBUGOUT << GREEN << "Methode : " << BLUE << _method RESETN;
+		// DEBUGOUT << GREEN << "Type    : " << BLUE << _type RESETN;
 		_lengthHeader = _body.size();
 		_BodyLength = 0;
 		if (_method == _POST && _type != _CGI)

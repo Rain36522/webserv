@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParseConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 15:18:12 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/12 14:02:25 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/21 14:47:52 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,9 +197,8 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 		for (size_t j = i + 1; j < servers.size(); j++)
 			if (servers[i]._host == servers[j]._host && servers[i]._port == servers[j]._port)
 			{
-				std::vector<Route> r = servers[j]._routes;
-				servers[i]._routes.insert(servers[i]._routes.end(), r.begin(), r.end());
-				servers.erase(servers.begin() + j);
+				std::cout << ORANGE << "Error: Duplicate server"  RESETN;
+				exit(1);
 			}
 		size_t len = servers[i]._routes.size();
 		for (size_t j = 0; j < len; j++)
@@ -208,7 +207,7 @@ void ParseConfig::validServers(std::vector<Server> &servers)
 			{
 				if (servers[i]._routes[j]._path == servers[i]._routes[k]._path)
 				{
-					std::cout << ORANGE << "Error: Duplicate path" << std::endl << RESET;
+					std::cout << ORANGE << "Error: Duplicate path" RESETN;
 					exit(1);
 				}
 			}

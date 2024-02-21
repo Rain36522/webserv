@@ -80,6 +80,14 @@ int WebServer::getServerSocket(Server s) {
 void WebServer::run(void)
 {
 	struct sockaddr_in client_addr;
+	std::vector<int>reads(5000);
+	std::vector<int>writes(5000);
+	
+	if (_servers.empty())
+	{
+		std::cout << RED << "No servers, stopping" RESETN;
+		return ;
+	}
 	while (true)
 	{
 		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, NULL);
@@ -87,13 +95,18 @@ void WebServer::run(void)
 			std::cerr << RED << "Error in kevent" RESETN;
 			exit(EXIT_FAILURE);
 		}
-
 		for (int i = 0; i < n_events; ++i) {
 			std::cout << "================================================" RESETN;
 			
-			DEBUGOUT << GREEN << "INCOMING FD: " << events[i].ident RESETN;
+			// DEBUGOUT << GREEN << "INCOMING FD: " << events[i].ident RESETN;
 			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
 				if (events[i].flags & EV_EOF) {
+					std::cout << GREEN << "Closed client" RESETN;
+
+					struct kevent event[2];
+					EV_SET(&event[0], events[i].ident, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
+					EV_SET(&event[0], events[i].ident, EVFILT_WRITE, EV_DELETE, 0, 0, nullptr);
+					kevent(_kfd, event, 2, nullptr, 0, nullptr);
 					close(events[i].ident);
 					continue;
 				}
@@ -115,18 +128,19 @@ void WebServer::run(void)
 			}
 			else
 			{
-				DEBUGOUT << "EVENT FILTER TYPE: " << BLUE << events[i].filter << RESET << "fd:" << GREEN << events[i].ident RESETN;
+				// DEBUGOUT << "EVENT FILTER TYPE: " << BLUE << events[i].filter << RESET << "fd:" << GREEN << events[i].ident RESETN;
 				int client_fd = events[i].ident;
-				if (events[i].flags & EV_EOF) {
-                    std::cout << "Client socket encountered EOF, closing it" << std::endl;
-					struct kevent event[2];
-					EV_SET(&event[0], client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
-					EV_SET(&event[0], client_fd, EVFILT_WRITE, EV_DELETE, 0, 0, nullptr);
-					kevent(_kfd, event, 2, nullptr, 0, nullptr);
-                    close(client_fd);
-					continue;
-                }
+				
 				if (events[i].filter == -1)
+					reads[events[i].ident] = 1;
+				if (events[i].filter == -2)
+					writes[events[i].ident] = 1;
+				if (reads[events[i].ident] == 1 && writes[events[i].ident] == 1)
+				{
+					reads[events[i].ident] = 0;
+					writes[events[i].ident] = 0;
+				}
+				else
 					continue;
 				Response response(client_fd);
 				Request request(client_fd, response._errorCode);
@@ -147,6 +161,7 @@ void WebServer::run(void)
 				}
 				else
 					std::cout << ORANGE << "Request did not match a server" RESETN;
+				// DEBUGOUT << "Closed client" << std::endl;
 				close(client_fd);
 			}
 			

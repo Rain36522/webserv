@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2024/02/20 16:57:16 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/21 14:31:13 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,17 @@ Route::Route(){
 
 int	Route::match(Request req)
 {
-	DEBUGOUT << "compared route " << _path << " to request " << req._path;
+	// DEBUGOUT << "compared route " << _path << " to request " << req._path;
 	if (_path.size() == 0){
-		DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
+		// DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
 		return (0);
 	}
 	if (req._path.find(_path) == 0 && (req._path.size() == _path.size() || req._path[_path.size()] == '/'))
 	{
-		DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
+		// DEBUGOUT << BOLD << GREEN << " match" << NOBOLD RESETN;
 		return (int)_path.size();
 	}
-	DEBUGOUT << BOLD << RED << " no match" << NOBOLD RESETN;
+	// DEBUGOUT << BOLD << RED << " no match" << NOBOLD RESETN;
 	return -1;
 }
 
@@ -43,8 +43,8 @@ void Route::execute(Request request, Response &response)
 	response._errorCode = request.setUrlFile(_path, _uploadPath, _allowUpload);
 	if (response._errorCode >= 400)
 		return ;
-	DEBUGOUT << "Incoming request method is " << request._method << std::endl;
-	DEBUGOUT << "Incoming request type is " << request._type << std::endl;DEBUG
+	// DEBUGOUT << "Incoming request method is " << request._method << std::endl;
+	// DEBUGOUT << "Incoming request type is " << request._type << std::endl;DEBUG
 	if (!_redirPath.empty())
 	{
 		response._redirLocation = _redirPath;
@@ -83,7 +83,7 @@ void Route::login(Request request, Response &response)
 void Route::delMethod(Request request, Response &response)
 {
 	std::string fileFullPath = _uploadPath + "/" +request._bodyFileName;
-	DEBUGOUT << GREEN << fileFullPath RESETN;
+	// DEBUGOUT << GREEN << fileFullPath RESETN;
 	if (remove(fileFullPath.c_str()))
 		response._errorCode = 401;
 	else
@@ -102,7 +102,7 @@ int	Route::doListDir(std::string &html, std::string path_dir) const
 	if (dir == nullptr)
 	{
 		std::cerr << RED << "Could not access path for list directory\n" << RESET;
-		return (500);
+		return (404);
 	}
 	html = "";
 	while ((entry = readdir(dir)) != nullptr)

@@ -33,13 +33,13 @@ int main(int ac, char*av[], char **env_input)
 {
 	if (ac != 2)
 	{
-		perror("Invalid number of parameters");
+		std::cerr << RED << "Invalid user input (./webserv CONFIG_FILE)\n Server is not running" RESETN;
 		return (1);
 	}
 	doHeader();
 	env = env_input;
 	WebServer MasterServer((std::string(av[1])));
-	std::cout << GREEN << BOLD "Server is runing" << NOBOLD RESETN;
+	std::cout << GREEN << BOLD "Server is running" << NOBOLD RESETN;
 	MasterServer.run();
 	return (0);
 }
