@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 17:44:01 by dvandenb         ###   ########.fr       */
+/*   Created: 2024/02/21 10:58:15 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 11:00:02 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,9 +305,9 @@ int	Request::getBodyContent(int error)
 
 int	Request::setUrlFile(std::string route_path, std::string uploadDir, bool allowUpload)
 {
-	if (route_path[route_path.size() - 1] != '/')
+	if (route_path.size() > 0 && route_path[route_path.size() - 1] != '/')
 		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
-	else
+	else if (_path.size() > 0)
 		_fileName = _path.substr(route_path.size() + 1, _path.size() - route_path.size() - 1);
 	if (_fileName[0] == '/')
 		_fileName = _fileName.substr(1, _fileName.size() - 1);
@@ -327,28 +327,27 @@ int	Request::setBody(int bodySize)
 	int	error;
 
 	error = 200;
-	std::cout << "total : " << _BodyLength + _lengthHeader << " / " << bodySize RESETN;
-	std::cout << "header : " << _lengthHeader << "body : " << _BodyLength RESETN;
-	if (_BodyLength + _lengthHeader > bodySize)
-		return 413;
-	DEBUG
-	if (_method == _POST)
+	std::cout << BLUE << "Bodyisize : " << _BodyLength << "/" << bodySize RESETN;
+	if (_method == _POST && _BodyLength <= bodySize)
 	{
+		DEBUG
 		if (!getBoundary(error))
-			return 501;
+			return 500;
 		else if (_body.find(("--" + _boundary + "--")) == std::string::npos && getBodyContent(error) == 500)
-			return 502;
+			return 500;
 		else if (_type == _STANDARD && !getSpecialType())
-			return 503;
+			return 500;
 		if (_type == _LOGIN)
 			return getLogin(error);
 		else if (_type == _UPLOAD)
 			error = getUploadName(error);
 	}
+	else if (_BodyLength > bodySize && _method == _POST)
+		return 413;
 	else if (_method == _DEL)
 		error = getDelete(error);
 	if (error == 500)
-		std::cout << RED << "Error getting body request" RESETN;
+		std::cerr << RED << "Error getting body request" RESETN;
 	return error;
 }
 
