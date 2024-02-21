@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sendPage.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/16 13:55:15 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 17:43:03 by dvandenb         ###   ########.fr       */
+/*   Created: 2024/02/21 11:04:01 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 11:05:33 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,6 @@ bool validateFd(std::string file, int type)
 
 bool validateFd(int fd, int type)
 {
-	int fd_type = O_RDONLY;
-	if (type == EVFILT_WRITE)
-		fd_type = O_WRONLY;
 	if (fd == -1)
 		return (false);
 	int kfd = kqueue();

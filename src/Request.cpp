@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 10:58:15 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/21 11:00:02 by pudry            ###   ########.ch       */
+/*   Created: 2024/02/21 11:09:15 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 11:14:30 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,6 @@ int	Request::getBodyContent(int error)
 	
 	if ((i = _body.find(("--" + _boundary))) == std::string::npos)
 		i = 0;
-	// DEBUGOUT << "Total : " << _totaLength << ", length : " << _length RESETN;
 	error = receiveHTTPRequest(_clientFd, _BodyLength - int(i));
 	return error;
 }
@@ -308,7 +307,7 @@ int	Request::setUrlFile(std::string route_path, std::string uploadDir, bool allo
 	if (route_path.size() > 0 && route_path[route_path.size() - 1] != '/')
 		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
 	else if (_path.size() > 0)
-		_fileName = _path.substr(route_path.size() + 1, _path.size() - route_path.size() - 1);
+		_fileName = _path.substr(route_path.size(), _path.size() - route_path.size());
 	if (_fileName[0] == '/')
 		_fileName = _fileName.substr(1, _fileName.size() - 1);
 	std::cout << GREEN << "Filename <" << BLUE << _fileName << GREEN << ">" RESETN;

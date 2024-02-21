@@ -91,7 +91,7 @@ void WebServer::run(void)
 		for (int i = 0; i < n_events; ++i) {
 			std::cout << "================================================" RESETN;
 			
-			// DEBUGOUT << GREEN << "INCOMING FD: " << events[i].ident RESETN;
+			DEBUGOUT << GREEN << "INCOMING FD: " << events[i].ident RESETN;
 			if (std::find(_serverFds.begin(), _serverFds.end(), events[i].ident) != _serverFds.end()) {
 				if (events[i].flags & EV_EOF) {
 					close(events[i].ident);
@@ -115,7 +115,7 @@ void WebServer::run(void)
 			}
 			else
 			{
-				// DEBUGOUT << "EVENT FILTER TYPE: " << BLUE << events[i].filter << RESET << "fd:" << GREEN << events[i].ident RESETN;
+				DEBUGOUT << "EVENT FILTER TYPE: " << BLUE << events[i].filter << RESET << "fd:" << GREEN << events[i].ident RESETN;
 				int client_fd = events[i].ident;
 				if (events[i].flags & EV_EOF) {
                     std::cout << "Client socket encountered EOF, closing it" << std::endl;
