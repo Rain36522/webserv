@@ -49,6 +49,7 @@ void Route::execute(Request request, Response &response)
 	{
 		response._redirLocation = _redirPath;
 		response._errorCode = 302;
+		return;
 	}
 	
 	switch (request._type)

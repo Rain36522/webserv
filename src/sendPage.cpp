@@ -63,6 +63,8 @@ int	getHtmlFd(int fd, std::string &html)
 	char	buffer[256];
 	int		i = 255;
 
+	if (!validateFd(fd, EVFILT_READ))
+		return 500;
 	while (i == 255)
 	{
 		i = read(fd, buffer, 255);
@@ -81,6 +83,31 @@ bool validateFd(std::string file, int type)
 	if (type == EVFILT_WRITE)
 		fd_type = O_WRONLY;
 	int fd = open(file.c_str(), fd_type);
+	if (fd == -1)
+		return (false);
+	int kfd = kqueue();
+	if (kfd == -1)
+	{
+		close(fd);
+		return false;
+	}
+	struct kevent change;
+	struct kevent events[1];
+
+	EV_SET(&change, fd, type, EV_ADD, 0, 0, NULL);
+	int ret = kevent(kfd, &change, 1, events, 1, NULL);
+	close(kfd);
+	close(fd);
+	if (ret < 1)
+		return false;
+	return events[0].ident == (uintptr_t) fd;
+}
+
+bool validateFd(int fd, int type)
+{
+	int fd_type = O_RDONLY;
+	if (type == EVFILT_WRITE)
+		fd_type = O_WRONLY;
 	if (fd == -1)
 		return (false);
 	int kfd = kqueue();

@@ -49,6 +49,7 @@
 #define NOBOLD	"\033[0m"
 
 bool		validateFd(std::string file, int type);
+bool		validateFd(int fd, int type);
 std::string	getErrorHtml(std::string File, int errorCode);
 int			getHtml(std::string path, std::string &html);
 int			getHtmlFd(int fd, std::string &html);
