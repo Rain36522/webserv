@@ -6,7 +6,7 @@
 /*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/21 13:00:46 by pudry            ###   ########.fr       */
+/*   Updated: 2024/02/21 13:03:36 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,7 +329,6 @@ int	Request::setBody(int bodySize)
 	std::cout << BLUE << "Bodyisize : " << _BodyLength << "/" << bodySize RESETN;
 	if (_method == _POST && _BodyLength <= bodySize)
 	{
-		DEBUG
 		if (!getBoundary(error))
 			return 500;
 		else if (_body.find(("--" + _boundary + "--")) == std::string::npos && getBodyContent(error) == 500)
@@ -358,7 +357,7 @@ Request::Request(const int client_Fd, int &error)
 		&& getPath() && getExtension() && getType())
 	{
 		_lengthHeader = _body.size();
-		_BodyLength = _lengthHeader;
+		_BodyLength = 0;
 		if (_method == _POST && _type != _CGI)
 			error = getTotalLength(error);
 		else if (_type == _CGI)
