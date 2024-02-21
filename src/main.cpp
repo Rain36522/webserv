@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/01 15:51:05 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 16:10:20 by pudry            ###   ########.fr       */
+/*   Created: 2024/02/21 10:08:42 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 10:08:42 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ int main(int ac, char*av[], char **env_input)
 	}
 	doHeader();
 	env = env_input;
-	WebServer a((std::string(av[1])));
+	WebServer MasterServer((std::string(av[1])));
 	std::cout << GREEN << BOLD "Server is runing" << NOBOLD RESETN;
-	a.run();
+	MasterServer.run();
 	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WebServer.cpp                                      :+:      :+:    :+:   */
+/*   settings.json                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/30 09:26:28 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 17:35:46 by dvandenb         ###   ########.fr       */
+/*   Created: 2024/02/21 10:09:58 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 10:11:54 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void WebServer::run(void)
 	{
 		int n_events = kevent(_kfd, nullptr, 0, events, MAX_EVENTS, NULL);
 		if (n_events == -1) {
-			perror("Error in kevent");
+			std::cerr << RED << "Error in kevent" RESETN;
 			exit(EXIT_FAILURE);
 		}
 
@@ -100,16 +100,16 @@ void WebServer::run(void)
 				socklen_t client_len = sizeof(client_addr);
 				int client_fd = accept(events[i].ident, (struct sockaddr*)&client_addr, &client_len);
 				if (client_fd == -1) {
-					perror("Error accepting connection");
+					std::cerr << RED << "Error accepting connection." RESETN;
 					continue ;
 				}
-				 std::cout << "Accepted connection from client" << std::endl;
+				 std::cout << GREEN << "Accepted connection from client" RESETN;
                 struct kevent client_event[3];
                 EV_SET(&client_event[0], client_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, NULL);
 				EV_SET(&client_event[1], client_fd, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, NULL);
 
                 if (kevent(_kfd, client_event, 2, NULL, 0, NULL) == -1) {
-                    perror("Error adding client socket to kqueue");
+                    std::cerr << RED << "Error adding client socket to kqueue" RESETN;
                     close(client_fd);
                 }
 			}
@@ -136,7 +136,7 @@ void WebServer::run(void)
 					EV_SET(&event[0], client_fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr);
 					EV_SET(&event[0], client_fd, EVFILT_WRITE, EV_DELETE, 0, 0, nullptr);
 					kevent(_kfd, event, 2, nullptr, 0, nullptr);
-					std::cout << "Invalid request, deleted event" << std::endl;
+					std::cerr << ORANGE << "Invalid request, deleted event" RESETN;
 					continue;
 				}
 				response._clientFd = client_fd;
@@ -146,7 +146,7 @@ void WebServer::run(void)
 					response.sendResponse();
 				}
 				else
-					std::cout << RED << "Request did not match a server" RESETN;
+					std::cout << ORANGE << "Request did not match a server" RESETN;
 				close(client_fd);
 			}
 			
