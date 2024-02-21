@@ -119,7 +119,6 @@ bool validateFd(int fd, int type)
 	EV_SET(&change, fd, type, EV_ADD, 0, 0, NULL);
 	int ret = kevent(kfd, &change, 1, events, 1, NULL);
 	close(kfd);
-	close(fd);
 	if (ret < 1)
 		return false;
 	return events[0].ident == (uintptr_t) fd;
