@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/15 16:05:33 by pudry             #+#    #+#             */
-/*   Updated: 2024/02/20 17:44:01 by dvandenb         ###   ########.fr       */
+/*   Updated: 2024/02/20 18:02:50 by pudry            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ bool	Request::getBoundary(int &error)
 		return false;
 	}
 	_boundary = _body.substr(i, j - i);
-	DEBUGOUT << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
+	// DEBUGOUT << GREEN << "Boundary <" << BLUE << _boundary << GREEN << ">" RESETN;
 	return true;
 }
 
@@ -327,11 +327,10 @@ int	Request::setBody(int bodySize)
 	int	error;
 
 	error = 200;
-	std::cout << "total : " << _BodyLength + _lengthHeader << " / " << bodySize RESETN;
-	std::cout << "header : " << _lengthHeader << "body : " << _BodyLength RESETN;
+	// DEBUGOUT << "total : " << _BodyLength + _lengthHeader << " / " << bodySize RESETN;
+	// DEBUGOUT << "header : " << _lengthHeader << "body : " << _BodyLength RESETN;
 	if (_BodyLength + _lengthHeader > bodySize)
 		return 413;
-	DEBUG
 	if (_method == _POST)
 	{
 		if (!getBoundary(error))
@@ -368,7 +367,10 @@ Request::Request(const int client_Fd, int &error)
 	}
 	else
 	{
-		error = 500;
+		if (_method == _UNKNOW)
+			error = 413;
+		else
+			error = 500;
 		std::cout << RED << "Error getting request" RESETN;
 	}
 }
