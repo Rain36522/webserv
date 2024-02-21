@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pudry <pudry@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pudry <pudry@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/15 16:14:34 by dvandenb          #+#    #+#             */
-/*   Updated: 2024/02/20 16:44:48 by pudry            ###   ########.fr       */
+/*   Created: 2024/02/21 10:14:37 by pudry             #+#    #+#             */
+/*   Updated: 2024/02/21 10:19:54 by pudry            ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,11 @@ void Response::sendHTML()
 	responseHeaders += "Server: " + _servName +"\r\n";
 	responseHeaders += "\r\n";
 	ssize_t sent = send(_clientFd, responseHeaders.c_str(), responseHeaders.size(), 0);
-	if (sent == -1)
-	{
-		perror("Error sending response headers");
-	}
+	if (sent < 0 || (responseHeaders != "" && sent == 0))
+		std::cerr << RED << "Error sending response headers" RESETN;
 	sent = send(_clientFd, _htmlContent.c_str(), _htmlContent.size(), 0);
-	if (sent == -1) {
-		perror("Error sending HTML content");
+	if (sent < 0 || (_htmlContent != "" && sent == 0)) {
+		std::cerr << RED << "Error sending Html content" RESETN;
 	}
 }
 
@@ -47,8 +45,8 @@ void Response::sendRedirect()
     responseHeaders += "\r\n";
 
     ssize_t sent = send(_clientFd, responseHeaders.c_str(), responseHeaders.size(), 0);
-    if (sent == -1) {
-        perror("Error sending redirect response");
+    if (sent == -1 || (responseHeaders != "" && sent == 0)) {
+		std::cerr << ORANGE << "Error send redirect response" RESETN;
     }
 }
 
